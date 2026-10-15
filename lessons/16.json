@@ -1,0 +1,28 @@
+{
+  "title": "Случайный лес и бустинг",
+  "intro": "Соберём несколько моделей, чтобы получить более устойчивое решение.",
+  "theory": [
+    "Случайный лес обучает деревья на случайных подвыборках объектов и признаков. Усреднение разных деревьев снижает разброс предсказаний по сравнению с одним глубоким деревом.",
+    "Бустинг строит модели последовательно: следующие шаги улучшают текущую композицию, используя градиент функции потерь. learning_rate управляет вкладом шага, а число итераций — длиной обучения.",
+    "Ансамбль не гарантирует улучшения на любой задаче. Сравнивай модели на одинаковых разбиениях и учитывай время обучения, размер модели и требования к объяснению. Для больших таблиц полезны гистограммные реализации бустинга."
+  ],
+  "insight": "Лес объединяет много разных деревьев; бустинг последовательно исправляет текущую модель.",
+  "code": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier\nX, y = make_classification(n_samples=500, n_features=10, random_state=42)\nXtr, Xte, ytr, yte = train_test_split(X, y, stratify=y, random_state=42)\nmodels = [RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42),\n          HistGradientBoostingClassifier(max_iter=80, max_leaf_nodes=7, random_state=42)]\nfor model in models:\n    model.fit(Xtr, ytr)\n    print(type(model).__name__, model.score(Xte, yte))\n",
+  "expected": "Будут две оценки accuracy на одном test. Это демонстрация сравнения, а не основание многократно подбирать настройки по тесту.",
+  "task": "Сравни время обучения при 50 и 200 деревьях в лесу.",
+  "hint": "Используй time.perf_counter(). Число деревьев влияет на затраты, но прирост качества может быстро уменьшаться.",
+  "quiz": {
+    "question": "Как обучаются базовые модели в бустинге?",
+    "options": [
+      "Последовательно",
+      "Все независимо",
+      "Без функции потерь"
+    ],
+    "answer": 0,
+    "explanation": "Каждый новый шаг учитывает текущую композицию."
+  },
+  "source": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "id": "16",
+  "group": 3,
+  "minutes": 18
+}
