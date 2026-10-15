@@ -25,6 +25,8 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - run: node --check app.js && node --check lab.js
       - run: python scripts/build.py
+      - run: python courses/verify.py
+      - run: python tests/verify_file_path.py
       - run: python tests/verify_course.py
       - run: python tests/verify_locales.py
       - name: Verify browser interactions
@@ -36,6 +38,7 @@ jobs:
           python tests/browser_check.py
           python tests/browser_locale.py
           python tests/browser_storage.py
+          python tests/browser_file_path.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

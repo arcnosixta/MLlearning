@@ -11,7 +11,7 @@ for name in ['index.html', 'styles.css', 'app.js', 'icon.svg', 'lab.js', 'locale
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
-app_source=(ROOT/'app.js').read_text(encoding='utf-8')+'\n'+(ROOT/'data-view.js').read_text(encoding='utf-8')
+app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['app.js','data-view.js','files-view.js'])
 (OUT/'app.js').write_text(app_source,encoding='utf-8')
 lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
 (OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
@@ -46,3 +46,6 @@ for original, translated in zip(lessons,translations):
     (OUT/'examples/kk'/f"{row['id']}.py").write_text(row['code'],encoding='utf-8')
 (OUT/'lessons.kk.json').write_text(json.dumps(localized,ensure_ascii=False),encoding='utf-8')
 print('Built complete Kazakh interface, 24 lessons and localized examples')
+
+from build_notebooks import build as build_notebooks
+build_notebooks()

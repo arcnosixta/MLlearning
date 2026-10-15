@@ -1,7 +1,9 @@
 /* Versioned browser-local learning records. No requests or user data upload. */
 (()=>{
   const KEY='mllearning-data-v1',ids=new Set(Array.from({length:24},(_,i)=>String(i+1).padStart(2,'0')));
-  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru'});
+  const fileIds=new Set(['01','02','03','04','05','06','07']);
+  const blankFiles=()=>({completed:[],answers:{},notes:{},lastLesson:null});
+  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles()});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   const controls={regression:{weight:[-0.5,3],bias:[-3,7]},scaling:{'scale-mode':['raw','standard','minmax'],multiplier:[1,100]},knn:{k:[1,11],'query-x':[0,10],'query-y':[0,10]}};
   function validate(input){
@@ -23,6 +25,14 @@
         out.labs[type][name]=value;
       }
     }
+    // Additive schema: old version-1 backups without a file pathway still load.
+    if(input.files!==undefined){
+      const f=input.files;
+      if(!plain(f)||!Array.isArray(f.completed)||f.completed.some(id=>!fileIds.has(id))||!plain(f.answers)||!plain(f.notes)||(f.lastLesson!==null&&!fileIds.has(f.lastLesson)))throw new Error('Invalid file pathway');
+      out.files.completed=[...new Set(f.completed)];out.files.lastLesson=f.lastLesson;
+      for(const [id,value] of Object.entries(f.answers)){if(!fileIds.has(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid file answer');out.files.answers[id]=value}
+      for(const [id,value] of Object.entries(f.notes)){if(!fileIds.has(id)||typeof value!=='string'||value.length>10000)throw new Error('Invalid file note');out.files.notes[id]=value}
+    }
     return out;
   }
   let state=blank(),persistent=true;
@@ -43,6 +53,10 @@
     update,
     answer:(id,value)=>update({answers:{...state.answers,[id]:value}}),
     note:(id,value)=>update({notes:{...state.notes,[id]:value}}),
+    fileVisit:id=>update({files:{...state.files,lastLesson:id}}),
+    fileNote:(id,value)=>update({files:{...state.files,notes:{...state.files.notes,[id]:value}}}),
+    fileAnswer:(id,value)=>update({files:{...state.files,answers:{...state.files.answers,[id]:value}}}),
+    fileComplete:id=>update({files:{...state.files,completed:[...new Set([...state.files.completed,id])]}}),
     export:()=>JSON.stringify(state,null,2),
     import:text=>save(validate(JSON.parse(text))),
     resetProgress:()=>update({completed:[]}),
