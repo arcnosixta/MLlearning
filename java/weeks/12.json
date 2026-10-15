@@ -1,0 +1,206 @@
+{
+  "week": 12,
+  "id": "12",
+  "source": "https://dev.java/learn/java-io/",
+  "code": "import java.nio.file.*;\nimport java.nio.charset.StandardCharsets;\nimport java.io.IOException;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        Path file = Files.createTempFile(\"imlearning-\", \".txt\");\n        try {\n            Files.writeString(file, \"Aida:80\\n\", StandardCharsets.UTF_8);\n            System.out.print(Files.readString(file, StandardCharsets.UTF_8));\n        } finally { Files.deleteIfExists(file); }\n    }\n}\n",
+  "output": "Aida:80",
+  "ru": {
+    "title": "Файлы и управление ресурсами",
+    "intro": "Сохрани результат между запусками и обработай ошибки ввода-вывода.",
+    "sections": [
+      {
+        "title": "Path и Files",
+        "text": "Path описывает путь, но не доказывает существование файла. Files.readString/writeString работают с текстом. Явно указывай кодировку UTF-8 при обмене данными. Относительный путь зависит от текущего каталога процесса."
+      },
+      {
+        "title": "try-with-resources",
+        "text": "Ресурс AutoCloseable в try(...) закрывается автоматически при выходе из блока, включая исключение. Files.lines возвращает Stream, который нужно закрыть. Закрытие ресурсов не заменяет обработку IOException."
+      },
+      {
+        "title": "Контракт формата",
+        "text": "Определи разделитель, кодировку и поведение на пустом или повреждённом файле. Не называй ручной split полноценным CSV-парсером: CSV может содержать кавычки и разделители внутри поля. Для простого учебного формата документируй ограничения."
+      }
+    ],
+    "practice": "Сохрани три строки с результатами в UTF-8. Прочитай их и посчитай число записей. Проверь пустой файл и отсутствующий файл; опиши ожидаемые ошибки.",
+    "trap": "Относительный путь зависит от рабочей папки, а не обязательно от расположения Main.java.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Файлдар және ресурстарды басқару",
+    "intro": "Нәтижені іске қосулар арасында сақтап, енгізу-шығару қатесін өңде.",
+    "sections": [
+      {
+        "title": "Path және Files",
+        "text": "Path жолды сипаттайды, файл бар екенін дәлелдемейді. Files.readString/writeString мәтінмен жұмыс істейді. Дерек алмасуда UTF-8 көрсет. Салыстырмалы жол процестің ағымдағы каталогына тәуелді."
+      },
+      {
+        "title": "try-with-resources",
+        "text": "try(...) ішіндегі AutoCloseable ресурс блоктан шыққанда, ерекшелік болса да жабылады. Files.lines қайтаратын Stream жабылуы керек. Ресурсты жабу IOException өңдеуін алмастырмайды."
+      },
+      {
+        "title": "Пішім келісімі",
+        "text": "Бөлгіш, кодтау және бос не бұзылған файл әрекетін анықта. Қолмен split толық CSV парсер емес: CSV өрісінде тырнақша мен бөлгіш болуы мүмкін. Оқу пішімінің шектеуін жаз."
+      }
+    ],
+    "practice": "Үш нәтиже жолын UTF-8 арқылы сақта. Оқып, жазба санын есепте. Бос және жоқ файлды тексер; күтілетін қатені сипатта.",
+    "trap": "Салыстырмалы жол Main.java орнына емес, жұмыс каталогына тәуелді.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Как называется интерфейс ресурса для try-with-resources?",
+      "hint": "Автоматически закрываемый объект."
+    },
+    "kk": {
+      "prompt": "try-with-resources ресурсының интерфейсі қалай аталады?",
+      "hint": "Автоматты жабылатын объект."
+    },
+    "answers": [
+      "AutoCloseable",
+      "java.lang.AutoCloseable"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Что описывает Path?",
+        "options": [
+          "Путь к файлу/каталогу",
+          "Всегда открытый файл",
+          "Только содержимое"
+        ],
+        "explanation": "Path не открывает файл сам по себе."
+      },
+      "kk": {
+        "question": "Path нені сипаттайды?",
+        "options": [
+          "Файл/каталог жолын",
+          "Әрқашан ашық файлды",
+          "Тек мазмұнды"
+        ],
+        "explanation": "Path файлды өздігінен ашпайды."
+      },
+      "answer": 0,
+      "id": "j12-c1",
+      "week": 12
+    },
+    {
+      "ru": {
+        "question": "Когда try-with-resources закрывает ресурс?",
+        "options": [
+          "Только при успехе",
+          "При выходе из блока, включая исключение",
+          "Никогда"
+        ],
+        "explanation": "AutoCloseable.close вызывается автоматически."
+      },
+      "kk": {
+        "question": "try-with-resources ресурсты қашан жабады?",
+        "options": [
+          "Тек сәтті болса",
+          "Блоктан шыққанда, ерекшелікпен де",
+          "Ешқашан"
+        ],
+        "explanation": "AutoCloseable.close автоматты шақырылады."
+      },
+      "answer": 1,
+      "id": "j12-c2",
+      "week": 12
+    },
+    {
+      "ru": {
+        "question": "От чего зависит относительный путь?",
+        "options": [
+          "От текущего каталога процесса",
+          "От имени класса",
+          "От числа методов"
+        ],
+        "explanation": "Проверяй рабочую папку при запуске."
+      },
+      "kk": {
+        "question": "Салыстырмалы жол неге тәуелді?",
+        "options": [
+          "Процестің ағымдағы каталогына",
+          "Класс атауына",
+          "Әдістер санына"
+        ],
+        "explanation": "Іске қосқанда жұмыс каталогын тексер."
+      },
+      "answer": 0,
+      "id": "j12-c3",
+      "week": 12
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nSystem.out.println(java.nio.file.Path.of(\"a\", \"b.txt\").getFileName());",
+        "options": [
+          "b.txt",
+          "a",
+          "a/b.txt"
+        ],
+        "explanation": "getFileName возвращает последний компонент."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nSystem.out.println(java.nio.file.Path.of(\"a\", \"b.txt\").getFileName());",
+        "options": [
+          "b.txt",
+          "a",
+          "a/b.txt"
+        ],
+        "explanation": "getFileName соңғы бөлікті қайтарады."
+      },
+      "answer": 0,
+      "id": "j12-t1",
+      "week": 12,
+      "trace": "System.out.println(java.nio.file.Path.of(\"a\", \"b.txt\").getFileName());"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nclass R implements AutoCloseable { public void close(){System.out.print(\"C\");} } try(R r=new R()){System.out.print(\"T\");}",
+        "options": [
+          "CT",
+          "T",
+          "TC"
+        ],
+        "explanation": "После тела вызывается close."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nclass R implements AutoCloseable { public void close(){System.out.print(\"C\");} } try(R r=new R()){System.out.print(\"T\");}",
+        "options": [
+          "CT",
+          "T",
+          "TC"
+        ],
+        "explanation": "Денеден кейін close шақырылады."
+      },
+      "answer": 2,
+      "id": "j12-t2",
+      "week": 12,
+      "trace": "class R implements AutoCloseable { public void close(){System.out.print(\"C\");} } try(R r=new R()){System.out.print(\"T\");}"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nSystem.out.println(\"A\\nB\".lines().count());",
+        "options": [
+          "3",
+          "2",
+          "1"
+        ],
+        "explanation": "Строка содержит две строки текста."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nSystem.out.println(\"A\\nB\".lines().count());",
+        "options": [
+          "3",
+          "2",
+          "1"
+        ],
+        "explanation": "Жолда екі мәтін жолы бар."
+      },
+      "answer": 1,
+      "id": "j12-t3",
+      "week": 12,
+      "trace": "System.out.println(\"A\\nB\".lines().count());"
+    }
+  ]
+}
