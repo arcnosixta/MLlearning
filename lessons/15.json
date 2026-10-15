@@ -1,0 +1,28 @@
+{
+  "title": "Деревья решений",
+  "intro": "Посмотрим, как модель превращает признаки в последовательность вопросов.",
+  "theory": [
+    "Дерево делит пространство признаков условиями вида «значение ≤ порог». В каждом узле выбирается разбиение, уменьшающее неоднородность классов; в листе остаётся распределение ответов.",
+    "Глубокое дерево может выделить почти отдельный лист для каждого объекта и переобучиться. max_depth и min_samples_leaf ограничивают сложность. Масштабирование обычно не меняет смысл порогов и для деревьев не требуется.",
+    "Дерево удобно читать, но небольшое изменение данных может поменять его структуру. Важность признаков из дерева не является причинным объяснением и может быть смещена в пользу признаков с большим числом возможных разбиений."
+  ],
+  "insight": "Каждый путь от корня до листа — понятное правило, по которому сделан прогноз.",
+  "code": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier, export_text\ndata = load_iris()\nXtr, Xte, ytr, yte = train_test_split(data.data, data.target, stratify=data.target, random_state=42)\nmodel = DecisionTreeClassifier(max_depth=3, random_state=42).fit(Xtr, ytr)\nprint(export_text(model, feature_names=list(data.feature_names)))\nprint(\"Accuracy:\", model.score(Xte, yte))\n",
+  "expected": "Текстовое дерево с порогами по признакам цветка и итоговая оценка на test.",
+  "task": "Убери ограничение max_depth и сравни train/test accuracy.",
+  "hint": "model.score(Xtr, ytr) показывает запоминание train. Сравни с отложенной оценкой.",
+  "quiz": {
+    "question": "Зачем ограничивать глубину дерева?",
+    "options": [
+      "Уменьшить переобучение",
+      "Стандартизировать признаки",
+      "Увеличить число данных"
+    ],
+    "answer": 0,
+    "explanation": "Ограничение глубины сокращает сложность правил."
+  },
+  "source": "https://scikit-learn.org/stable/modules/tree.html",
+  "id": "15",
+  "group": 3,
+  "minutes": 18
+}
