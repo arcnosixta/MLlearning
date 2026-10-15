@@ -1,0 +1,206 @@
+{
+  "week": 11,
+  "id": "11",
+  "source": "https://dev.java/learn/generics/",
+  "code": "import java.util.*;\npublic class Main {\n    static final class Student {\n        private final int id;\n        Student(int id) { this.id = id; }\n        @Override public boolean equals(Object other) {\n            return other instanceof Student && id == ((Student) other).id;\n        }\n        @Override public int hashCode() { return Integer.hashCode(id); }\n    }\n    public static void main(String[] args) {\n        Set<Student> students = new HashSet<>();\n        students.add(new Student(1));\n        students.add(new Student(1));\n        System.out.println(students.size());\n    }\n}\n",
+  "output": "1",
+  "ru": {
+    "title": "Generics, equals и hashCode",
+    "intro": "Добавь типобезопасность и корректное сравнение собственных объектов.",
+    "sections": [
+      {
+        "title": "Параметры типов",
+        "text": "Box<T> позволяет проверять тип значения при компиляции без ручных приведений. В generics используют ссылочные типы: Integer вместо int. List<Integer> не является подтипом List<Number>, хотя Integer наследует Number. Не используй raw-типы без причины."
+      },
+      {
+        "title": "equals и контракт",
+        "text": "equals должен быть рефлексивным, симметричным, транзитивным и согласованным. Для null возвращается false. При сравнении по id используй неизменяемый id и проверь тип другого объекта."
+      },
+      {
+        "title": "Хеш-коллекции",
+        "text": "Если a.equals(b), их hashCode должны совпадать. Обратное не гарантируется: коллизии разрешены. Не меняй поля, влияющие на hashCode, пока объект служит ключом HashMap или элементом HashSet."
+      }
+    ],
+    "practice": "Создай Box<T> с конструктором и get(). Затем Student с final id и корректными equals/hashCode. Проверь Set из двух студентов с одинаковым id и одного с другим id.",
+    "trap": "Одинаковый hashCode не доказывает equals. А переопределение equals без hashCode ломает контракт хеш-коллекций.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Generics, equals және hashCode",
+    "intro": "Тип қауіпсіздігін және өз объектілеріңді дұрыс салыстыруды қос.",
+    "sections": [
+      {
+        "title": "Тип параметрлері",
+        "text": "Box<T> мән типін компиляцияда қолмен түрлендірмей тексереді. Generics сілтемелік типтермен жұмыс істейді: int орнына Integer. Integer Number-ден мұра алса да, List<Integer> List<Number> туындысы емес. Raw типтен сақтан."
+      },
+      {
+        "title": "equals және келісім",
+        "text": "equals рефлексивті, симметриялы, транзитивті және тұрақты болуы керек. null үшін false қайтарады. id бойынша салыстырсаң, өзгермейтін id алып, екінші объект типін тексер."
+      },
+      {
+        "title": "Хеш коллекциялар",
+        "text": "a.equals(b) болса, hashCode бірдей болуы керек. Кері тұжырым міндетті емес: коллизия болуы мүмкін. HashMap кілті не HashSet элементі кезінде hashCode-қа әсер ететін өрісті өзгертпе."
+      }
+    ],
+    "practice": "Конструктор және get() бар Box<T> жаса. Кейін final id және дұрыс equals/hashCode бар Student жаса. Бірдей id бар екі және өзге id бар бір студентпен Set тексер.",
+    "trap": "Бірдей hashCode equals-ті дәлелдемейді. equals-ті hashCode-сыз қайта анықтау хеш келісімін бұзады.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Какой wrapper-тип используют вместо int в List<...>?",
+      "hint": "Это имя начинается с заглавной I."
+    },
+    "kk": {
+      "prompt": "List<...> ішінде int орнына қандай wrapper тип қолданылады?",
+      "hint": "Атауы үлкен I-ден басталады."
+    },
+    "answers": [
+      "Integer",
+      "java.lang.Integer"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Можно ли List<int>?",
+        "options": [
+          "Да",
+          "Нет, нужен Integer",
+          "Только в main"
+        ],
+        "explanation": "Параметры типов не бывают примитивами."
+      },
+      "kk": {
+        "question": "List<int> бола ма?",
+        "options": [
+          "Иә",
+          "Жоқ, Integer керек",
+          "Тек main ішінде"
+        ],
+        "explanation": "Тип параметрі примитив болмайды."
+      },
+      "answer": 1,
+      "id": "j11-c1",
+      "week": 11
+    },
+    {
+      "ru": {
+        "question": "Если equals истинно, hashCode должны быть…",
+        "options": [
+          "Одинаковыми",
+          "Разными",
+          "Случайными"
+        ],
+        "explanation": "Это обязательная часть контракта."
+      },
+      "kk": {
+        "question": "equals ақиқат болса, hashCode қандай?",
+        "options": [
+          "Бірдей",
+          "Әртүрлі",
+          "Кездейсоқ"
+        ],
+        "explanation": "Бұл келісімнің міндетті бөлігі."
+      },
+      "answer": 0,
+      "id": "j11-c2",
+      "week": 11
+    },
+    {
+      "ru": {
+        "question": "List<Integer> является List<Number>?",
+        "options": [
+          "Да",
+          "Нет",
+          "Только если пустой"
+        ],
+        "explanation": "Generics инвариантны."
+      },
+      "kk": {
+        "question": "List<Integer> List<Number> бола ма?",
+        "options": [
+          "Иә",
+          "Жоқ",
+          "Тек бос болса"
+        ],
+        "explanation": "Generics инвариантты."
+      },
+      "answer": 1,
+      "id": "j11-c3",
+      "week": 11
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nclass Box<T>{ T value; Box(T v){value=v;} } Box<String> b=new Box<>(\"ok\"); System.out.println(b.value);",
+        "options": [
+          "String",
+          "ok",
+          "null"
+        ],
+        "explanation": "T становится String для этой ссылки."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nclass Box<T>{ T value; Box(T v){value=v;} } Box<String> b=new Box<>(\"ok\"); System.out.println(b.value);",
+        "options": [
+          "String",
+          "ok",
+          "null"
+        ],
+        "explanation": "Бұл сілтеме үшін T String болады."
+      },
+      "answer": 1,
+      "id": "j11-t1",
+      "week": 11,
+      "trace": "class Box<T>{ T value; Box(T v){value=v;} } Box<String> b=new Box<>(\"ok\"); System.out.println(b.value);"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nInteger a=1000; Integer b=1000; System.out.println(a.equals(b));",
+        "options": [
+          "true",
+          "false",
+          "1000"
+        ],
+        "explanation": "equals сравнивает числовое содержимое wrapper."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nInteger a=1000; Integer b=1000; System.out.println(a.equals(b));",
+        "options": [
+          "true",
+          "false",
+          "1000"
+        ],
+        "explanation": "equals wrapper сандық мәнін салыстырады."
+      },
+      "answer": 0,
+      "id": "j11-t2",
+      "week": 11,
+      "trace": "Integer a=1000; Integer b=1000; System.out.println(a.equals(b));"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\njava.util.Set<String> s=new java.util.HashSet<>(); s.add(new String(\"x\")); s.add(new String(\"x\")); System.out.println(s.size());",
+        "options": [
+          "2",
+          "0",
+          "1"
+        ],
+        "explanation": "String реализует согласованные equals/hashCode."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\njava.util.Set<String> s=new java.util.HashSet<>(); s.add(new String(\"x\")); s.add(new String(\"x\")); System.out.println(s.size());",
+        "options": [
+          "2",
+          "0",
+          "1"
+        ],
+        "explanation": "String келісімді equals/hashCode береді."
+      },
+      "answer": 2,
+      "id": "j11-t3",
+      "week": 11,
+      "trace": "java.util.Set<String> s=new java.util.HashSet<>(); s.add(new String(\"x\")); s.add(new String(\"x\")); System.out.println(s.size());"
+    }
+  ]
+}
