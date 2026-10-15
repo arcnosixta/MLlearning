@@ -1,0 +1,28 @@
+{
+  "title": "Precision, recall и порог решения",
+  "intro": "Accuracy бывает обманчива. Научимся различать типы ошибок классификатора.",
+  "theory": [
+    "Матрица ошибок для бинарной задачи в стандартном порядке классов содержит TN, FP, FN, TP. FP — ложная тревога, FN — пропуск положительного события. Нужно заранее определить, какой класс считаем положительным.",
+    "Precision = TP/(TP+FP) отвечает, какая доля положительных решений верна. Recall = TP/(TP+FN) показывает, какую долю реальных положительных объектов мы нашли. F1 — гармоническое среднее этих величин.",
+    "Когда редкий класс встречается у 1% объектов, предсказание «всегда отрицательный» даст accuracy 99% и recall 0. Порог нужно выбирать по стоимости ошибок и на валидации. Для сравнения ранжирования дополнительно используют ROC AUC и average precision."
+  ],
+  "insight": "Хорошая метрика отражает цену ошибки в задаче, а не просто выглядит высокой.",
+  "code": "from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score\ny = [0, 0, 0, 0, 1, 1, 1, 1]\np = [0.1, 0.2, 0.6, 0.4, 0.3, 0.7, 0.8, 0.9]\nfor threshold in [0.5, 0.75]:\n    pred = [int(v >= threshold) for v in p]\n    print(\"Threshold:\", threshold)\n    print(confusion_matrix(y, pred, labels=[0, 1]))\n    print(\"P/R/F1:\", precision_score(y, pred, zero_division=0),\n          recall_score(y, pred, zero_division=0), f1_score(y, pred, zero_division=0))\n",
+  "expected": "При 0.5 precision=0.75 и recall=0.75. При 0.75 precision=1.0 и recall=0.5: меньше тревог, больше пропусков.",
+  "task": "Посчитай метрики для порога 0.25 вручную и проверь кодом.",
+  "hint": "Отметь все p ≥ 0.25, затем отдельно посчитай TP, FP и FN.",
+  "quiz": {
+    "question": "Что измеряет recall?",
+    "options": [
+      "Долю найденных реальных положительных объектов",
+      "Долю отрицательных ответов",
+      "Средний размер ошибки"
+    ],
+    "answer": 0,
+    "explanation": "В знаменателе TP+FN — все реальные положительные объекты."
+  },
+  "source": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics",
+  "id": "22",
+  "group": 5,
+  "minutes": 22
+}
