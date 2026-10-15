@@ -1,0 +1,28 @@
+{
+  "title": "Итоговый проект: обучение и сохранение",
+  "intro": "Соберём весь путь: постановка задачи, baseline, Pipeline, подбор, тест и сохранение модели.",
+  "theory": [
+    "Задача проекта — регрессия на учебном наборе diabetes: предсказать числовой показатель прогрессирования заболевания. Это технический учебный пример, не инструмент для клинических решений. Данные встроены в scikit-learn и не требуют сети.",
+    "Отделяем тест, сравниваем Ridge с baseline и выбираем alpha кросс-валидацией на train. Оцениваем MAE, сохраняем весь Pipeline через joblib и проверяем, что загрузка не меняет прогноз.",
+    "Сохранённая модель — начало применения. Для сервиса нужны контракт входных признаков, контроль версий среды, мониторинг качества и распределения данных, обработка ошибок и политика обновления. joblib использует pickle: загружай только свои доверенные файлы, совместимость между версиями не гарантируется."
+  ],
+  "insight": "Готовый ML-проект — воспроизводимый эксперимент с честной оценкой, а не один вызов fit.",
+  "code": "from pathlib import Path\nimport joblib\nimport numpy as np\nfrom sklearn.datasets import load_diabetes\nfrom sklearn.model_selection import train_test_split, KFold, GridSearchCV\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import Ridge\nfrom sklearn.dummy import DummyRegressor\nfrom sklearn.metrics import mean_absolute_error\nX, y = load_diabetes(return_X_y=True, scaled=False)\nXtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)\nbaseline = DummyRegressor(strategy=\"median\").fit(Xtr, ytr)\nsearch = GridSearchCV(make_pipeline(StandardScaler(), Ridge()),\n    {\"ridge__alpha\": [0.1, 1, 10, 100]},\n    cv=KFold(5, shuffle=True, random_state=42), scoring=\"neg_mean_absolute_error\")\nsearch.fit(Xtr, ytr)\nmodel = search.best_estimator_\nprint(\"Parameters:\", search.best_params_)\nprint(\"Baseline MAE:\", mean_absolute_error(yte, baseline.predict(Xte)))\nprint(\"Model MAE:\", mean_absolute_error(yte, model.predict(Xte)))\npath = Path(\"model.joblib\")\njoblib.dump(model, path)\nrestored = joblib.load(path)\nassert np.allclose(restored.predict(Xte), model.predict(Xte))\nprint(\"Saved and verified:\", path.resolve())\n",
+  "expected": "Файл model.joblib, лучшая alpha и две MAE на test. Проверка assert подтверждает сохранение прогнозов после загрузки.",
+  "task": "Напиши короткий отчёт: задача, происхождение данных, разбиение, baseline, выбранные параметры, MAE и ограничения.",
+  "hint": "Сохрани версии Python и зависимостей, seed и список признаков. Для расширения проекта добавь оценку разброса ошибок и анализ отдельных групп объектов.",
+  "quiz": {
+    "question": "Что нужно сохранить для новых прогнозов?",
+    "options": [
+      "Только коэффициенты",
+      "Весь Pipeline подготовки и модели",
+      "Тестовые ответы"
+    ],
+    "answer": 1,
+    "explanation": "Pipeline сохраняет и обученную подготовку, и модель; дополнительно фиксируют среду и контракт данных."
+  },
+  "source": "https://scikit-learn.org/stable/model_persistence.html",
+  "id": "24",
+  "group": 5,
+  "minutes": 22
+}
