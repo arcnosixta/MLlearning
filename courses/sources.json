@@ -23,6 +23,17 @@
       "downloaded_at": "2026-10-15T07:04:08.692808+05:00",
       "format": "Jupyter Notebook v4",
       "renamed_only": false
+    },
+    {
+      "number": 3,
+      "original_filename": "3-Matplotlib және Seaborn арқылы EDA орындау.ipynb",
+      "path": "03-eda/03-eda.ipynb",
+      "sha256": "546223543cf25f32aeddfcd8bb5e843a4fb93aaad365095a7396e0185246d4eb",
+      "bytes": 2016898,
+      "cells": 95,
+      "downloaded_at": "2026-10-15T07:04:10.165988+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": false
     }
   ]
 }
