@@ -1,0 +1,205 @@
+{
+  "week": 8,
+  "id": "08",
+  "source": "https://dev.java/learn/interfaces/",
+  "code": "public class Main {\n    interface Printable { String text(); }\n    static class Report implements Printable {\n        public String text() { return \"Report ready\"; }\n    }\n    static void print(Printable item) { System.out.println(item.text()); }\n    public static void main(String[] args) { print(new Report()); }\n}\n",
+  "output": "Report ready",
+  "ru": {
+    "title": "Интерфейсы и проектирование контрактов",
+    "intro": "После РК отдели обещание поведения от общего состояния класса.",
+    "sections": [
+      {
+        "title": "interface и implements",
+        "text": "Интерфейс задаёт тип и контракт. Класс может реализовать несколько интерфейсов через implements. Обычные abstract-методы интерфейса неявно public; реализация не может сузить этот доступ."
+      },
+      {
+        "title": "default и static",
+        "text": "Интерфейс может иметь default-реализацию instance-метода и static-методы. Его поля неявно public static final. Интерфейс не хранит обычное состояние отдельного экземпляра и не имеет конструктора."
+      },
+      {
+        "title": "Композиция",
+        "text": "Часто лучше передать объекту зависимость через конструктор, чем наследовать лишнее поведение. Принимая интерфейс в параметре, код работает с разными реализациями. Наследование описывает «является», композиция — «содержит/использует»."
+      }
+    ],
+    "practice": "Создай интерфейс Payable с amount() и две реализации. Метод total(Payable[] items) не должен знать их конкретные классы. Объясни, где здесь композиция.",
+    "trap": "Метод реализации интерфейса должен оставаться public. Package-private здесь не подходит.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Интерфейстер және келісім құру",
+    "intro": "РК-дан кейін әрекет келісімін кластың ортақ күйінен ажырат.",
+    "sections": [
+      {
+        "title": "interface және implements",
+        "text": "Интерфейс тип пен келісім береді. Класс implements арқылы бірнеше интерфейсті іске асыра алады. Кәдімгі abstract интерфейс әдістері public, іске асыруда қатынауды тарылтуға болмайды."
+      },
+      {
+        "title": "default және static",
+        "text": "Интерфейсте default instance әдісі және static әдістер болуы мүмкін. Өрістері public static final. Интерфейсте данаға тән кәдімгі күй мен конструктор болмайды."
+      },
+      {
+        "title": "Композиция",
+        "text": "Кейде артық мұрагерліктің орнына тәуелділікті конструктор арқылы беру дұрыс. Параметрдегі интерфейс түрлі іске асумен жұмыс істейді. Мұрагерлік — «болып табылады», композиция — «қамтиды/қолданады»."
+      }
+    ],
+    "practice": "amount() бар Payable интерфейсі мен екі іске асуын жаса. total(Payable[] items) нақты кластарды білмесін. Композиция қайда екенін түсіндір.",
+    "trap": "Интерфейсті іске асыратын әдіс public болуы керек. Package-private жарамайды.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Введи ключевое слово, которым класс реализует интерфейс.",
+      "hint": "Не extends: это реализация контракта."
+    },
+    "kk": {
+      "prompt": "Класс интерфейсті қай кілтсөзбен іске асырады?",
+      "hint": "extends емес: келісімді іске асыру."
+    },
+    "answers": [
+      "implements"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Сколько интерфейсов может реализовать класс?",
+        "options": [
+          "Несколько",
+          "Только один",
+          "Ни одного"
+        ],
+        "explanation": "Java допускает несколько реализуемых интерфейсов."
+      },
+      "kk": {
+        "question": "Класс неше интерфейсті іске асыра алады?",
+        "options": [
+          "Бірнеше",
+          "Тек бір",
+          "Ешбірін"
+        ],
+        "explanation": "Java бірнеше интерфейсті қолдайды."
+      },
+      "answer": 0,
+      "id": "j08-c1",
+      "week": 8
+    },
+    {
+      "ru": {
+        "question": "Какими являются поля интерфейса?",
+        "options": [
+          "private instance",
+          "public static final",
+          "protected mutable"
+        ],
+        "explanation": "Это константные поля типа."
+      },
+      "kk": {
+        "question": "Интерфейс өрістері қандай?",
+        "options": [
+          "private instance",
+          "public static final",
+          "protected mutable"
+        ],
+        "explanation": "Бұл типтің тұрақты өрістері."
+      },
+      "answer": 1,
+      "id": "j08-c2",
+      "week": 8
+    },
+    {
+      "ru": {
+        "question": "Для чего нужен default-метод?",
+        "options": [
+          "Для конструктора",
+          "Для instance-реализации в интерфейсе",
+          "Для удаления интерфейса"
+        ],
+        "explanation": "default добавляет тело instance-методу интерфейса."
+      },
+      "kk": {
+        "question": "default әдісі не үшін?",
+        "options": [
+          "Конструктор үшін",
+          "Интерфейстегі instance іске асу үшін",
+          "Интерфейсті жою үшін"
+        ],
+        "explanation": "default интерфейс instance әдісіне дене береді."
+      },
+      "answer": 1,
+      "id": "j08-c3",
+      "week": 8
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\ninterface I { default int f(){return 4;} } class B implements I {} System.out.println(new B().f());",
+        "options": [
+          "1",
+          "4",
+          "0"
+        ],
+        "explanation": "Наследуется default-реализация."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\ninterface I { default int f(){return 4;} } class B implements I {} System.out.println(new B().f());",
+        "options": [
+          "1",
+          "4",
+          "0"
+        ],
+        "explanation": "Default іске асуы мұраланады."
+      },
+      "answer": 1,
+      "id": "j08-t1",
+      "week": 8,
+      "trace": "interface I { default int f(){return 4;} } class B implements I {} System.out.println(new B().f());"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\ninterface I { int N=5; } System.out.println(I.N);",
+        "options": [
+          "5",
+          "0",
+          "1"
+        ],
+        "explanation": "Поле интерфейса static final."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\ninterface I { int N=5; } System.out.println(I.N);",
+        "options": [
+          "5",
+          "0",
+          "1"
+        ],
+        "explanation": "Интерфейс өрісі static final."
+      },
+      "answer": 0,
+      "id": "j08-t2",
+      "week": 8,
+      "trace": "interface I { int N=5; } System.out.println(I.N);"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\ninterface I { int f(); } class B implements I { public int f(){return 9;} } I b=new B(); System.out.println(b.f());",
+        "options": [
+          "0",
+          "1",
+          "9"
+        ],
+        "explanation": "Вызов через интерфейс направляется к B."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\ninterface I { int f(); } class B implements I { public int f(){return 9;} } I b=new B(); System.out.println(b.f());",
+        "options": [
+          "0",
+          "1",
+          "9"
+        ],
+        "explanation": "Интерфейс арқылы шақыру B-ге өтеді."
+      },
+      "answer": 2,
+      "id": "j08-t3",
+      "week": 8,
+      "trace": "interface I { int f(); } class B implements I { public int f(){return 9;} } I b=new B(); System.out.println(b.f());"
+    }
+  ]
+}
