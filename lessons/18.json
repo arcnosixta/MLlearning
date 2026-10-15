@@ -1,0 +1,28 @@
+{
+  "title": "PCA: сжимаем пространство признаков",
+  "intro": "Заменим много коррелирующих признаков небольшим числом новых осей.",
+  "theory": [
+    "Метод главных компонент ищет ортогональные направления максимальной дисперсии. Первая компонента сохраняет наибольший разброс, вторая — максимальный оставшийся разброс при ортогональности первой.",
+    "PCA центрирует данные, но не масштабирует признаки автоматически. Когда единицы различаются, часто добавляют StandardScaler. explained_variance_ratio_ показывает долю дисперсии каждой компоненты.",
+    "Большая дисперсия не обязательно означает полезность для предсказания y. PCA не использует ответы и может удалить слабый, но важный сигнал. Для честной оценки PCA нужно обучать внутри Pipeline на train."
+  ],
+  "insight": "Две компоненты удобны для визуализации, но не гарантируют сохранение всех различий между классами.",
+  "code": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.decomposition import PCA\nX, y = load_iris(return_X_y=True)\nXtr, Xte = train_test_split(X, random_state=42)\nreducer = make_pipeline(StandardScaler(), PCA(n_components=2))\nreducer.fit(Xtr)\nprint(\"Reduced test:\", reducer.transform(Xte).shape)\nprint(\"Variance:\", reducer.named_steps[\"pca\"].explained_variance_ratio_)\n",
+  "expected": "Тестовая матрица получит два столбца. Сумма долей дисперсии покажет, сколько разброса сохранено.",
+  "task": "Замени 2 на 0.95. Сколько компонент выберется?",
+  "hint": "При дробном n_components PCA выбирает число компонент, покрывающее заданную долю дисперсии.",
+  "quiz": {
+    "question": "Использует ли PCA целевую переменную y?",
+    "options": [
+      "Да",
+      "Нет",
+      "Только при двух компонентах"
+    ],
+    "answer": 1,
+    "explanation": "Оси выбираются по структуре X, без знания ответов."
+  },
+  "source": "https://scikit-learn.org/stable/modules/decomposition.html#pca",
+  "id": "18",
+  "group": 4,
+  "minutes": 18
+}
