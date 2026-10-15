@@ -1,0 +1,28 @@
+{
+  "title": "Кросс-валидация и подбор параметров",
+  "intro": "Сравним настройки на нескольких разбиениях, сохранив тест нетронутым.",
+  "theory": [
+    "Одно разбиение может оказаться удачным или неудачным. Кросс-валидация делит тренировочные данные на несколько частей: каждая по очереди становится валидацией, остальные — обучением.",
+    "GridSearchCV перебирает заданные комбинации гиперпараметров. Pipeline гарантирует, что scaler обучается заново внутри каждого fold. Для классификации используем стратифицированные части с перемешиванием.",
+    "После подбора лучшая модель переобучается на всём train; её один раз проверяют на финальном test. Среднее CV не заменяет оценку на новых условиях. Для времени и групп нужны специальные разбиения."
+  ],
+  "insight": "Гиперпараметры выбирают по CV внутри train. Test оставляют для финального отчёта.",
+  "code": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neighbors import KNeighborsClassifier\nX, y = load_iris(return_X_y=True)\nXtr, Xte, ytr, yte = train_test_split(X, y, stratify=y, random_state=42)\npipe = make_pipeline(StandardScaler(), KNeighborsClassifier())\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\nsearch = GridSearchCV(pipe, {\"kneighborsclassifier__n_neighbors\": [3, 5, 9]}, cv=cv, scoring=\"accuracy\")\nsearch.fit(Xtr, ytr)\nprint(\"Best:\", search.best_params_, \"CV:\", search.best_score_)\nprint(\"Final test:\", search.score(Xte, yte))\n",
+  "expected": "Выбранное k, средняя CV accuracy и отдельная финальная оценка. Лучшее k может отличаться между версиями.",
+  "task": "Добавь параметр weights со значениями uniform и distance.",
+  "hint": "Имя параметра: kneighborsclassifier__weights. Всего получится 3 × 2 = 6 комбинаций.",
+  "quiz": {
+    "question": "Какие данные видит GridSearchCV в этом примере?",
+    "options": [
+      "Только train",
+      "Train и test",
+      "Только test"
+    ],
+    "answer": 0,
+    "explanation": "В fit переданы Xtr, ytr; тест используется после подбора."
+  },
+  "source": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "id": "21",
+  "group": 5,
+  "minutes": 22
+}
