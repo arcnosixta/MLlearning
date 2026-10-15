@@ -1,0 +1,28 @@
+{
+  "title": "Переобучение и регуляризация",
+  "intro": "Более сложная модель может идеально запомнить train и ошибаться на test.",
+  "theory": [
+    "Полиномиальные признаки добавляют степени x и позволяют линейной модели строить кривые. Название «линейная» относится к параметрам, а не обязательно к форме зависимости от исходного x.",
+    "При высокой степени полином может следовать за шумом. На train ошибка падает, а на test растёт: это переобучение. Слишком простая модель может недообучаться и ошибаться на обеих частях.",
+    "Ridge добавляет L2-штраф к величине весов. alpha управляет силой штрафа. Масштабирование важно, чтобы штраф не зависел произвольно от единиц признаков. Подбирать alpha нужно на валидации, а не на финальном тесте."
+  ],
+  "insight": "Сложность модели выбирают по способности обобщать, а не по минимальной ошибке обучения.",
+  "code": "import numpy as np\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import PolynomialFeatures, StandardScaler\nfrom sklearn.linear_model import Ridge\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import mean_squared_error\nrng = np.random.default_rng(42)\nX = rng.uniform(-2, 2, (70, 1))\ny = X[:, 0]**2 + rng.normal(0, 0.7, 70)\nXtr, Xte, ytr, yte = train_test_split(X, y, random_state=42)\nfor degree in [1, 2, 15]:\n    model = make_pipeline(PolynomialFeatures(degree, include_bias=False), StandardScaler(), Ridge(alpha=1))\n    model.fit(Xtr, ytr)\n    print(degree, \"train:\", mean_squared_error(ytr, model.predict(Xtr)),\n          \"test:\", mean_squared_error(yte, model.predict(Xte)))\n",
+  "expected": "Увидишь сравнение трёх степеней. Квадратичная модель соответствует истинной зависимости; высокая степень может давать нестабильные прогнозы.",
+  "task": "Для степени 15 сравни alpha=0.001 и alpha=100.",
+  "hint": "Большое alpha сильнее сжимает веса. На одном разбиении эффект может быть шумным — дальше изучим CV.",
+  "quiz": {
+    "question": "Как выглядит переобучение?",
+    "options": [
+      "Высокая ошибка везде",
+      "Малая ошибка train, высокая test",
+      "Одинаковые веса"
+    ],
+    "answer": 1,
+    "explanation": "Модель запомнила особенности обучающей выборки."
+  },
+  "source": "https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification",
+  "id": "11",
+  "group": 2,
+  "minutes": 18
+}
