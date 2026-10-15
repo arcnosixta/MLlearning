@@ -1,0 +1,206 @@
+{
+  "week": 10,
+  "id": "10",
+  "source": "https://dev.java/learn/api/collections-framework/",
+  "code": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<>(List.of(\"A\", \"B\", \"A\"));\n        Set<String> unique = new LinkedHashSet<>(names);\n        Map<String,Integer> counts = new LinkedHashMap<>();\n        for (String name : names) counts.merge(name, 1, Integer::sum);\n        System.out.println(unique);\n        System.out.println(counts);\n    }\n}\n",
+  "output": "[A, B]\n{A=2, B=1}",
+  "ru": {
+    "title": "Коллекции: List, Set и Map",
+    "intro": "Замени фиксированные массивы коллекциями и выбери структуру под задачу.",
+    "sections": [
+      {
+        "title": "List и ArrayList",
+        "text": "List хранит последовательность с индексами и допускает повторы. ArrayList — изменяемый список с быстрым доступом по индексу. List.of создаёт неизменяемый список: add/remove недопустимы. Список ссылок не копирует сами объекты."
+      },
+      {
+        "title": "Set и уникальность",
+        "text": "Set не содержит повторяющихся элементов по equals/hashCode. HashSet не обещает порядок обхода; LinkedHashSet сохраняет порядок вставки. Выбирай структуру по требуемым гарантиям, а не по виду одного вывода."
+      },
+      {
+        "title": "Map: ключ → значение",
+        "text": "Map хранит соответствия уникальных ключей значениям и не является подтипом Collection. put с существующим ключом заменяет значение. Для частот используй getOrDefault или merge. equals/hashCode пользовательских ключей изучим на следующей неделе."
+      }
+    ],
+    "practice": "Построй журнал оценок Map<String, List<Integer>>. Добавь оценки, найди среднее студента, обработай отсутствующий ключ. Не полагайся на порядок HashMap при проверке.",
+    "trap": "remove(1) у List<Integer> удаляет элемент по индексу; remove(Integer.valueOf(1)) удаляет значение 1.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Коллекциялар: List, Set және Map",
+    "intro": "Бекітілген массивтерді коллекциямен алмастырып, есепке сай құрылым таңда.",
+    "sections": [
+      {
+        "title": "List және ArrayList",
+        "text": "List индекстері бар тізбек сақтап, қайталауға рұқсат береді. ArrayList өзгермелі және индекс арқылы қатынауы жылдам. List.of өзгермейтін тізім жасайды: add/remove болмайды. Сілтеме тізімі объектілердің өзін көшірмейді."
+      },
+      {
+        "title": "Set және бірегейлік",
+        "text": "Set equals/hashCode бойынша қайталанбайды. HashSet айналу ретін кепілдемейді; LinkedHashSet енгізу ретін сақтайды. Бір нәтижеге емес, қажет кепілдікке қарап таңда."
+      },
+      {
+        "title": "Map: кілт → мән",
+        "text": "Map бірегей кілт пен мән сәйкестігін сақтайды, Collection туындысы емес. Бар кілтке put мәнді ауыстырады. Жиілікке getOrDefault не merge қолдан. Өз кілттеріңнің equals/hashCode-ын келесі аптада қараймыз."
+      }
+    ],
+    "practice": "Map<String, List<Integer>> бағалар журналын жаса. Баға қос, орташа мәнді тап, жоқ кілтті өңде. Тексеруде HashMap ретіне сүйенбе.",
+    "trap": "List<Integer> ішінде remove(1) индекс бойынша, remove(Integer.valueOf(1)) 1 мәні бойынша жояды.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Какой интерфейс хранит пары ключ–значение?",
+      "hint": "Это не List и не Set."
+    },
+    "kk": {
+      "prompt": "Кілт–мән жұптарын қай интерфейс сақтайды?",
+      "hint": "Бұл List те, Set те емес."
+    },
+    "answers": [
+      "Map",
+      "java.util.Map"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Что допускает повторы и имеет индексы?",
+        "options": [
+          "Set",
+          "List",
+          "Map key"
+        ],
+        "explanation": "List — последовательность."
+      },
+      "kk": {
+        "question": "Қайсысы қайталауға және индекске ие?",
+        "options": [
+          "Set",
+          "List",
+          "Map key"
+        ],
+        "explanation": "List — тізбек."
+      },
+      "answer": 1,
+      "id": "j10-c1",
+      "week": 10
+    },
+    {
+      "ru": {
+        "question": "Гарантирует ли HashSet порядок вставки?",
+        "options": [
+          "Нет",
+          "Да",
+          "Только для int"
+        ],
+        "explanation": "Для порядка вставки используют LinkedHashSet."
+      },
+      "kk": {
+        "question": "HashSet енгізу ретін кепілдей ме?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "Тек int үшін"
+        ],
+        "explanation": "Енгізу ретіне LinkedHashSet қолданылады."
+      },
+      "answer": 0,
+      "id": "j10-c2",
+      "week": 10
+    },
+    {
+      "ru": {
+        "question": "Что делает put с существующим ключом?",
+        "options": [
+          "Добавляет второй такой ключ",
+          "Заменяет значение",
+          "Удаляет всю Map"
+        ],
+        "explanation": "Ключи Map уникальны."
+      },
+      "kk": {
+        "question": "Бар кілтке put не істейді?",
+        "options": [
+          "Екінші дәл кілт қосады",
+          "Мәнді ауыстырады",
+          "Бүкіл Map жояды"
+        ],
+        "explanation": "Map кілттері бірегей."
+      },
+      "answer": 1,
+      "id": "j10-c3",
+      "week": 10
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\njava.util.List<Integer> a=new java.util.ArrayList<>(java.util.List.of(3,4,5)); a.remove(1); System.out.println(a);",
+        "options": [
+          "[4, 5]",
+          "[3, 4]",
+          "[3, 5]"
+        ],
+        "explanation": "Удаляется элемент с индексом 1."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\njava.util.List<Integer> a=new java.util.ArrayList<>(java.util.List.of(3,4,5)); a.remove(1); System.out.println(a);",
+        "options": [
+          "[4, 5]",
+          "[3, 4]",
+          "[3, 5]"
+        ],
+        "explanation": "1 индекстегі элемент жойылады."
+      },
+      "answer": 2,
+      "id": "j10-t1",
+      "week": 10,
+      "trace": "java.util.List<Integer> a=new java.util.ArrayList<>(java.util.List.of(3,4,5)); a.remove(1); System.out.println(a);"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\njava.util.Set<String> s=new java.util.HashSet<>(); s.add(\"A\"); s.add(\"A\"); System.out.println(s.size());",
+        "options": [
+          "0",
+          "1",
+          "2"
+        ],
+        "explanation": "Дубликат не добавляется."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\njava.util.Set<String> s=new java.util.HashSet<>(); s.add(\"A\"); s.add(\"A\"); System.out.println(s.size());",
+        "options": [
+          "0",
+          "1",
+          "2"
+        ],
+        "explanation": "Қайталанған мән қосылмайды."
+      },
+      "answer": 1,
+      "id": "j10-t2",
+      "week": 10,
+      "trace": "java.util.Set<String> s=new java.util.HashSet<>(); s.add(\"A\"); s.add(\"A\"); System.out.println(s.size());"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\njava.util.Map<String,Integer> m=new java.util.HashMap<>(); m.put(\"x\",1); m.put(\"x\",9); System.out.println(m.get(\"x\"));",
+        "options": [
+          "9",
+          "1",
+          "2"
+        ],
+        "explanation": "Второй put заменяет значение."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\njava.util.Map<String,Integer> m=new java.util.HashMap<>(); m.put(\"x\",1); m.put(\"x\",9); System.out.println(m.get(\"x\"));",
+        "options": [
+          "9",
+          "1",
+          "2"
+        ],
+        "explanation": "Екінші put мәнді ауыстырады."
+      },
+      "answer": 0,
+      "id": "j10-t3",
+      "week": 10,
+      "trace": "java.util.Map<String,Integer> m=new java.util.HashMap<>(); m.put(\"x\",1); m.put(\"x\",9); System.out.println(m.get(\"x\"));"
+    }
+  ]
+}
