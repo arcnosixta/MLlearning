@@ -1,0 +1,28 @@
+{
+  "title": "Пропуски и категориальные признаки",
+  "intro": "Превратим сырую таблицу в числовую матрицу, которую понимает модель.",
+  "theory": [
+    "Многие модели scikit-learn ожидают числовые значения. Пропуски в числовых столбцах можно заменить медианой, вычисленной на обучающей части. Это базовый подход; иногда сам факт пропуска — полезный сигнал.",
+    "OneHotEncoder создаёт отдельные индикаторы категорий. Так район города не получает искусственного порядка. handle_unknown=\"ignore\" позволяет обработать новую категорию на предсказании.",
+    "ColumnTransformer применяет разные преобразования к разным столбцам. Pipeline связывает заполнение и кодирование, чтобы одна и та же логика применялась на обучении и новых данных."
+  ],
+  "insight": "Медиана, список категорий и другие параметры подготовки — тоже результат обучения.",
+  "code": "import numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.preprocessing import OneHotEncoder\nfrom sklearn.pipeline import make_pipeline\ntrain = pd.DataFrame({\"area\": [30., np.nan, 80.], \"district\": [\"A\", \"B\", \"A\"]})\ntest = pd.DataFrame({\"area\": [np.nan], \"district\": [\"C\"]})\nprep = ColumnTransformer([\n    (\"number\", SimpleImputer(strategy=\"median\"), [\"area\"]),\n    (\"category\", make_pipeline(SimpleImputer(strategy=\"most_frequent\"),\n         OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)), [\"district\"])])\nprint(prep.fit_transform(train))\nprint(\"New district:\", prep.transform(test))\n",
+  "expected": "Пропуск площади заменится на 55. Для неизвестного района C оба индикатора A/B будут равны нулю.",
+  "task": "Добавь категорию B в test. Сравни её вектор с неизвестной категорией.",
+  "hint": "Индикатор B станет 1. Не вызывай fit_transform повторно на test.",
+  "quiz": {
+    "question": "Почему район нельзя бездумно кодировать числами 1, 2, 3?",
+    "options": [
+      "Это создаёт искусственный порядок",
+      "Модель не принимает числа",
+      "Это всегда вызывает исключение"
+    ],
+    "answer": 0,
+    "explanation": "Модель может воспринять разницу 3−1 как осмысленное расстояние."
+  },
+  "source": "https://scikit-learn.org/stable/modules/compose.html#columntransformer-for-heterogeneous-data",
+  "id": "06",
+  "group": 1,
+  "minutes": 18
+}
