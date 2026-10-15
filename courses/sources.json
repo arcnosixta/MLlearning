@@ -45,6 +45,39 @@
       "downloaded_at": "2026-10-15T07:04:14.476110+05:00",
       "format": "Jupyter Notebook v4",
       "renamed_only": false
+    },
+    {
+      "number": 5,
+      "original_filename": "5-Сызықты регрессия.json",
+      "path": "05-models-evaluation/05-linear-regression.ipynb",
+      "sha256": "9bf151ff9e39fbb3723d645715cfd82a7d355ed735eeab36125694d1dcb33b4d",
+      "bytes": 244345,
+      "cells": 53,
+      "downloaded_at": "2026-10-15T07:04:20.089930+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": true
+    },
+    {
+      "number": 6,
+      "original_filename": "6-Logistic_Regression_Sklearn",
+      "path": "05-models-evaluation/06-logistic-regression.ipynb",
+      "sha256": "fd6ac42f6514440d8aef67c9bd74217d876584225280f0971471a2812b896687",
+      "bytes": 117684,
+      "cells": 28,
+      "downloaded_at": "2026-10-15T07:04:26.348486+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": true
+    },
+    {
+      "number": 7,
+      "original_filename": "7-Модель сапасын бағалау. Accuracy, Precision, Recall, F1, ROC-AUC және Confusion Matrix.ipynb",
+      "path": "05-models-evaluation/07-model-evaluation.ipynb",
+      "sha256": "e77e7597dbe3c49d75b3ef0b6f78f4182651521aef1dde7d116a420ba5af570c",
+      "bytes": 367216,
+      "cells": 25,
+      "downloaded_at": "2026-10-15T07:04:31.207358+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": false
     }
   ]
 }

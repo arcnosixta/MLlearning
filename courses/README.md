@@ -10,6 +10,7 @@
 | 02 | [NumPy, pandas және scikit-learn / NumPy, pandas и scikit-learn](02-libraries/README.md) | 2 |
 | 03 | [Matplotlib және Seaborn: EDA / Matplotlib и Seaborn: EDA](03-eda/README.md) | 3 |
 | 04 | [Деректерді дайындау / Подготовка данных](04-preprocessing/README.md) | 4 |
+| 05 | [Регрессия, жіктеу және бағалау / Регрессия, классификация и оценка](05-models-evaluation/README.md) | 5, 6, 7 |
 
 ## Жергілікті іске қосу / Локальный запуск
 
