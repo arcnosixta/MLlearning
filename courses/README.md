@@ -9,6 +9,7 @@
 | 01 | [Python және Colab / Python и Colab](01-python-colab/README.md) | 1 |
 | 02 | [NumPy, pandas және scikit-learn / NumPy, pandas и scikit-learn](02-libraries/README.md) | 2 |
 | 03 | [Matplotlib және Seaborn: EDA / Matplotlib и Seaborn: EDA](03-eda/README.md) | 3 |
+| 04 | [Деректерді дайындау / Подготовка данных](04-preprocessing/README.md) | 4 |
 
 ## Жергілікті іске қосу / Локальный запуск
 

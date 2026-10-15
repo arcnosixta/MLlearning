@@ -34,6 +34,17 @@
       "downloaded_at": "2026-10-15T07:04:10.165988+05:00",
       "format": "Jupyter Notebook v4",
       "renamed_only": false
+    },
+    {
+      "number": 4,
+      "original_filename": "4-Бос мәндер, масштабтау және Pipeline құру.ipynb",
+      "path": "04-preprocessing/04-preprocessing-pipeline.ipynb",
+      "sha256": "c57f02d09b6690801ee2e6cb7cc2c31de6df6473c7e21b0c5bf9235b6cf78f61",
+      "bytes": 54276,
+      "cells": 18,
+      "downloaded_at": "2026-10-15T07:04:14.476110+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": false
     }
   ]
 }
