@@ -1,0 +1,72 @@
+# MLlearning
+
+Бесплатный интерактивный курс машинного обучения на русском: 24 урока от основ Python до сохранения готового Pipeline. В каждом уроке — теория, запускаемый пример, ожидаемый результат, самостоятельное задание, подсказка и тест.
+
+**Сайт:** https://mllearning-arcnosixta.happy-pin-5648.chatgpt.site
+
+**Репозиторий:** https://github.com/arcnosixta/MLlearning
+
+## Программа
+
+| Раздел | Уроки | Темы |
+| --- | --- | --- |
+| Фундамент | 01–04 | Что такое ML, Python, NumPy, pandas |
+| Подготовка данных | 05–08 | Train/test, пропуски, категории, масштабирование, Pipeline |
+| Регрессия | 09–12 | Линейная модель, градиентный спуск, Ridge, метрики |
+| Классификация | 13–16 | Логистическая регрессия, kNN, деревья, ансамбли |
+| Структура данных | 17–20 | K-means, PCA, нейросети, TF-IDF |
+| От модели к проекту | 21–24 | CV, подбор параметров, precision/recall, временные данные, сохранение |
+
+Лаборатория содержит три эксперимента: ручной подбор прямой и точное решение наименьших квадратов; StandardScaler/MinMaxScaler; голосование ближайших соседей. Вычисления выполняются в браузере. Прогресс сохраняется в localStorage текущего устройства. Аккаунт не требуется. Python-код запускается локально, а не в браузере.
+
+## Запуск сайта
+
+Нужен Python 3.11+. Сайт не требует npm или Node.js.
+
+```sh
+python scripts/build.py
+python -m http.server 8765 --directory dist
+```
+
+Открой http://localhost:8765. Нужен HTTP-сервер: загрузка JSON через file:// не поддерживается.
+
+## Python-примеры
+
+```sh
+python -m venv .venv
+```
+
+В Windows используй `.venv/Scripts/python.exe`, в macOS/Linux — `.venv/bin/python`. После активации окружения:
+
+```sh
+python -m pip install -r requirements.txt
+python examples/01.py
+python examples/24.py
+```
+
+Все примеры самостоятельные, используют встроенные или синтетические данные и не скачивают датасеты. Урок 24 создаёт `model.joblib` в текущем каталоге. Загружай только доверенные файлы модели. Учебный diabetes-пример не предназначен для клинического применения.
+
+## Проверки
+
+```sh
+python scripts/build.py
+python tests/verify_course.py
+python -m pip install playwright
+python -m playwright install chromium
+# Отдельно запусти сервер из инструкции выше:
+python tests/browser_check.py
+```
+
+Для уже установленного Edge можно задать `PLAYWRIGHT_CHANNEL=msedge`. Проверки выполняют все 24 Python-примера, проверяют маршруты уроков, поиск, тест, сохранение прогресса, эксперименты и отсутствие горизонтального переполнения на телефоне.
+
+## Структура и публикация
+
+`lessons/` — исходные тексты JSON; `examples/` — соответствующие самостоятельные Python-файлы; `app.js`, `lab.js`, `styles.css`, `index.html` — интерфейс; `scripts/build.py` собирает `dist/`. Код урока в JSON должен совпадать с файлом примера: это проверяется автоматически.
+
+Сайт публикуется через Sites с настройками `.openai/hosting.json`. GitHub Actions проверяет курс при каждом push и pull request; публикация Sites выполняется отдельно из подключённой среды. Секреты и учётные данные в репозитории отсутствуют. При добавлении урока обнови программу, счётчики и проверки.
+
+## Источники
+
+В уроках есть ссылки на официальные руководства [Python](https://docs.python.org/3/tutorial/), [NumPy](https://numpy.org/doc/stable/), [pandas](https://pandas.pydata.org/docs/) и [scikit-learn](https://scikit-learn.org/stable/). Практики разделения данных и Pipeline следуют [руководству о типичных ошибках](https://scikit-learn.org/stable/common_pitfalls.html).
+
+Материал написан для этого курса. MIT License.
