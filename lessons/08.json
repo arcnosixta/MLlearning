@@ -1,0 +1,28 @@
+{
+  "title": "Pipeline и утечка данных",
+  "intro": "Соберём подготовку и модель в единый воспроизводимый объект.",
+  "theory": [
+    "Утечка возникает, когда обучение получает информацию, которой не будет в момент реального предсказания. Например, масштабирование всех данных до разбиения уже использует статистику теста.",
+    "Pipeline последовательно вызывает fit_transform у промежуточных шагов и fit у последней модели. При predict промежуточные шаги только transform: обученные параметры не меняются.",
+    "Pipeline защищает от утечек преобразований при корректном разбиении, в том числе внутри кросс-валидации. Но он не исправит признак из будущего, дубликаты в разных частях или ошибочную целевую переменную."
+  ],
+  "insight": "Храни подготовку и модель вместе. Это уменьшает расхождение между обучением и применением.",
+  "code": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nX, y = load_iris(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)\nmodel = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))\nmodel.fit(X_train, y_train)\nprint(\"Test accuracy:\", model.score(X_test, y_test))\nprint(\"First prediction:\", model.predict(X_test[:1]))\n",
+  "expected": "Выведется доля верных ответов на отложенных объектах и класс первого объекта. Значение зависит от версии библиотеки.",
+  "task": "Посмотри на model.named_steps и средние обученного scaler.",
+  "hint": "Используй model.named_steps[\"standardscaler\"].mean_. Они вычислены по X_train.",
+  "quiz": {
+    "question": "Защищает ли Pipeline от столбца с ответом из будущего?",
+    "options": [
+      "Да, всегда",
+      "Нет",
+      "Только при стандартизации"
+    ],
+    "answer": 1,
+    "explanation": "Pipeline не может определить смысл и время появления признака."
+  },
+  "source": "https://scikit-learn.org/stable/common_pitfalls.html",
+  "id": "08",
+  "group": 1,
+  "minutes": 18
+}
