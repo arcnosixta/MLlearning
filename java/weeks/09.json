@@ -1,0 +1,205 @@
+{
+  "week": 9,
+  "id": "09",
+  "source": "https://dev.java/learn/exceptions/",
+  "code": "public class Main {\n    static int score(String value) {\n        int n = Integer.parseInt(value);\n        if (n < 0 || n > 100) throw new IllegalArgumentException(\"range\");\n        return n;\n    }\n    public static void main(String[] args) {\n        try { System.out.println(score(\"75\")); }\n        catch (IllegalArgumentException e) { System.out.println(\"invalid\"); }\n        finally { System.out.println(\"done\"); }\n    }\n}\n",
+  "output": "75\ndone",
+  "ru": {
+    "title": "Исключения и обработка ошибок",
+    "intro": "Различай ошибку входных данных, исключение и нормальный результат метода.",
+    "sections": [
+      {
+        "title": "try / catch / finally",
+        "text": "Когда возникает исключение, обычный поток прерывается и ищется подходящий catch. finally используется для завершающих действий. Он обычно выполняется и при return, но завершение JVM может этому помешать. Не прячь ошибки пустым catch."
+      },
+      {
+        "title": "throw и throws",
+        "text": "throw создаёт переход с конкретным объектом исключения; throws объявляет возможность исключений в сигнатуре. Checked-исключения нужно обработать или объявить. RuntimeException и Error с подклассами не требуют такого объявления."
+      },
+      {
+        "title": "Контракт метода",
+        "text": "Выбери понятный контракт: например parseScore возвращает число 0..100 или бросает IllegalArgumentException. Не используй исключения как обычную замену if в частом успешном сценарии. Сохраняй причину ошибки при оборачивании."
+      }
+    ],
+    "practice": "Проверь score на \"75\", \"abc\", \"101\". Для каждого входа запиши нормальный результат или тип ошибки. Не заменяй невалидную оценку значением 0 молча.",
+    "trap": "catch для более общего исключения перед частным делает последующий catch недостижимым.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Ерекшеліктер және қатені өңдеу",
+    "intro": "Кіріс қатесін, ерекшелікті және әдістің қалыпты нәтижесін ажырат.",
+    "sections": [
+      {
+        "title": "try / catch / finally",
+        "text": "Ерекшелік кезінде қалыпты ағын үзіліп, сәйкес catch ізделеді. finally аяқтау әрекеттеріне арналған. Әдетте return кезінде де орындалады, бірақ JVM тоқтауы кедергі болуы мүмкін. Бос catch қатені жасырмасын."
+      },
+      {
+        "title": "throw және throws",
+        "text": "throw нақты ерекшелік объектісін тастайды; throws сигнатурада мүмкіндік жариялайды. Checked ерекшелікті өңдеу не жариялау керек. RuntimeException және Error туындыларына бұл міндет жоқ."
+      },
+      {
+        "title": "Әдіс келісімі",
+        "text": "Түсінікті келісім таңда: parseScore 0..100 қайтарады не IllegalArgumentException тастайды. Сәтті сценарийде ерекшелікті if орнына қолданба. Орағанда бастапқы себепті сақта."
+      }
+    ],
+    "practice": "score әдісін \"75\", \"abc\", \"101\" үшін тексер. Әр кіріске нәтиже не қате типін жаз. Жарамсыз бағаны үнсіз 0-ге алмастырма.",
+    "trap": "Жалпы ерекшелік catch-і жеке ерекшеліктен бұрын тұрса, кейінгі catch қолжетімсіз болады.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Введи ключевое слово для выбрасывания объекта исключения.",
+      "hint": "В сигнатуре uses throws, а здесь нужно само действие."
+    },
+    "kk": {
+      "prompt": "Ерекшелік объектісін тастайтын кілтсөзді енгіз.",
+      "hint": "Сигнатурада throws, мұнда әрекеттің өзі керек."
+    },
+    "answers": [
+      "throw"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Что делает throws?",
+        "options": [
+          "Объявляет возможные исключения",
+          "Ловит исключение",
+          "Всегда завершает JVM"
+        ],
+        "explanation": "Это часть сигнатуры метода."
+      },
+      "kk": {
+        "question": "throws не істейді?",
+        "options": [
+          "Мүмкін ерекшеліктерді жариялайды",
+          "Ерекшелікті ұстайды",
+          "JVM-ді әрқашан тоқтатады"
+        ],
+        "explanation": "Бұл әдіс сигнатурасының бөлігі."
+      },
+      "answer": 0,
+      "id": "j09-c1",
+      "week": 9
+    },
+    {
+      "ru": {
+        "question": "Что из этого unchecked?",
+        "options": [
+          "IOException",
+          "RuntimeException",
+          "Любой Exception"
+        ],
+        "explanation": "RuntimeException не требует catch/throws при компиляции."
+      },
+      "kk": {
+        "question": "Қайсысы unchecked?",
+        "options": [
+          "IOException",
+          "RuntimeException",
+          "Кез келген Exception"
+        ],
+        "explanation": "RuntimeException компиляцияда catch/throws талап етпейді."
+      },
+      "answer": 1,
+      "id": "j09-c2",
+      "week": 9
+    },
+    {
+      "ru": {
+        "question": "Какой catch ставят раньше?",
+        "options": [
+          "Более конкретный",
+          "Всегда Exception",
+          "Порядок не важен"
+        ],
+        "explanation": "Иначе конкретный обработчик будет недостижим."
+      },
+      "kk": {
+        "question": "Қай catch бұрын тұрады?",
+        "options": [
+          "Нақтырақ",
+          "Әрқашан Exception",
+          "Реті маңызды емес"
+        ],
+        "explanation": "Әйтпесе нақты өңдегіш қолжетімсіз болады."
+      },
+      "answer": 0,
+      "id": "j09-c3",
+      "week": 9
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\ntry { Integer.parseInt(\"x\"); } catch(NumberFormatException e) { System.out.println(\"bad\"); }",
+        "options": [
+          "bad",
+          "x",
+          "0"
+        ],
+        "explanation": "Нечисловая строка вызывает NumberFormatException."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\ntry { Integer.parseInt(\"x\"); } catch(NumberFormatException e) { System.out.println(\"bad\"); }",
+        "options": [
+          "bad",
+          "x",
+          "0"
+        ],
+        "explanation": "Сан емес жол NumberFormatException тастайды."
+      },
+      "answer": 0,
+      "id": "j09-t1",
+      "week": 9,
+      "trace": "try { Integer.parseInt(\"x\"); } catch(NumberFormatException e) { System.out.println(\"bad\"); }"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\ntry { System.out.print(\"T\"); } finally { System.out.print(\"F\"); }",
+        "options": [
+          "FT",
+          "T",
+          "TF"
+        ],
+        "explanation": "После try выполняется finally."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\ntry { System.out.print(\"T\"); } finally { System.out.print(\"F\"); }",
+        "options": [
+          "FT",
+          "T",
+          "TF"
+        ],
+        "explanation": "try-дан кейін finally орындалады."
+      },
+      "answer": 2,
+      "id": "j09-t2",
+      "week": 9,
+      "trace": "try { System.out.print(\"T\"); } finally { System.out.print(\"F\"); }"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\ntry { throw new IllegalArgumentException(); } catch(RuntimeException e) { System.out.println(\"caught\"); }",
+        "options": [
+          "false",
+          "caught",
+          "null"
+        ],
+        "explanation": "IllegalArgumentException наследует RuntimeException."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\ntry { throw new IllegalArgumentException(); } catch(RuntimeException e) { System.out.println(\"caught\"); }",
+        "options": [
+          "false",
+          "caught",
+          "null"
+        ],
+        "explanation": "IllegalArgumentException RuntimeException-нан мұра алады."
+      },
+      "answer": 1,
+      "id": "j09-t3",
+      "week": 9,
+      "trace": "try { throw new IllegalArgumentException(); } catch(RuntimeException e) { System.out.println(\"caught\"); }"
+    }
+  ]
+}
