@@ -12,6 +12,17 @@
       "downloaded_at": "2026-10-15T07:04:07.539692+05:00",
       "format": "Jupyter Notebook v4",
       "renamed_only": false
+    },
+    {
+      "number": 2,
+      "original_filename": "2_NumPy,_Pandas,_Scikit_learn,_Matplotlib_кітапханаларымен_жұмыс_жасау (1).ipynb",
+      "path": "02-libraries/02-numpy-pandas-sklearn.ipynb",
+      "sha256": "23f8eac272ea6c8c6af27a5997096c629e20da3e47137c3a84531787829632c1",
+      "bytes": 387831,
+      "cells": 103,
+      "downloaded_at": "2026-10-15T07:04:08.692808+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": false
     }
   ]
 }

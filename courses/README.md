@@ -7,6 +7,7 @@
 | Бөлім / Раздел | Тақырып / Тема | Жұмыстар / Работы |
 | --- | --- | --- |
 | 01 | [Python және Colab / Python и Colab](01-python-colab/README.md) | 1 |
+| 02 | [NumPy, pandas және scikit-learn / NumPy, pandas и scikit-learn](02-libraries/README.md) | 2 |
 
 ## Жергілікті іске қосу / Локальный запуск
 
