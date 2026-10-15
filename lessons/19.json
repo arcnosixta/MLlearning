@@ -1,0 +1,28 @@
+{
+  "title": "Нейросети: слои и нелинейность",
+  "intro": "Поймём многослойный перцептрон без магии и сложного фреймворка.",
+  "theory": [
+    "Нейрон вычисляет взвешенную сумму входов и применяет функцию активации. Слои объединяют много таких вычислений. Нелинейная активация позволяет описывать зависимости, которые не выражаются одной прямой.",
+    "При прямом проходе получаем прогноз и потерю. Обратное распространение вычисляет градиенты по правилу цепочки, а оптимизатор обновляет веса. Число слоёв и нейронов — гиперпараметры, веса — обучаемые параметры.",
+    "Нейросети чувствительны к масштабу, инициализации и настройкам обучения. На небольших таблицах дерево или линейная модель часто оказываются достаточными. Здесь используем встроенный MLP scikit-learn, а не заявляем решение задач больших языковых моделей."
+  ],
+  "insight": "Нелинейные активации важны: цепочка линейных слоёв без них сводится к одному линейному преобразованию.",
+  "code": "from sklearn.datasets import make_moons\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neural_network import MLPClassifier\nX, y = make_moons(n_samples=300, noise=0.18, random_state=42)\nXtr, Xte, ytr, yte = train_test_split(X, y, stratify=y, random_state=42)\nmodel = make_pipeline(StandardScaler(), MLPClassifier(\n    hidden_layer_sizes=(16, 8), solver=\"lbfgs\", max_iter=2000, random_state=42))\nmodel.fit(Xtr, ytr)\nprint(\"Accuracy:\", model.score(Xte, yte))\nprint(\"Layer shapes:\", [w.shape for w in model.named_steps[\"mlpclassifier\"].coefs_])\n",
+  "expected": "Формы матриц весов: (2, 16), (16, 8), (8, 1). Accuracy относится к синтетическим полумесяцам.",
+  "task": "Замени hidden_layer_sizes на (2,) и сравни результат.",
+  "hint": "Меньше нейронов — меньше доступной сложности. Для вывода о качестве нужна валидация, а не одна удачная попытка.",
+  "quiz": {
+    "question": "Зачем нужны нелинейные активации?",
+    "options": [
+      "Для моделирования нелинейных связей",
+      "Только для ускорения",
+      "Чтобы отменить обучение"
+    ],
+    "answer": 0,
+    "explanation": "Без нелинейностей композиция линейных слоёв остаётся линейной."
+  },
+  "source": "https://scikit-learn.org/stable/modules/neural_networks_supervised.html",
+  "id": "19",
+  "group": 4,
+  "minutes": 18
+}
