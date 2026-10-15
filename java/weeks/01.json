@@ -10,7 +10,7 @@
     "sections": [
       {
         "title": "JDK → байткод → JVM",
-        "text": "JDK содержит компилятор javac и инструменты разработки. javac Main.java создаёт Main.class; java Main загружает класс в JVM. Имя public-класса должно совпадать с именем файла. Примеры курса совместимы с Java 17 и не требуют preview-функций."
+        "text": "JDK содержит компилятор javac и инструменты разработки. javac Main.java создаёт Main.class; java Main загружает класс в JVM. Имя public-класса должно совпадать с именем файла. Примеры курса совместимы с Java 17 и не требуют preview-функций. После установки проверь java -version и javac -version в терминале: обе команды должны находиться в PATH. Для учебного ввода добавь import java.util.Scanner; создай Scanner in = new Scanner(System.in); и прочитай int n = in.nextInt();. Это отдельный вариант программы с вводом; основной пример ниже выполняется без него."
       },
       {
         "title": "Переменные и примитивы",
@@ -31,7 +31,7 @@
     "sections": [
       {
         "title": "JDK → байткод → JVM",
-        "text": "JDK құрамында javac компиляторы бар. javac Main.java Main.class жасайды, java Main класты JVM-де іске қосады. public класс атауы файл атауымен сәйкес болуы керек. Мысалдар Java 17-мен үйлеседі."
+        "text": "JDK құрамында javac компиляторы бар. javac Main.java Main.class жасайды, java Main класты JVM-де іске қосады. public класс атауы файл атауымен сәйкес болуы керек. Мысалдар Java 17-мен үйлеседі. Орнатқаннан кейін терминалда java -version және javac -version тексер: екеуі де PATH арқылы табылуы керек. Оқу енгізуіне import java.util.Scanner; қосып, Scanner in = new Scanner(System.in); жаса, int n = in.nextInt(); арқылы оқы. Бұл енгізуі бар бөлек нұсқа; төмендегі негізгі мысал енгізусіз орындалады."
       },
       {
         "title": "Айнымалылар және примитивтер",

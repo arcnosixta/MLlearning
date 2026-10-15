@@ -1,8 +1,8 @@
 /* A deterministic short-answer trainer. This is not a Java compiler or shell. */
 (()=>{
-  const normalize=s=>s.trim().replace(/\s+/g,'');
+  const normalize=s=>{const pattern=/@?[A-Za-z_$][A-Za-z0-9_$]*|&&|\|\||[0-9]+|[().;<>\[\]]/g;const tokens=s.match(pattern)||[];return s.replace(pattern,'').trim()?null:tokens.join('\u001f')};
   window.IMTerminal={
-    check:(input,accepted)=>accepted.some(answer=>normalize(input)===normalize(answer)),
+    check:(input,accepted)=>{const value=normalize(input);return value!==null&&accepted.some(answer=>value===normalize(answer))},
     mount:(container,exercise,lang,onSuccess)=>{
       const kk=lang==='kk',t=exercise[kk?'kk':'ru'];
       container.innerHTML=`<div class="terminal-box"><h3>${kk?'Жауаптар терминалы':'Терминал ответов'}</h3><p>${kk?'Қысқа жауапты не пәрменді енгіз. Бұл Java компиляторы емес; жауап тапсырма шартымен тексеріледі.':'Введи короткий ответ или команду. Это не компилятор Java: ответ проверяется по условию задания.'}</p><p class="terminal-prompt"></p><form><label for="terminal-input">${kk?'Сенің жауабың':'Твой ответ'}</label><input id="terminal-input" maxlength="300" autocomplete="off" spellcheck="false"><div class="java-controls"><button class="button" type="submit">${kk?'Тексеру':'Проверить'}</button><button class="button outline" type="button" id="terminal-hint">${kk?'Көмек':'Подсказка'}</button><button class="button outline" type="button" id="terminal-reset">${kk?'Тазалау':'Очистить'}</button></div></form><div class="terminal-result" role="status" aria-live="polite"></div></div>`;

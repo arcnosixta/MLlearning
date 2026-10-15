@@ -1,7 +1,7 @@
 {
   "week": 10,
   "id": "10",
-  "source": "https://dev.java/learn/api/collections-framework/",
+  "source": "https://dev.java/learn/api/collections-and-streams/collections-framework/",
   "code": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<>(List.of(\"A\", \"B\", \"A\"));\n        Set<String> unique = new LinkedHashSet<>(names);\n        Map<String,Integer> counts = new LinkedHashMap<>();\n        for (String name : names) counts.merge(name, 1, Integer::sum);\n        System.out.println(unique);\n        System.out.println(counts);\n    }\n}\n",
   "output": "[A, B]\n{A=2, B=1}",
   "ru": {

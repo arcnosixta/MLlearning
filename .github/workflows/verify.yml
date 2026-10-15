@@ -21,12 +21,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
       - run: python -m pip install -r requirements.txt playwright
       - run: python -m playwright install --with-deps chromium
       - run: node --check app.js && node --check lab.js
       - run: python scripts/build.py
       - run: python courses/verify.py
       - run: python tests/verify_file_path.py
+      - run: python tests/verify_java.py
+      - run: node tests/java_core_check.js
       - run: python tests/verify_course.py
       - run: python tests/verify_locales.py
       - name: Verify browser interactions
@@ -39,6 +45,7 @@ jobs:
           python tests/browser_locale.py
           python tests/browser_storage.py
           python tests/browser_file_path.py
+          python tests/browser_java.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

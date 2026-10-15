@@ -13,7 +13,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     errors=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
     page.on('dialog',lambda dialog:dialog.accept())
-    page.goto(url)
+    page.goto(url+'/#course')
     page.locator('.module-card').first.wait_for()
     page.evaluate("localStorage.clear(); localStorage.setItem('mllearning-progress','[\"01\"]')")
     page.reload()
@@ -53,7 +53,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     assert page.evaluate('MLStore.get().notes')==before['notes']
     invalid=Path(temporary)/'invalid.json';invalid.write_text('{"version":1,"completed":["99"]}',encoding='utf-8')
     page.locator('#import-data').set_input_files(invalid)
-    page.get_by_text('Файл не подходит: данные не изменены. Выбери резервную копию MLlearning.',exact=True).wait_for()
+    page.get_by_text('Файл не подходит: данные не изменены. Выбери резервную копию IMlearning.',exact=True).wait_for()
     assert page.evaluate('MLStore.get().notes')==before['notes']
     # Simulate quota/security denial. UI must never claim a note was saved.
     page.evaluate("()=>{Storage.prototype.setItem=function(){throw new DOMException('Quota','QuotaExceededError')}}")
@@ -61,7 +61,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     page.locator('#lesson-note').fill('not persisted')
     assert 'Хранилище недоступно' in page.locator('#note-status').inner_text()
     # A fresh context has independent records, even on the same device.
-    other=browser.new_context();second=other.new_page();second.goto(url)
+    other=browser.new_context();second=other.new_page();second.goto(url+'/#course')
     second.locator('.module-card').first.wait_for()
     assert second.evaluate('MLStore.get().completed')==[]
     assert not errors,errors

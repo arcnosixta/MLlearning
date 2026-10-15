@@ -1,7 +1,7 @@
 {
   "week": 6,
   "id": "06",
-  "source": "https://dev.java/learn/inheritance/",
+  "source": "https://dev.java/learn/language/oop/inheritance/",
   "code": "public class Main {\n    static class Person {\n        String role() { return \"person\"; }\n    }\n    static class Student extends Person {\n        @Override String role() { return \"student\"; }\n    }\n    public static void main(String[] args) {\n        Person person = new Student();\n        System.out.println(person.role());\n    }\n}\n",
   "output": "student",
   "ru": {

@@ -11,7 +11,7 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':1440,'height':1000})
     errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
     for lang in ['ru','kk']:
-        page.goto(url+'/?lang='+lang)
+        page.goto(url+'/?lang='+lang+'#course')
         page.locator('.pathway-card').first.wait_for()
         assert page.locator('.pathway-card').count()==2
         page.locator('.pathway-card[href="#files"]').click()

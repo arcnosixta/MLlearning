@@ -1,7 +1,7 @@
 {
   "week": 9,
   "id": "09",
-  "source": "https://dev.java/learn/exceptions/",
+  "source": "https://dev.java/learn/language/annotations-exceptions/exceptions/",
   "code": "public class Main {\n    static int score(String value) {\n        int n = Integer.parseInt(value);\n        if (n < 0 || n > 100) throw new IllegalArgumentException(\"range\");\n        return n;\n    }\n    public static void main(String[] args) {\n        try { System.out.println(score(\"75\")); }\n        catch (IllegalArgumentException e) { System.out.println(\"invalid\"); }\n        finally { System.out.println(\"done\"); }\n    }\n}\n",
   "output": "75\ndone",
   "ru": {
@@ -49,7 +49,7 @@
   "terminal": {
     "ru": {
       "prompt": "Введи ключевое слово для выбрасывания объекта исключения.",
-      "hint": "В сигнатуре uses throws, а здесь нужно само действие."
+      "hint": "В сигнатуре пишут throws, а здесь нужно само действие."
     },
     "kk": {
       "prompt": "Ерекшелік объектісін тастайтын кілтсөзді енгіз.",

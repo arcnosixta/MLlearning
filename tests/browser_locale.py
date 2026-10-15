@@ -11,7 +11,7 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':390,'height':844})
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.goto(url+'/?lang=kk')
+    page.goto(url+'/?lang=kk#course')
     page.locator('.module-card').first.wait_for()
     assert page.locator('html').get_attribute('lang')=='kk'
     assert page.get_by_role('link',name='Негіздерден бастау',exact=False).count()==1
@@ -35,7 +35,7 @@ with sync_playwright() as p:
     assert page.locator('#fit').inner_text()=='Найти лучшие w и b'
     page.locator('.language-switch a[lang="kk"]').click()
     page.locator('#fit').wait_for()
-    page.goto(url)
+    page.goto(url+'/#course')
     page.locator('.module-card').first.wait_for()
     assert page.locator('html').get_attribute('lang')=='kk'
     assert not errors,errors

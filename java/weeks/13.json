@@ -1,7 +1,7 @@
 {
   "week": 13,
   "id": "13",
-  "source": "https://dev.java/learn/api/streams/",
+  "source": "https://dev.java/learn/api/collections-and-streams/streams/",
   "code": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> marks = List.of(40, 90, 70, 30);\n        List<Integer> passed = marks.stream().filter(x -> x >= 50).sorted().toList();\n        int total = marks.stream().mapToInt(Integer::intValue).sum();\n        System.out.println(passed);\n        System.out.println(total);\n    }\n}\n",
   "output": "[70, 90]\n230",
   "ru": {

@@ -1,7 +1,7 @@
 {
   "week": 5,
   "id": "05",
-  "source": "https://dev.java/learn/classes-objects/",
+  "source": "https://dev.java/learn/language/oop/classes-objects/",
   "code": "public class Main {\n    static class Student {\n        private final String name;\n        private int points;\n        Student(String name) { this.name = name; }\n        void addPoints(int value) {\n            if (value < 0) throw new IllegalArgumentException(\"negative\");\n            points += value;\n        }\n        String report() { return name + \": \" + points; }\n    }\n    public static void main(String[] args) {\n        Student student = new Student(\"Aida\");\n        student.addPoints(20);\n        System.out.println(student.report());\n    }\n}\n",
   "output": "Aida: 20",
   "ru": {

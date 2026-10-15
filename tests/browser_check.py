@@ -12,7 +12,7 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':1440,'height':1100}, device_scale_factor=1)
     errors=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
-    page.goto(url)
+    page.goto(url+'/#course')
     page.locator('.module-card').first.wait_for()
     assert page.locator('.module-card').count()==6
     page.screenshot(path=str(out/'desktop.png'),full_page=True)
@@ -46,13 +46,13 @@ with sync_playwright() as p:
     assert page.locator('#k-out').inner_text()=='7'
     page.screenshot(path=str(out/'lab.png'),full_page=True)
     page.set_viewport_size({'width':390,'height':844})
-    for route in ['', '#lesson/09', '#lab']:
+    for route in ['#course', '#lesson/09', '#lab']:
         page.goto(url+'/'+route)
-        if route=='':page.locator('.module-card').first.wait_for()
+        if route=='#course':page.locator('.module-card').first.wait_for()
         elif 'lesson' in route:page.locator('.lesson-body h1').wait_for()
         else:page.locator('#class-result').wait_for()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), route
-    page.goto(url)
+    page.goto(url+'/#course')
     page.locator('.module-card').first.wait_for()
     page.screenshot(path=str(out/'mobile.png'),full_page=True)
     assert not errors,errors

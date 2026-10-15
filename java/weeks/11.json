@@ -1,7 +1,7 @@
 {
   "week": 11,
   "id": "11",
-  "source": "https://dev.java/learn/generics/",
+  "source": "https://dev.java/learn/generics/intro/",
   "code": "import java.util.*;\npublic class Main {\n    static final class Student {\n        private final int id;\n        Student(int id) { this.id = id; }\n        @Override public boolean equals(Object other) {\n            return other instanceof Student && id == ((Student) other).id;\n        }\n        @Override public int hashCode() { return Integer.hashCode(id); }\n    }\n    public static void main(String[] args) {\n        Set<Student> students = new HashSet<>();\n        students.add(new Student(1));\n        students.add(new Student(1));\n        System.out.println(students.size());\n    }\n}\n",
   "output": "1",
   "ru": {
