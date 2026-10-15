@@ -1,0 +1,28 @@
+{
+  "title": "K-means: группы без ответов",
+  "intro": "Поищем структуру в данных, где нет известных меток классов.",
+  "theory": [
+    "K-means задаёт k центров и повторяет два действия: относит объекты к ближайшему центру, затем пересчитывает центры как средние объектов в группе. Минимизируется сумма квадратов расстояний до центров.",
+    "Алгоритм ищет локальное решение и зависит от инициализации. n_init запускает несколько попыток. Масштабирование важно, если признаки измеряются в разных единицах.",
+    "Метрика silhouette сравнивает близость внутри группы с расстоянием до другой группы. Она не доказывает, что группы имеют смысл для задачи. K-means лучше подходит для компактных групп близкой плотности; номера кластеров произвольны."
+  ],
+  "insight": "Кластер 0 — просто идентификатор, а не автоматически обнаруженное человеческое понятие.",
+  "code": "from sklearn.datasets import make_blobs\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.cluster import KMeans\nfrom sklearn.metrics import silhouette_score\nX, _ = make_blobs(n_samples=180, centers=3, cluster_std=0.7, random_state=42)\nscaled = StandardScaler().fit_transform(X)\nmodel = KMeans(n_clusters=3, n_init=10, random_state=42).fit(scaled)\nprint(\"Centers:\\n\", model.cluster_centers_)\nprint(\"Silhouette:\", silhouette_score(scaled, model.labels_))\n",
+  "expected": "Три двумерных центра в стандартизированном пространстве и коэффициент silhouette от −1 до 1.",
+  "task": "Сравни n_clusters=2, 3, 4. Измени cluster_std на 2.",
+  "hint": "Чем сильнее перекрываются группы, тем труднее отделить их по расстоянию. Этот пример исследовательский: здесь нет предсказательного test.",
+  "quiz": {
+    "question": "Нужны ли K-means известные ответы y?",
+    "options": [
+      "Да, обязательно",
+      "Нет",
+      "Только бинарные"
+    ],
+    "answer": 1,
+    "explanation": "Это обучение без учителя: ищем структуру в X."
+  },
+  "source": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "id": "17",
+  "group": 4,
+  "minutes": 18
+}
