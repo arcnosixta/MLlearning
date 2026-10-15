@@ -1,0 +1,28 @@
+{
+  "title": "Линейная регрессия",
+  "intro": "Первая полноценная модель: предсказываем число с помощью взвешенной суммы признаков.",
+  "theory": [
+    "Для одного признака модель имеет вид ŷ = wx + b. Вес w задаёт наклон, b — сдвиг. Для нескольких признаков складываются произведения каждого признака на свой вес.",
+    "Метод наименьших квадратов подбирает веса, минимизируя сумму квадратов ошибок на train. Квадрат сильно штрафует большие ошибки; выбросы могут заметно изменить прямую.",
+    "Коэффициент описывает связь при фиксированных остальных признаках, но сам по себе не доказывает причинность. Вне диапазона обучения линейная экстраполяция может быть неправдоподобной."
+  ],
+  "insight": "В лаборатории подбери наклон и сдвиг вручную. Обучение делает похожую работу автоматически.",
+  "code": "from sklearn.datasets import make_regression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_absolute_error\nX, y = make_regression(n_samples=200, n_features=1, noise=15, random_state=42)\nX_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(\"Weight:\", model.coef_, \"Bias:\", model.intercept_)\nprint(\"Test MAE:\", mean_absolute_error(y_test, model.predict(X_test)))\n",
+  "expected": "Получится положительный вес и ненулевая ошибка из-за искусственного шума. MAE измеряется в единицах y.",
+  "task": "Увеличь noise с 15 до 60 и сравни тестовую ошибку.",
+  "hint": "Ожидается рост ошибки. Изменение качества на одной выборке — наблюдение, а не универсальный закон.",
+  "quiz": {
+    "question": "Что делает коэффициент b в ŷ = wx + b?",
+    "options": [
+      "Задаёт сдвиг",
+      "Число объектов",
+      "Вероятность класса"
+    ],
+    "answer": 0,
+    "explanation": "b — предсказание при x = 0 в этой модели."
+  },
+  "source": "https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares",
+  "id": "09",
+  "group": 2,
+  "minutes": 18
+}
