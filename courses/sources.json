@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "timezone": "Asia/Qyzylorda",
+  "items": [
+    {
+      "number": 1,
+      "original_filename": "1_Google_Colab_және_Python_орталарымен_танысу (1).ipynb",
+      "path": "01-python-colab/01-python-colab.ipynb",
+      "sha256": "657aa2900942cb6bc89e8a2aacf3cf7ed30fdf4ba87907b6e794a61638ec542b",
+      "bytes": 38037,
+      "cells": 79,
+      "downloaded_at": "2026-10-15T07:04:07.539692+05:00",
+      "format": "Jupyter Notebook v4",
+      "renamed_only": false
+    }
+  ]
+}
