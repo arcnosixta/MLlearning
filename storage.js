@@ -3,9 +3,22 @@
   const KEY='mllearning-data-v1',ids=new Set(Array.from({length:24},(_,i)=>String(i+1).padStart(2,'0')));
   const fileIds=new Set(['01','02','03','04','05','06','07']);
   const blankFiles=()=>({completed:[],answers:{},notes:{},lastLesson:null});
-  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles()});
+  const javaIds=new Set(Array.from({length:14},(_,i)=>String(i+1).padStart(2,'0')));
+  const questionId=id=>typeof id==='string'&&/^j(0[1-9]|1[0-4])-[ct][1-3]$/.test(id);
+  const blankJava=()=>({completed:[],notes:{},quiz:{},terminal:[],lastWeek:null,active:null,history:[]});
+  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava()});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   const controls={regression:{weight:[-0.5,3],bias:[-3,7]},scaling:{'scale-mode':['raw','standard','minmax'],multiplier:[1,100]},knn:{k:[1,11],'query-x':[0,10],'query-y':[0,10]}};
+  function validateRun(run,finished){
+    if(!plain(run)||!['rk1','rk2','session'].includes(run.type)||typeof run.id!=='string'||!/^[a-z0-9]+-[a-z0-9]+$/.test(run.id)||run.id.length>80||!Number.isInteger(run.seed)||run.seed<0||run.seed>4294967295)throw new Error('Invalid exam');
+    const size=run.type==='session'?60:30,duration=(run.type==='session'?90:45)*60000;
+    if(!Array.isArray(run.questionIds)||run.questionIds.length!==size||new Set(run.questionIds).size!==size||run.questionIds.some(id=>!questionId(id)))throw new Error('Invalid question set');
+    if(run.questionIds.some(id=>{const n=Number(id.slice(1,3));return run.type==='rk1'?n>7:run.type==='rk2'?n<8:false}))throw new Error('Wrong exam topic');
+    if(!Number.isSafeInteger(run.startedAt)||run.startedAt<0||run.deadline!==run.startedAt+duration||!plain(run.answers))throw new Error('Invalid exam time');
+    if(finished?(!Number.isSafeInteger(run.submittedAt)||run.submittedAt<run.startedAt):run.submittedAt!==null)throw new Error('Invalid submission');
+    const answers={};for(const [id,value] of Object.entries(run.answers)){if(!run.questionIds.includes(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid exam answer');answers[id]=value}
+    return {id:run.id,type:run.type,seed:run.seed,startedAt:run.startedAt,deadline:run.deadline,submittedAt:run.submittedAt,questionIds:[...run.questionIds],answers};
+  }
   function validate(input){
     if(!plain(input)||input.version!==1||!Array.isArray(input.completed)||!plain(input.answers)||!plain(input.notes)||!plain(input.labs))throw new Error('Invalid backup');
     if(input.completed.some(id=>!ids.has(id))||!['ru','kk'].includes(input.language)||(input.lastLesson!==null&&!ids.has(input.lastLesson)))throw new Error('Invalid record');
@@ -33,6 +46,15 @@
       for(const [id,value] of Object.entries(f.answers)){if(!fileIds.has(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid file answer');out.files.answers[id]=value}
       for(const [id,value] of Object.entries(f.notes)){if(!fileIds.has(id)||typeof value!=='string'||value.length>10000)throw new Error('Invalid file note');out.files.notes[id]=value}
     }
+    if(input.java!==undefined){
+      const j=input.java;
+      if(!plain(j)||!Array.isArray(j.completed)||j.completed.some(id=>!javaIds.has(id))||!Array.isArray(j.terminal)||j.terminal.some(id=>!javaIds.has(id))||!plain(j.notes)||!plain(j.quiz)||(j.lastWeek!==null&&!javaIds.has(j.lastWeek))||!Array.isArray(j.history)||j.history.length>10)throw new Error('Invalid Java records');
+      out.java.completed=[...new Set(j.completed)];out.java.terminal=[...new Set(j.terminal)];out.java.lastWeek=j.lastWeek;
+      for(const [id,value] of Object.entries(j.notes)){if(!javaIds.has(id)||typeof value!=='string'||value.length>10000)throw new Error('Invalid Java note');out.java.notes[id]=value}
+      for(const [id,value] of Object.entries(j.quiz)){if(!questionId(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid Java answer');out.java.quiz[id]=value}
+      out.java.active=j.active===null?null:validateRun(j.active,false);out.java.history=j.history.map(run=>validateRun(run,true));
+      if(new Set(out.java.history.map(r=>r.id)).size!==out.java.history.length)throw new Error('Duplicate attempt');
+    }
     return out;
   }
   let state=blank(),persistent=true;
@@ -57,6 +79,7 @@
     fileNote:(id,value)=>update({files:{...state.files,notes:{...state.files.notes,[id]:value}}}),
     fileAnswer:(id,value)=>update({files:{...state.files,answers:{...state.files.answers,[id]:value}}}),
     fileComplete:id=>update({files:{...state.files,completed:[...new Set([...state.files.completed,id])]}}),
+    javaUpdate:patch=>update({java:{...state.java,...patch}}),
     export:()=>JSON.stringify(state,null,2),
     import:text=>save(validate(JSON.parse(text))),
     resetProgress:()=>update({completed:[]}),

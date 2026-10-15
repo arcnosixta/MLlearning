@@ -7,11 +7,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'dist'
 OUT.mkdir(exist_ok=True)
-for name in ['index.html', 'styles.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'storage.js']:
+for name in ['index.html', 'styles.css', 'academy.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'storage.js']:
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
-app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['app.js','data-view.js','files-view.js'])
+app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','app.js','data-view.js','files-view.js','java/java-view.js','java/exam-view.js'])
 (OUT/'app.js').write_text(app_source,encoding='utf-8')
 lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
 (OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
@@ -49,3 +49,10 @@ print('Built complete Kazakh interface, 24 lessons and localized examples')
 
 from build_notebooks import build as build_notebooks
 build_notebooks()
+
+java_weeks=[json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT/'java/weeks').glob('*.json'))]
+assert len(java_weeks)==14
+(OUT/'java-course.json').write_text(json.dumps(java_weeks,ensure_ascii=False),encoding='utf-8')
+shutil.copy2(ROOT/'java/exams.json',OUT/'java-exams.json')
+shutil.copytree(ROOT/'java/examples',OUT/'java-examples',dirs_exist_ok=True)
+print('Built Java semester: 14 weeks, 84 questions, checkpoints 30/30 and session 60')
