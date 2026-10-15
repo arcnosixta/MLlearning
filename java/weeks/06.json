@@ -1,0 +1,205 @@
+{
+  "week": 6,
+  "id": "06",
+  "source": "https://dev.java/learn/inheritance/",
+  "code": "public class Main {\n    static class Person {\n        String role() { return \"person\"; }\n    }\n    static class Student extends Person {\n        @Override String role() { return \"student\"; }\n    }\n    public static void main(String[] args) {\n        Person person = new Student();\n        System.out.println(person.role());\n    }\n}\n",
+  "output": "student",
+  "ru": {
+    "title": "Наследование и полиморфизм",
+    "intro": "Раздели общий контракт и конкретное поведение. Эта неделя готовит основу для abstract.",
+    "sections": [
+      {
+        "title": "extends и super",
+        "text": "Класс наследует один класс через extends. super(...) вызывает конструктор родителя; в примерах Java 17 это первая инструкция конструктора. private-поля родителя недоступны напрямую из подкласса, но поведение можно получить через его методы."
+      },
+      {
+        "title": "Переопределение и перегрузка",
+        "text": "Override меняет реализацию унаследованного нестатического метода с совместимой сигнатурой. @Override помогает компилятору проверить намерение. Overload создаёт методы с одним именем и разными параметрами. Одного изменения возвращаемого типа для перегрузки недостаточно."
+      },
+      {
+        "title": "Динамический вызов",
+        "text": "В Parent p = new Child() доступные члены проверяются по типу Parent, а переопределённый instance-метод выбирается по фактическому объекту Child. Поля и static-методы не используют такое же динамическое переопределение. Наследование должно описывать отношение «является»."
+      }
+    ],
+    "practice": "Создай Person и два подкласса Student и Teacher. Переопредели describe(), положи объекты в Person[] и вызови describe() в цикле без instanceof.",
+    "trap": "Перегрузка выбирается по типам аргументов при компиляции; override instance-метода — по объекту во время выполнения.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Мұрагерлік және полиморфизм",
+    "intro": "Ортақ келісім мен нақты әрекетті ажырат. Бұл апта abstract негізін дайындайды.",
+    "sections": [
+      {
+        "title": "extends және super",
+        "text": "Класс extends арқылы бір кластан мұра алады. super(...) ата-ана конструкторын шақырады; Java 17 мысалында ол бірінші нұсқау. Ата-ананың private өрістері туынды класқа тікелей ашық емес, бірақ әдістерін қолдануға болады."
+      },
+      {
+        "title": "Қайта анықтау және артық жүктеу",
+        "text": "Override мұраланған static емес әдіс іске асуын үйлесімді сигнатурамен өзгертеді. @Override компиляторға ниетті тексеруге көмектеседі. Overload бір атаумен әртүрлі параметрлі әдістер жасайды. Тек қайтару типін өзгерту жеткіліксіз."
+      },
+      {
+        "title": "Динамикалық шақыру",
+        "text": "Parent p = new Child() ішінде қолжетімді мүшелер Parent типімен тексеріледі, ал override instance әдісі нақты Child объектісімен таңдалады. Өрістер мен static әдістер дәл осылай динамикалық таңдалмайды. Мұрагерлік «болып табылады» қатынасын сипаттауы керек."
+      }
+    ],
+    "practice": "Person және Student, Teacher туынды кластарын жаса. describe() қайта анықтап, объектілерді Person[] ішіне сал. instanceof қолданбай циклде describe() шақыр.",
+    "trap": "Overload аргумент типтерімен компиляцияда, instance әдіс override-ы нақты объектімен орындалғанда таңдалады.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Какой аннотацией помечают переопределённый метод?",
+      "hint": "Начинается с @ и говорит о переопределении."
+    },
+    "kk": {
+      "prompt": "Қай аннотация әдістің қайта анықталғанын көрсетеді?",
+      "hint": "@ таңбасынан басталып, қайта анықтауды білдіреді."
+    },
+    "answers": [
+      "@Override"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Сколько классов может напрямую расширять Java-класс?",
+        "options": [
+          "Один",
+          "Любое число",
+          "Ноль всегда"
+        ],
+        "explanation": "Множественного наследования классов нет."
+      },
+      "kk": {
+        "question": "Java класы тікелей неше кластан мұра алады?",
+        "options": [
+          "Бір",
+          "Кез келген сан",
+          "Әрқашан нөл"
+        ],
+        "explanation": "Кластардан көптік мұрагерлік жоқ."
+      },
+      "answer": 0,
+      "id": "j06-c1",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "Что такое overload?",
+        "options": [
+          "Разные параметры при одном имени",
+          "Только новое тело в подклассе",
+          "Удаление метода"
+        ],
+        "explanation": "Перегрузка различается списком параметров."
+      },
+      "kk": {
+        "question": "Overload деген не?",
+        "options": [
+          "Бір атаумен әртүрлі параметрлер",
+          "Туындыда тек жаңа дене",
+          "Әдісті жою"
+        ],
+        "explanation": "Артық жүктеу параметр тізімімен ажыратылады."
+      },
+      "answer": 0,
+      "id": "j06-c2",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "По чему выбирается override instance-метода?",
+        "options": [
+          "По имени файла",
+          "По фактическому объекту",
+          "По позиции в коде"
+        ],
+        "explanation": "Это динамическая диспетчеризация."
+      },
+      "kk": {
+        "question": "Override instance әдісі немен таңдалады?",
+        "options": [
+          "Файл атауымен",
+          "Нақты объектімен",
+          "Код орнымен"
+        ],
+        "explanation": "Бұл динамикалық диспетчерлеу."
+      },
+      "answer": 1,
+      "id": "j06-c3",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nclass A { String f(){return \"A\";} } class B extends A { String f(){return \"B\";} } A a=new B(); System.out.println(a.f());",
+        "options": [
+          "B",
+          "A",
+          "AB"
+        ],
+        "explanation": "Вызывается реализация объекта B."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nclass A { String f(){return \"A\";} } class B extends A { String f(){return \"B\";} } A a=new B(); System.out.println(a.f());",
+        "options": [
+          "B",
+          "A",
+          "AB"
+        ],
+        "explanation": "B объектісінің іске асуы шақырылады."
+      },
+      "answer": 0,
+      "id": "j06-t1",
+      "week": 6,
+      "trace": "class A { String f(){return \"A\";} } class B extends A { String f(){return \"B\";} } A a=new B(); System.out.println(a.f());"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nclass A { int n=1; } class B extends A { int n=2; } A a=new B(); System.out.println(a.n);",
+        "options": [
+          "2",
+          "3",
+          "1"
+        ],
+        "explanation": "Доступ к полю определяется типом ссылки A."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nclass A { int n=1; } class B extends A { int n=2; } A a=new B(); System.out.println(a.n);",
+        "options": [
+          "2",
+          "3",
+          "1"
+        ],
+        "explanation": "Өріске қатынау A сілтеме типімен анықталады."
+      },
+      "answer": 2,
+      "id": "j06-t2",
+      "week": 6,
+      "trace": "class A { int n=1; } class B extends A { int n=2; } A a=new B(); System.out.println(a.n);"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nclass A { A(){System.out.print(\"A\");} } class B extends A { B(){System.out.print(\"B\");} } new B();",
+        "options": [
+          "B",
+          "AB",
+          "BA"
+        ],
+        "explanation": "Сначала выполняется конструктор родителя."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nclass A { A(){System.out.print(\"A\");} } class B extends A { B(){System.out.print(\"B\");} } new B();",
+        "options": [
+          "B",
+          "AB",
+          "BA"
+        ],
+        "explanation": "Алдымен ата-ана конструкторы орындалады."
+      },
+      "answer": 1,
+      "id": "j06-t3",
+      "week": 6,
+      "trace": "class A { A(){System.out.print(\"A\");} } class B extends A { B(){System.out.print(\"B\");} } new B();"
+    }
+  ]
+}
