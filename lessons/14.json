@@ -1,0 +1,28 @@
+{
+  "title": "kNN: учимся у соседей",
+  "intro": "Предскажем класс по ближайшим обучающим объектам.",
+  "theory": [
+    "k ближайших соседей — простой алгоритм: для нового объекта находим k ближайших точек и голосуем за класс. С weights=\"distance\" ближайшие соседи получают больший вес.",
+    "Малое k создаёт гибкую границу, чувствительную к шуму. Большое k сглаживает границу, но может потерять локальную структуру. Это гиперпараметр, который выбирают по валидации.",
+    "Расстояние зависит от масштаба, поэтому используем StandardScaler внутри Pipeline. В высокой размерности расстояния становятся менее различимыми, а хранение и поиск соседей могут быть дорогими."
+  ],
+  "insight": "Лаборатория позволяет перемещать запрос и менять k: посмотри, какие соседи голосуют за класс.",
+  "code": "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neighbors import KNeighborsClassifier\nX, y = load_iris(return_X_y=True)\nXtr, Xte, ytr, yte = train_test_split(X, y, stratify=y, random_state=42)\nmodel = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5))\nmodel.fit(Xtr, ytr)\nprint(\"Accuracy:\", model.score(Xte, yte))\nprint(\"Classes:\", model.predict(Xte[:5]))\n",
+  "expected": "Классы первых пяти объектов и тестовая accuracy. Набор Iris содержит три класса.",
+  "task": "Сравни k=1 и k=25. Почему результаты могут различаться?",
+  "hint": "k задаёт размер окрестности. На маленьком датасете оценка зависит от разбиения.",
+  "quiz": {
+    "question": "Почему kNN чувствителен к единицам измерения?",
+    "options": [
+      "Использует расстояния",
+      "Не хранит train",
+      "Всегда строит дерево"
+    ],
+    "answer": 0,
+    "explanation": "Большой числовой диапазон может доминировать в расстоянии."
+  },
+  "source": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "id": "14",
+  "group": 3,
+  "minutes": 18
+}
