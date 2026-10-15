@@ -7,10 +7,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'dist'
 OUT.mkdir(exist_ok=True)
-for name in ['index.html', 'styles.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js']:
+for name in ['index.html', 'styles.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'storage.js']:
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
+app_source=(ROOT/'app.js').read_text(encoding='utf-8')+'\n'+(ROOT/'data-view.js').read_text(encoding='utf-8')
+(OUT/'app.js').write_text(app_source,encoding='utf-8')
 lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
 (OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
 if (ROOT / 'examples').exists():
@@ -22,7 +24,7 @@ print(f'Built {len(lessons)} lessons in {OUT}')
 dictionary = json.loads((ROOT/'i18n/ui.kk.json').read_text(encoding='utf-8'))
 pattern = re.compile('|'.join(re.escape(k) for k in sorted(dictionary,key=len,reverse=True)))
 for name in ['app', 'lab']:
-    text = (ROOT/f'{name}.js').read_text(encoding='utf-8')
+    text = app_source if name == 'app' else (ROOT/f'{name}.js').read_text(encoding='utf-8')
     text = pattern.sub(lambda match:dictionary[match[0]], text)
     if name == 'app':
         text = text.replace("fetch('lessons.json')", "fetch('lessons.kk.json')")

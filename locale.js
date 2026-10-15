@@ -1,9 +1,9 @@
 /* Choose a single locale before loading the application; URLs remain shareable. */
 (()=>{
   const requested=new URLSearchParams(location.search).get('lang');
-  let saved;try{saved=localStorage.getItem('mllearning-language')}catch{}
+  let saved;try{saved=window.MLStore?.get().language||localStorage.getItem('mllearning-language')}catch{}
   const lang=['ru','kk'].includes(requested)?requested:saved==='kk'?'kk':'ru';
-  window.ML_LOCALE=lang;
+  window.ML_LOCALE=lang;window.MLStore?.update({language:lang});
   document.documentElement.lang=lang;
   try{localStorage.setItem('mllearning-language',lang)}catch{}
   document.addEventListener('DOMContentLoaded',async()=>{

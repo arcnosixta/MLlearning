@@ -1,0 +1,19 @@
+/* Included in app.js at build time so both locales share exactly one renderer. */
+function renderData(){
+  const snapshot=window.MLStore.get();
+  main.innerHTML=`<section class="lab-page data-page"><a class="breadcrumb" href="#course">← Программа</a><h1>Мои данные</h1><p class="lesson-intro">Твой прогресс, ответы, заметки и параметры лаборатории хранятся в этом браузере на этом устройстве.</p><p class="callout">Данные не отправляются на сервер. Очистка данных браузера удалит записи. Скачай резервную копию для переноса или восстановления.</p><div class="data-stats"><p><strong>${snapshot.completed.length}</strong> уроков пройдено</p><p><strong>${Object.keys(snapshot.answers).length}</strong> ответов сохранено</p><p><strong>${Object.values(snapshot.notes).filter(Boolean).length}</strong> заметок сохранено</p></div>${snapshot.lastLesson?`<a class="button green" href="#lesson/${snapshot.lastLesson}">Продолжить обучение →</a>`:''}<h2>Резервная копия</h2><div class="data-actions"><button class="button" id="export-data">Скачать данные JSON</button><button class="button outline" id="import-trigger">Восстановить из файла</button><input id="import-data" type="file" accept="application/json,.json" hidden></div><p class="lab-explain">Восстановление заменит текущие записи данными из файла. Поддерживается только формат резервной копии MLlearning версии 1. Личные заметки могут содержать твои данные — храни копию у себя.</p><h2>Очистка</h2><button class="button outline" id="clear-data">Удалить все локальные данные</button><p id="data-status" role="status">${window.MLStore.isPersistent()?'Локальное хранилище доступно':'Хранилище недоступно: данные останутся только до закрытия страницы.'}</p></section>`;
+  const status=document.querySelector('#data-status');
+  document.querySelector('#export-data').onclick=()=>{const blob=new Blob([window.MLStore.export()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='mllearning-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Резервная копия скачана'};
+  document.querySelector('#import-trigger').onclick=()=>document.querySelector('#import-data').click();document.querySelector('#import-data').onchange=async event=>{
+    const file=event.target.files[0];if(!file)return;
+    try{
+      if(file.size>1024*1024)throw new Error('Too large');
+      const text=await file.text();
+      // Validate a detached value before asking to replace any existing records.
+      const test=JSON.parse(text);if(test.version!==1)throw new Error('Unknown version');
+      if(!confirm('Заменить текущие данные резервной копией?')){event.target.value='';return}
+      const saved=window.MLStore.import(text);completed=new Set(window.MLStore.get().completed);renderData();document.querySelector('#data-status').textContent=saved?'Данные восстановлены':'Хранилище недоступно: данные останутся только до закрытия страницы.';
+    }catch{status.textContent='Файл не подходит: данные не изменены. Выбери резервную копию MLlearning.'}finally{event.target.value=''}
+  };
+  document.querySelector('#clear-data').onclick=()=>{if(confirm('Удалить прогресс, ответы, заметки и настройки с этого устройства?')){const saved=window.MLStore.clear();completed.clear();renderData();document.querySelector('#data-status').textContent=saved?'Локальные данные удалены':'Не удалось очистить хранилище браузера.'}};
+}

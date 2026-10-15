@@ -50,7 +50,7 @@ with sync_playwright() as p:
         page.goto(url+'/'+route)
         if route=='':page.locator('.module-card').first.wait_for()
         elif 'lesson' in route:page.locator('.lesson-body h1').wait_for()
-        else:page.locator('#mse').wait_for()
+        else:page.locator('#class-result').wait_for()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), route
     page.goto(url)
     page.locator('.module-card').first.wait_for()
