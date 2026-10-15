@@ -1,0 +1,205 @@
+{
+  "week": 7,
+  "id": "07",
+  "source": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+  "code": "public class Main {\n    static abstract class Shape {\n        abstract int area();\n        String label() { return \"area=\" + area(); }\n    }\n    static class Square extends Shape {\n        private final int side;\n        Square(int side) { this.side = side; }\n        @Override int area() { return side * side; }\n    }\n    public static void main(String[] args) {\n        Shape shape = new Square(4);\n        System.out.println(shape.label());\n    }\n}\n",
+  "output": "area=16",
+  "ru": {
+    "title": "Абстрактные классы · РК-1",
+    "intro": "К седьмой неделе свяжи основы языка и ООП. Заверши блок абстракцией и пробным РК-1 на 30 вопросов.",
+    "sections": [
+      {
+        "title": "abstract class",
+        "text": "Абстрактный класс задаёт общий тип и может хранить состояние, конструктор и обычные методы. Создать экземпляр самого abstract-класса через new нельзя. Ссылка его типа может указывать на экземпляр конкретного подкласса."
+      },
+      {
+        "title": "Абстрактный метод",
+        "text": "Абстрактный метод объявляет контракт без тела и заканчивается ;. Конкретный подкласс обязан реализовать все унаследованные абстрактные методы, иначе сам должен быть abstract. Абстрактный метод нельзя одновременно объявить final, private или static."
+      },
+      {
+        "title": "Подготовка к РК",
+        "text": "Сделай таблицу: поле, конструктор, static, override, abstract. Для каждой конструкции объясни роль и приведи пример. На РК сначала отделяй ошибку компиляции от ошибки выполнения и неверного результата. После попытки разбери каждую ошибку, а не только итоговый процент."
+      }
+    ],
+    "practice": "Расширь Shape классом Rectangle. Создай Shape[] с квадратом и прямоугольником, выведи площади через один цикл. Объясни, почему Shape нельзя создать напрямую, но у него может быть конструктор. Затем пройди РК-1.",
+    "trap": "abstract не означает «все методы абстрактные». Класс может иметь обычные методы и даже не иметь abstract-методов.",
+    "oral": "Объясни своими словами три темы недели. Затем измени пример, предскажи вывод до запуска и сравни результат."
+  },
+  "kk": {
+    "title": "Абстрактілі кластар · РК-1",
+    "intro": "Жетінші аптада тіл негіздері мен ООП-ты біріктір. Блокты абстракция және 30 сұрақтық РК-1 арқылы аяқта.",
+    "sections": [
+      {
+        "title": "abstract class",
+        "text": "Абстрактілі класс ортақ типті анықтап, күй, конструктор және кәдімгі әдістер сақтай алады. abstract кластың өзін new арқылы жасауға болмайды. Оның сілтемесі нақты туынды данаға нұсқай алады."
+      },
+      {
+        "title": "Абстрактілі әдіс",
+        "text": "Абстрактілі әдіс денесіз келісім жариялап, ; арқылы аяқталады. Нақты туынды барлық мұраланған abstract әдістерді іске асырады, әйтпесе өзі abstract болуы керек. Abstract әдіс final, private не static бола алмайды."
+      },
+      {
+        "title": "РК-ға дайындық",
+        "text": "Өріс, конструктор, static, override, abstract кестесін жаса. Әрқайсысының рөлін мысалмен түсіндір. РК-да компиляция қатесін орындау қатесі мен қате нәтижеден ажырат. Әр қатені талда, тек пайызға қарама."
+      }
+    ],
+    "practice": "Shape класын Rectangle арқылы кеңейт. Square пен Rectangle бар Shape[] жасап, аудандарды бір циклмен шығар. Shape неге тікелей жасалмайтынын, бірақ конструкторы болатынын түсіндір. Кейін РК-1 өт.",
+    "trap": "abstract «барлық әдіс абстрактілі» дегенді білдірмейді. Класта кәдімгі әдістер болуы және abstract әдіс болмауы да мүмкін.",
+    "oral": "Аптаның үш тақырыбын өз сөзіңмен түсіндір. Содан кейін мысалды өзгертіп, іске қоспай нәтижесін болжа және тексер."
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Введи объявление абстрактного метода area(), возвращающего int.",
+      "hint": "Метод без тела заканчивается точкой с запятой."
+    },
+    "kk": {
+      "prompt": "int қайтаратын абстрактілі area() әдісінің жариялауын енгіз.",
+      "hint": "Денесіз әдіс нүктелі үтірмен аяқталады."
+    },
+    "answers": [
+      "abstract int area();"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Можно ли new Shape(), если Shape abstract?",
+        "options": [
+          "Да всегда",
+          "Нет",
+          "Только внутри main"
+        ],
+        "explanation": "Нельзя непосредственно создать экземпляр abstract-класса."
+      },
+      "kk": {
+        "question": "Shape abstract болса, new Shape() бола ма?",
+        "options": [
+          "Әрқашан болады",
+          "Жоқ",
+          "Тек main ішінде"
+        ],
+        "explanation": "Abstract кластың өзін тікелей жасауға болмайды."
+      },
+      "answer": 1,
+      "id": "j07-c1",
+      "week": 7
+    },
+    {
+      "ru": {
+        "question": "Может ли abstract-класс иметь конструктор?",
+        "options": [
+          "Да",
+          "Нет",
+          "Только static"
+        ],
+        "explanation": "Конструктор выполняется при создании подкласса."
+      },
+      "kk": {
+        "question": "Abstract класта конструктор бола ма?",
+        "options": [
+          "Иә",
+          "Жоқ",
+          "Тек static"
+        ],
+        "explanation": "Конструктор туынды дананы жасағанда орындалады."
+      },
+      "answer": 0,
+      "id": "j07-c2",
+      "week": 7
+    },
+    {
+      "ru": {
+        "question": "Что обязан сделать конкретный подкласс?",
+        "options": [
+          "Удалить поля",
+          "Реализовать оставшиеся abstract-методы",
+          "Сделать всё static"
+        ],
+        "explanation": "Иначе подкласс также должен быть abstract."
+      },
+      "kk": {
+        "question": "Нақты туынды класс не істеуге міндетті?",
+        "options": [
+          "Өрістерді жою",
+          "Қалған abstract әдістерді іске асыру",
+          "Бәрін static ету"
+        ],
+        "explanation": "Әйтпесе туынды да abstract болуы керек."
+      },
+      "answer": 1,
+      "id": "j07-c3",
+      "week": 7
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nabstract class A { abstract int f(); } class B extends A { int f(){return 7;} } A a=new B(); System.out.println(a.f());",
+        "options": [
+          "0",
+          "1",
+          "7"
+        ],
+        "explanation": "Конкретный B реализует f."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nabstract class A { abstract int f(); } class B extends A { int f(){return 7;} } A a=new B(); System.out.println(a.f());",
+        "options": [
+          "0",
+          "1",
+          "7"
+        ],
+        "explanation": "Нақты B f әдісін іске асырады."
+      },
+      "answer": 2,
+      "id": "j07-t1",
+      "week": 7,
+      "trace": "abstract class A { abstract int f(); } class B extends A { int f(){return 7;} } A a=new B(); System.out.println(a.f());"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nabstract class A { int n=3; int f(){return n*2;} } class B extends A {} System.out.println(new B().f());",
+        "options": [
+          "0",
+          "6",
+          "3"
+        ],
+        "explanation": "Обычный метод abstract-класса наследуется."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nabstract class A { int n=3; int f(){return n*2;} } class B extends A {} System.out.println(new B().f());",
+        "options": [
+          "0",
+          "6",
+          "3"
+        ],
+        "explanation": "Abstract кластың кәдімгі әдісі мұраланады."
+      },
+      "answer": 1,
+      "id": "j07-t2",
+      "week": 7,
+      "trace": "abstract class A { int n=3; int f(){return n*2;} } class B extends A {} System.out.println(new B().f());"
+    },
+    {
+      "ru": {
+        "question": "Что выведет код?\n\nabstract class A { A(){System.out.print(\"A\");} } class B extends A { B(){System.out.print(\"B\");} } new B();",
+        "options": [
+          "AB",
+          "B",
+          "BA"
+        ],
+        "explanation": "Конструктор abstract-родителя тоже выполняется."
+      },
+      "kk": {
+        "question": "Код нені шығарады?\n\nabstract class A { A(){System.out.print(\"A\");} } class B extends A { B(){System.out.print(\"B\");} } new B();",
+        "options": [
+          "AB",
+          "B",
+          "BA"
+        ],
+        "explanation": "Abstract ата-ананың конструкторы да орындалады."
+      },
+      "answer": 0,
+      "id": "j07-t3",
+      "week": 7,
+      "trace": "abstract class A { A(){System.out.print(\"A\");} } class B extends A { B(){System.out.print(\"B\");} } new B();"
+    }
+  ]
+}
