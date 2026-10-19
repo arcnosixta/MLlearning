@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'dist'
 OUT.mkdir(exist_ok=True)
-for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'storage.js']:
+for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'track-config.js', 'storage.js']:
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
@@ -60,8 +60,8 @@ print('Built Java semester: 14 weeks, 84 questions, checkpoints 30/30 and sessio
 tracks=json.loads((ROOT/'tracks/catalog.json').read_text(encoding='utf-8'))
 for track in tracks:
     track['lessons']=[json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT/'tracks'/track['id']).glob('*.json'))]
-    assert [l['id'] for l in track['lessons']]==[f'{n:02d}' for n in range(1,7)]
+    assert [l['id'] for l in track['lessons']]==[f'{n:02d}' for n in range(1,14)]
     assert all(len(l['questions'])==5 for l in track['lessons'])
     shutil.copytree(ROOT/'tracks'/track['id']/'examples',OUT/'track-examples'/track['id'],dirs_exist_ok=True)
 (OUT/'tracks.json').write_text(json.dumps(tracks,ensure_ascii=False),encoding='utf-8')
-print('Built 4 additional tracks, 24 modules and 120 questions')
+print('Built 4 tracks, 52 weeks and 260 questions; RK 30/30, session 60')
