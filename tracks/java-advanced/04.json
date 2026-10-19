@@ -1,0 +1,190 @@
+{
+  "id": "04",
+  "week": 4,
+  "course": "java-advanced",
+  "code": "import java.util.concurrent.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        ExecutorService pool=Executors.newFixedThreadPool(2);\n        try {\n            Future<Integer> a=pool.submit(()->20);\n            Future<Integer> b=pool.submit(()->22);\n            System.out.println(a.get(2,TimeUnit.SECONDS)+b.get(2,TimeUnit.SECONDS));\n        } finally {\n            pool.shutdown();\n            if(!pool.awaitTermination(2,TimeUnit.SECONDS)) pool.shutdownNow();\n        }\n    }\n}\n",
+  "output": "42",
+  "source": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+  "ru": {
+    "title": "Executors, Future и потокобезопасность",
+    "intro": "Управляй временем жизни задач и не путай видимость с атомарностью.",
+    "sections": [
+      {
+        "title": "Пул и задачи",
+        "text": "ExecutorService отделяет запуск от бизнес-кода. submit возвращает Future; get ожидает результат и может передать ошибку через ExecutionException. Ограничивай время ожидания и закрывай пул через shutdown с ожидаемым завершением. В Java 17 ExecutorService ещё не AutoCloseable."
+      },
+      {
+        "title": "Общая память",
+        "text": "volatile обеспечивает видимость и порядок для обращения к переменной, но n++ остаётся составной операцией. Для счётчика используй AtomicInteger или блокировку. Потокобезопасная коллекция не делает атомарной произвольную последовательность get/check/put."
+      },
+      {
+        "title": "Отмена и прерывание",
+        "text": "cancel(true) запрашивает прерывание, а не гарантирует мгновенную остановку. Задача должна реагировать на interruption. Если не можешь обработать InterruptedException, восстанови флаг и передай управление выше. Не проглатывай ошибку и не оставляй бесконечную задачу после timeout."
+      }
+    ],
+    "context": "Самостоятельный Main.java, фиксированный пул закрывается. Задачи не обращаются к внешней сети.",
+    "task": "Запусти 100 задач, увеличивающих AtomicInteger. Дождись результата и проверь 100. Затем добавь медленную задачу и обработай timeout с отменой.",
+    "criteria": [
+      "Есть timeout.",
+      "Пул завершается.",
+      "Счётчик не использует небезопасный n++."
+    ]
+  },
+  "kk": {
+    "title": "Executors, Future және ағын қауіпсіздігі",
+    "intro": "Тапсырма өмірін басқарып, көріну мен атомарлықты шатастырма.",
+    "sections": [
+      {
+        "title": "Пул және тапсырмалар",
+        "text": "ExecutorService іске қосуды бизнес кодтан бөледі. submit Future береді; get нәтижені күтіп, қатені ExecutionException арқылы жеткізеді. Күтуді шектеп, shutdown және аяқталуды күтумен пулды жап. Java 17-де ExecutorService AutoCloseable емес."
+      },
+      {
+        "title": "Ортақ жад",
+        "text": "volatile айнымалының көрінуі мен ретін береді, бірақ n++ құрама амал. Санағышқа AtomicInteger не бұғаттау қолдан. Thread-safe коллекция кез келген get/check/put тізбегін атомар етпейді."
+      },
+      {
+        "title": "Бас тарту және interrupt",
+        "text": "cancel(true) interrupt сұрайды, дереу тоқтатуды кепілдемейді. Тапсырма interruption-ға жауап беруі керек. InterruptedException өңдей алмасаң, жалаушаны қалпына келтіріп, басқаруды жоғары бер. Қатені жасырма, timeout кейін шексіз тапсырма қалдырма."
+      }
+    ],
+    "context": "Дербес Main.java, бекітілген пул жабылады. Тапсырмалар сыртқы желіге шықпайды.",
+    "task": "AtomicInteger арттыратын 100 тапсырма баста. Аяқталуын күтіп, 100 тексер. Кейін баяу тапсырма қосып, timeout пен бас тартуды өңде.",
+    "criteria": [
+      "Timeout бар.",
+      "Пул аяқталады.",
+      "Санағыш қауіпсіз емес n++ қолданбайды."
+    ]
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Делает ли volatile операцию n++ атомарной? Ответ: да или нет.",
+      "hint": "Видимость и атомарность — разные свойства."
+    },
+    "kk": {
+      "prompt": "Volatile n++ амалын атомар ете ме? Иә не жоқ.",
+      "hint": "Көріну мен атомарлық бөлек."
+    },
+    "answers": [
+      "нет",
+      "жоқ",
+      "no"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Что возвращает submit?",
+        "options": [
+          "Future",
+          "String всегда",
+          "Thread всегда"
+        ],
+        "explanation": "Future представляет ожидаемый результат."
+      },
+      "kk": {
+        "question": "submit не қайтарады?",
+        "options": [
+          "Future",
+          "Әрқашан String",
+          "Әрқашан Thread"
+        ],
+        "explanation": "Future күтілетін нәтижені білдіреді."
+      },
+      "answer": 0,
+      "id": "java-advanced-04-q1",
+      "week": 4
+    },
+    {
+      "ru": {
+        "question": "volatile n++ атомарно?",
+        "options": [
+          "Нет",
+          "Да",
+          "Если n int"
+        ],
+        "explanation": "Чтение, сложение и запись — несколько действий."
+      },
+      "kk": {
+        "question": "volatile n++ атомар ма?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "n int болса"
+        ],
+        "explanation": "Оқу, қосу және жазу бірнеше әрекет."
+      },
+      "answer": 0,
+      "id": "java-advanced-04-q2",
+      "week": 4
+    },
+    {
+      "ru": {
+        "question": "cancel(true) гарантирует остановку?",
+        "options": [
+          "Нет, нужно сотрудничество задачи",
+          "Да мгновенно",
+          "Удаляет JVM"
+        ],
+        "explanation": "Это запрос прерывания."
+      },
+      "kk": {
+        "question": "cancel(true) тоқтауды кепілдей ме?",
+        "options": [
+          "Жоқ, тапсырма жауап беруі керек",
+          "Иә дереу",
+          "JVM жояды"
+        ],
+        "explanation": "Бұл interrupt сұрауы."
+      },
+      "answer": 0,
+      "id": "java-advanced-04-q3",
+      "week": 4
+    },
+    {
+      "ru": {
+        "question": "Что следует сделать с пулом после работы?",
+        "options": [
+          "Завершить и дождаться",
+          "Оставить навсегда",
+          "Очистить экран"
+        ],
+        "explanation": "Потоки имеют жизненный цикл."
+      },
+      "kk": {
+        "question": "Жұмыстан кейін пулмен не істеу керек?",
+        "options": [
+          "Аяқтап, күту",
+          "Мәңгі қалдыру",
+          "Экран тазалау"
+        ],
+        "explanation": "Ағынның өмір циклі бар."
+      },
+      "answer": 0,
+      "id": "java-advanced-04-q4",
+      "week": 4
+    },
+    {
+      "ru": {
+        "question": "Безопасна ли любая get/check/put последовательность в ConcurrentHashMap?",
+        "options": [
+          "Нет, нужна атомарная операция",
+          "Всегда",
+          "Только ночью"
+        ],
+        "explanation": "Используй compute/merge при подходящем контракте."
+      },
+      "kk": {
+        "question": "ConcurrentHashMap кез келген get/check/put тізбегі қауіпсіз бе?",
+        "options": [
+          "Жоқ, атомар амал керек",
+          "Әрқашан",
+          "Тек түнде"
+        ],
+        "explanation": "Дұрыс келісімде compute/merge қолдан."
+      },
+      "answer": 0,
+      "id": "java-advanced-04-q5",
+      "week": 4
+    }
+  ]
+}
