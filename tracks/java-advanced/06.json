@@ -1,0 +1,188 @@
+{
+  "id": "06",
+  "week": 6,
+  "course": "java-advanced",
+  "code": "import java.util.*;\npublic class Main {\n    interface Repository { void save(int id,int score); Optional<Integer> find(int id); }\n    static class MemoryRepository implements Repository {\n        private final Map<Integer,Integer> values=new HashMap<>();\n        public void save(int id,int score){values.put(id,score);}\n        public Optional<Integer> find(int id){return Optional.ofNullable(values.get(id));}\n    }\n    static void record(Repository r,int id,int score) {\n        if(score<0||score>100) throw new IllegalArgumentException(\"score\");\n        r.save(id,score);\n    }\n    public static void main(String[] args) {\n        Repository r=new MemoryRepository(); record(r,1,80);\n        System.out.println(r.find(1).orElseThrow());\n        System.out.println(r.find(9).isEmpty());\n    }\n}\n",
+  "output": "80\ntrue",
+  "source": "https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html",
+  "ru": {
+    "title": "Архитектура, JDBC и итоговая проверка",
+    "intro": "Отдели правила предметной области от базы и проверь поведение при отказе.",
+    "sections": [
+      {
+        "title": "Порты и внедрение зависимостей",
+        "text": "Сервис принимает интерфейс Repository через конструктор, а не создаёт глобальный JDBC connection внутри метода. In-memory реализация позволяет проверять бизнес-правила без сети. Это не доказывает правильность SQL: нужен отдельный интеграционный тест с реальной БД."
+      },
+      {
+        "title": "JDBC: параметры и транзакции",
+        "text": "Для пользовательских значений применяй PreparedStatement с bind-параметрами, а не конкатенацию. Связанные изменения выполняй в одной транзакции: setAutoCommit(false), commit при успехе, rollback при отказе; закрывай Statement/ResultSet/Connection по владельцу. Подключение требует JDBC-драйвера выбранной БД."
+      },
+      {
+        "title": "Проверки проекта",
+        "text": "Собери сервис учёта результатов: валидация, repository, сохранение, отчёт. Проверяй границы 0/100, отсутствующий id, дубль и ошибку сохранения. Не прячь инфраструктурную ошибку как пустой список. Различай unit-, integration- и end-to-end проверки."
+      }
+    ],
+    "context": "Самостоятельный Main.java с in-memory repository; JDBC здесь объясняется теоретически, подключение к БД не выполняется и драйвер не требуется.",
+    "task": "Добавь тестовую реализацию Repository, бросающую ошибку записи. Проверь, что сервис не сообщает об успехе. Затем спроектируй JDBC-адаптер и отдельно перечисли его интеграционные проверки.",
+    "criteria": [
+      "Бизнес-код не зависит от конкретной БД.",
+      "SQL использует параметры.",
+      "Unit-тест не выдаётся за проверку реальной транзакции."
+    ]
+  },
+  "kk": {
+    "title": "Архитектура, JDBC және қорытынды тексеру",
+    "intro": "Пән ережесін базадан бөліп, бас тарту кезіндегі әрекетті тексер.",
+    "sections": [
+      {
+        "title": "Порттар және тәуелділік беру",
+        "text": "Сервис Repository интерфейсін конструктормен алады, әдіс ішінде жаһандық JDBC connection жасамайды. In-memory іске асу бизнес ережесін желісіз тексереді. Бұл SQL дұрыстығын дәлелдемейді: нақты БД интеграциялық тесті керек."
+      },
+      {
+        "title": "JDBC: параметрлер және транзакциялар",
+        "text": "Пайдаланушы мәніне мәтін біріктіру емес, bind параметрлі PreparedStatement қолдан. Байланысты өзгерістер бір транзакцияда: setAutoCommit(false), сәттіде commit, бас тартуда rollback. Ресурсты иесі жапсын. Қосылуға таңдалған БД JDBC драйвері керек."
+      },
+      {
+        "title": "Жоба тексерулері",
+        "text": "Нәтиже сервисін жина: валидация, repository, сақтау, есеп. 0/100, жоқ id, дубль және сақтау қатесін тексер. Инфрақұрылым қатесін бос тізімдей жасырма. Unit, integration және end-to-end ажырат."
+      }
+    ],
+    "context": "In-memory repository бар дербес Main.java. JDBC мұнда теорияда түсіндіріледі, БД қосылмайды, драйвер керек емес.",
+    "task": "Жазу қатесін тастайтын Repository тест іске асуын қос. Сервис сәтті демейтінін тексер. Кейін JDBC адаптерін жобалап, интеграциялық тексеруін бөлек жаз.",
+    "criteria": [
+      "Бизнес код нақты БД-ға тәуелсіз.",
+      "SQL параметр қолданады.",
+      "Unit тест нақты транзакция тексеруі емес."
+    ]
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Какой JDBC-объект связывает параметры вместо склейки SQL?",
+      "hint": "Он подготавливает запрос."
+    },
+    "kk": {
+      "prompt": "SQL біріктірудің орнына қай JDBC объект параметр байланыстырады?",
+      "hint": "Ол сұрауды дайындайды."
+    },
+    "answers": [
+      "PreparedStatement"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Что помогает подменять хранилище в unit-тесте?",
+        "options": [
+          "Интерфейс Repository",
+          "Глобальный connection",
+          "Случайный sleep"
+        ],
+        "explanation": "Зависимость передаётся явно."
+      },
+      "kk": {
+        "question": "Unit тестте сақтауды алмастыруға не көмектеседі?",
+        "options": [
+          "Repository интерфейсі",
+          "Жаһандық connection",
+          "Кездейсоқ sleep"
+        ],
+        "explanation": "Тәуелділік нақты беріледі."
+      },
+      "answer": 0,
+      "id": "java-advanced-06-q1",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "Как передают пользовательское значение в SQL?",
+        "options": [
+          "Bind-параметром",
+          "Конкатенацией",
+          "В именах методов"
+        ],
+        "explanation": "Параметры отделяют данные от текста."
+      },
+      "kk": {
+        "question": "Пайдаланушы мәні SQL-ге қалай беріледі?",
+        "options": [
+          "Bind параметрмен",
+          "Біріктірумен",
+          "Әдіс атауында"
+        ],
+        "explanation": "Параметр деректі мәтіннен бөледі."
+      },
+      "answer": 0,
+      "id": "java-advanced-06-q2",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "Что делает rollback?",
+        "options": [
+          "Отменяет незакоммиченные изменения",
+          "Повышает score",
+          "Создаёт UI"
+        ],
+        "explanation": "Это часть границы транзакции."
+      },
+      "kk": {
+        "question": "Rollback не істейді?",
+        "options": [
+          "Commit болмаған өзгерісті қайтарады",
+          "Score өсіреді",
+          "UI жасайды"
+        ],
+        "explanation": "Бұл транзакция шекарасы."
+      },
+      "answer": 0,
+      "id": "java-advanced-06-q3",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "Доказывает ли in-memory тест корректность SQL?",
+        "options": [
+          "Нет",
+          "Да",
+          "Если 100 тестов"
+        ],
+        "explanation": "Нужен отдельный интеграционный тест."
+      },
+      "kk": {
+        "question": "In-memory тест SQL дұрыстығын дәлелдей ме?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "100 тест болса"
+        ],
+        "explanation": "Бөлек интеграциялық тест керек."
+      },
+      "answer": 0,
+      "id": "java-advanced-06-q4",
+      "week": 6
+    },
+    {
+      "ru": {
+        "question": "Что делать с ошибкой сохранения?",
+        "options": [
+          "Передать понятный отказ",
+          "Вернуть успех",
+          "Скрыть в пустом списке"
+        ],
+        "explanation": "Не маскируй инфраструктурный отказ."
+      },
+      "kk": {
+        "question": "Сақтау қатесімен не істеу керек?",
+        "options": [
+          "Түсінікті бас тарту беру",
+          "Сәтті қайтару",
+          "Бос тізімге жасыру"
+        ],
+        "explanation": "Инфрақұрылым қатесін жасырма."
+      },
+      "answer": 0,
+      "id": "java-advanced-06-q5",
+      "week": 6
+    }
+  ]
+}
