@@ -1,0 +1,189 @@
+{
+  "id": "03",
+  "week": 3,
+  "course": "java-advanced",
+  "code": "import java.util.*;\nimport java.util.stream.*;\npublic class Main {\n    public static void main(String[] args) {\n        Map<String,Long> counts=List.of(\"go\",\"java\",\"go\").stream()\n            .collect(Collectors.groupingBy(x->x,TreeMap::new,Collectors.counting()));\n        String value=Optional.<String>empty().orElseGet(()->\"missing\");\n        System.out.println(counts); System.out.println(value);\n    }\n}\n",
+  "output": "{go=2, java=1}\nmissing",
+  "source": "https://dev.java/learn/api/collections-and-streams/streams/",
+  "ru": {
+    "title": "Stream, Optional и побочные эффекты",
+    "intro": "Пиши преобразования, которые остаются понятными и тестируемыми.",
+    "sections": [
+      {
+        "title": "Ленивый конвейер",
+        "text": "Stream описывает источник и цепочку операций. filter и map — промежуточные, collect/count/reduce — терминальные. Поток одноразовый. Не полагайся на побочный эффект peek как на обязательное действие: оптимизации могут менять факт выполнения отдельных шагов."
+      },
+      {
+        "title": "Редукция и ассоциативность",
+        "text": "Для корректного parallel reduce операция должна быть ассоциативной, а identity — нейтральным. Вычитание не ассоциативно. Общий изменяемый ArrayList внутри forEach создаёт гонки в parallelStream; используй collector с правильным контрактом."
+      },
+      {
+        "title": "Optional как результат отсутствия",
+        "text": "Optional помогает явно представить отсутствие результата метода. Не вызывай get без проверки. orElse вычисляет аргумент сразу; orElseGet вызывает Supplier только при отсутствии значения. Для простого отсутствия используй map/flatMap/filter и понятный default."
+      }
+    ],
+    "context": "Самостоятельный Main.java. TreeMap выбран для стабильного порядка вывода.",
+    "task": "Сгруппируй результаты студентов по предмету и вычисли среднее. Пустую выборку представь явно. Покажи отличие orElse от orElseGet счётчиком вызова default-функции.",
+    "criteria": [
+      "Нет общего изменяемого списка в parallel forEach.",
+      "Пустой результат обработан.",
+      "Разница eager/lazy default показана."
+    ]
+  },
+  "kk": {
+    "title": "Stream, Optional және жанама әсерлер",
+    "intro": "Түсінікті әрі тесттелетін түрлендіру жаз.",
+    "sections": [
+      {
+        "title": "Жалқау конвейер",
+        "text": "Stream көз бен амал тізбегін сипаттайды. filter/map аралық, collect/count/reduce соңғы амал. Ағын бір рет қолданылады. peek жанама әсеріне міндетті әрекет ретінде сүйенбе: оңтайландыру орындалуды өзгерте алады."
+      },
+      {
+        "title": "Редукция және ассоциативтілік",
+        "text": "Дұрыс parallel reduce үшін амал ассоциативті, identity бейтарап болуы керек. Азайту ассоциативті емес. parallelStream ішіндегі ортақ ArrayList race жасайды; дұрыс collector қолдан."
+      },
+      {
+        "title": "Optional жоқтық нәтижесі ретінде",
+        "text": "Optional әдіс нәтижесінің жоқтығын көрсетеді. get-ті тексерусіз шақырма. orElse аргументті бірден, orElseGet Supplier-ді тек мән жоқта есептейді. map/flatMap/filter және түсінікті default қолдан."
+      }
+    ],
+    "context": "Дербес Main.java. Тұрақты нәтиже ретіне TreeMap алынған.",
+    "task": "Студент нәтижесін пәнмен топтап, орташа есепте. Бос таңдауды нақты көрсет. Default функция санағышымен orElse және orElseGet айырмасын көрсет.",
+    "criteria": [
+      "Parallel forEach ішінде ортақ өзгермелі тізім жоқ.",
+      "Бос нәтиже өңделген.",
+      "Eager/lazy default айырмасы көрсетілген."
+    ]
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Какой метод Optional лениво вычисляет запасное значение?",
+      "hint": "Он принимает Supplier."
+    },
+    "kk": {
+      "prompt": "Optional қосалқы мәнді қай әдіспен жалқау есептейді?",
+      "hint": "Ол Supplier қабылдайды."
+    },
+    "answers": [
+      "orElseGet",
+      "orElseGet()"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Stream можно использовать повторно после terminal?",
+        "options": [
+          "Нет",
+          "Да",
+          "Если пустой"
+        ],
+        "explanation": "Нужен новый поток."
+      },
+      "kk": {
+        "question": "Terminal-дан кейін Stream қайта қолданыла ма?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "Бос болса"
+        ],
+        "explanation": "Жаңа ағын керек."
+      },
+      "answer": 0,
+      "id": "java-advanced-03-q1",
+      "week": 3
+    },
+    {
+      "ru": {
+        "question": "Что требуется операции parallel reduce?",
+        "options": [
+          "Ассоциативность",
+          "Случайность",
+          "Изменение глобального списка"
+        ],
+        "explanation": "Иначе разбиение меняет результат."
+      },
+      "kk": {
+        "question": "Parallel reduce амалына не керек?",
+        "options": [
+          "Ассоциативтілік",
+          "Кездейсоқтық",
+          "Жаһандық тізімді өзгерту"
+        ],
+        "explanation": "Әйтпесе бөлу нәтижені өзгертеді."
+      },
+      "answer": 0,
+      "id": "java-advanced-03-q2",
+      "week": 3
+    },
+    {
+      "ru": {
+        "question": "Какой default вычисляется сразу?",
+        "options": [
+          "orElse",
+          "orElseGet",
+          "map всегда"
+        ],
+        "explanation": "Аргумент обычного вызова вычисляется до метода."
+      },
+      "kk": {
+        "question": "Қай default бірден есептеледі?",
+        "options": [
+          "orElse",
+          "orElseGet",
+          "map әрқашан"
+        ],
+        "explanation": "Қалыпты шақыру аргументі әдіске дейін есептеледі."
+      },
+      "answer": 0,
+      "id": "java-advanced-03-q3",
+      "week": 3
+    },
+    {
+      "ru": {
+        "question": "get у пустого Optional…",
+        "options": [
+          "Бросит исключение",
+          "Вернёт null",
+          "Создаст значение"
+        ],
+        "explanation": "Используй явный сценарий отсутствия."
+      },
+      "kk": {
+        "question": "Бос Optional get-і…",
+        "options": [
+          "Ерекшелік тастайды",
+          "Null қайтарады",
+          "Мән жасайды"
+        ],
+        "explanation": "Жоқтық сценарийін нақты өңде."
+      },
+      "answer": 0,
+      "id": "java-advanced-03-q4",
+      "week": 3
+    },
+    {
+      "ru": {
+        "question": "Зачем TreeMap в примере?",
+        "options": [
+          "Стабильный порядок ключей",
+          "Чтобы включить parallel",
+          "Для HTTP"
+        ],
+        "explanation": "groupingBy получает поставщик Map."
+      },
+      "kk": {
+        "question": "Мысалда TreeMap не үшін?",
+        "options": [
+          "Тұрақты кілт реті",
+          "Parallel қосу үшін",
+          "HTTP үшін"
+        ],
+        "explanation": "groupingBy Map supplier алады."
+      },
+      "answer": 0,
+      "id": "java-advanced-03-q5",
+      "week": 3
+    }
+  ]
+}
