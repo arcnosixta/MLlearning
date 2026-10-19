@@ -75,22 +75,22 @@
       "ru": {
         "question": "Что возвращает submit?",
         "options": [
-          "Future",
           "String всегда",
-          "Thread всегда"
+          "Thread всегда",
+          "Future"
         ],
         "explanation": "Future представляет ожидаемый результат."
       },
       "kk": {
         "question": "submit не қайтарады?",
         "options": [
-          "Future",
           "Әрқашан String",
-          "Әрқашан Thread"
+          "Әрқашан Thread",
+          "Future"
         ],
         "explanation": "Future күтілетін нәтижені білдіреді."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-04-q1",
       "week": 4
     },
@@ -98,22 +98,22 @@
       "ru": {
         "question": "volatile n++ атомарно?",
         "options": [
+          "Если n int",
           "Нет",
-          "Да",
-          "Если n int"
+          "Да"
         ],
         "explanation": "Чтение, сложение и запись — несколько действий."
       },
       "kk": {
         "question": "volatile n++ атомар ма?",
         "options": [
+          "n int болса",
           "Жоқ",
-          "Иә",
-          "n int болса"
+          "Иә"
         ],
         "explanation": "Оқу, қосу және жазу бірнеше әрекет."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-04-q2",
       "week": 4
     },
@@ -144,22 +144,22 @@
       "ru": {
         "question": "Что следует сделать с пулом после работы?",
         "options": [
-          "Завершить и дождаться",
           "Оставить навсегда",
-          "Очистить экран"
+          "Очистить экран",
+          "Завершить и дождаться"
         ],
         "explanation": "Потоки имеют жизненный цикл."
       },
       "kk": {
         "question": "Жұмыстан кейін пулмен не істеу керек?",
         "options": [
-          "Аяқтап, күту",
           "Мәңгі қалдыру",
-          "Экран тазалау"
+          "Экран тазалау",
+          "Аяқтап, күту"
         ],
         "explanation": "Ағынның өмір циклі бар."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-04-q4",
       "week": 4
     },
@@ -167,22 +167,22 @@
       "ru": {
         "question": "Безопасна ли любая get/check/put последовательность в ConcurrentHashMap?",
         "options": [
+          "Только ночью",
           "Нет, нужна атомарная операция",
-          "Всегда",
-          "Только ночью"
+          "Всегда"
         ],
         "explanation": "Используй compute/merge при подходящем контракте."
       },
       "kk": {
         "question": "ConcurrentHashMap кез келген get/check/put тізбегі қауіпсіз бе?",
         "options": [
+          "Тек түнде",
           "Жоқ, атомар амал керек",
-          "Әрқашан",
-          "Тек түнде"
+          "Әрқашан"
         ],
         "explanation": "Дұрыс келісімде compute/merge қолдан."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-04-q5",
       "week": 4
     }

@@ -73,22 +73,22 @@
       "ru": {
         "question": "Нужно ли сохранять результат append?",
         "options": [
-          "Да",
           "Нет",
-          "Только для string"
+          "Только для string",
+          "Да"
         ],
         "explanation": "Он может вернуть срез с другим массивом."
       },
       "kk": {
         "question": "append нәтижесін сақтау керек пе?",
         "options": [
-          "Иә",
           "Жоқ",
-          "Тек string үшін"
+          "Тек string үшін",
+          "Иә"
         ],
         "explanation": "Ол өзге массивті срез қайтара алады."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "go-04-q1",
       "week": 4
     },
@@ -96,22 +96,22 @@
       "ru": {
         "question": "Что означает ok в v, ok := m[k]?",
         "options": [
+          "Map отсортирована",
           "Ключ найден",
-          "Значение положительное",
-          "Map отсортирована"
+          "Значение положительное"
         ],
         "explanation": "ok отличает отсутствие от zero value."
       },
       "kk": {
         "question": "v, ok := m[k] ішіндегі ok не?",
         "options": [
+          "Map сұрыпталған",
           "Кілт табылды",
-          "Мән оң",
-          "Map сұрыпталған"
+          "Мән оң"
         ],
         "explanation": "ok жоқтықты нөлдік мәннен ажыратады."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "go-04-q2",
       "week": 4
     },
@@ -142,22 +142,22 @@
       "ru": {
         "question": "Гарантирован ли порядок range по map?",
         "options": [
-          "Нет",
           "Да, по ключу",
-          "Да, по вставке"
+          "Да, по вставке",
+          "Нет"
         ],
         "explanation": "Для стабильности ключи сортируют."
       },
       "kk": {
         "question": "Map бойынша range реті кепілді ме?",
         "options": [
-          "Жоқ",
           "Иә, кілтпен",
-          "Иә, енгізумен"
+          "Иә, енгізумен",
+          "Жоқ"
         ],
         "explanation": "Тұрақтылық үшін кілттер сұрыпталады."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "go-04-q4",
       "week": 4
     },
@@ -165,22 +165,22 @@
       "ru": {
         "question": "Какое имя файла ожидает go test?",
         "options": [
+          "test.txt",
           "sum_test.go",
-          "sum.check",
-          "test.txt"
+          "sum.check"
         ],
         "explanation": "Стандартный суффикс — _test.go."
       },
       "kk": {
         "question": "go test қандай файл атауын күтеді?",
         "options": [
+          "test.txt",
           "sum_test.go",
-          "sum.check",
-          "test.txt"
+          "sum.check"
         ],
         "explanation": "Стандарт жұрнақ — _test.go."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "go-04-q5",
       "week": 4
     }

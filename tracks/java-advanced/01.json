@@ -73,22 +73,22 @@
       "ru": {
         "question": "List<Integer> — подтип List<Number>?",
         "options": [
-          "Нет",
           "Да",
-          "Только после cast"
+          "Только после cast",
+          "Нет"
         ],
         "explanation": "Generics инвариантны."
       },
       "kk": {
         "question": "List<Integer> List<Number> туындысы ма?",
         "options": [
-          "Жоқ",
           "Иә",
-          "Тек cast кейін"
+          "Тек cast кейін",
+          "Жоқ"
         ],
         "explanation": "Generics инвариантты."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-01-q1",
       "week": 1
     },
@@ -96,22 +96,22 @@
       "ru": {
         "question": "Из List<? extends Number> безопасно читать как…",
         "options": [
+          "String",
           "Number",
-          "Integer всегда",
-          "String"
+          "Integer всегда"
         ],
         "explanation": "Конкретный числовой подтип неизвестен."
       },
       "kk": {
         "question": "List<? extends Number> ішінен қауіпсіз оқу…",
         "options": [
+          "String",
           "Number",
-          "Әрқашан Integer",
-          "String"
+          "Әрқашан Integer"
         ],
         "explanation": "Нақты сандық туынды белгісіз."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-01-q2",
       "week": 1
     },
@@ -142,22 +142,22 @@
       "ru": {
         "question": "Где объявляют <T> у generic-метода?",
         "options": [
-          "Перед возвращаемым типом",
           "После тела",
-          "Только в import"
+          "Только в import",
+          "Перед возвращаемым типом"
         ],
         "explanation": "Это параметр метода."
       },
       "kk": {
         "question": "Generic әдісте <T> қайда?",
         "options": [
-          "Қайтару типінен бұрын",
           "Денеден кейін",
-          "Тек import ішінде"
+          "Тек import ішінде",
+          "Қайтару типінен бұрын"
         ],
         "explanation": "Бұл әдіс параметрі."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-01-q4",
       "week": 1
     },
@@ -165,22 +165,22 @@
       "ru": {
         "question": "Что даёт стирание типов?",
         "options": [
+          "Примитивы становятся Object",
           "Параметры generics в основном проверяются компилятором",
-          "Все типы исчезают из JVM",
-          "Примитивы становятся Object"
+          "Все типы исчезают из JVM"
         ],
         "explanation": "Это не отменяет обычные runtime-типы объектов."
       },
       "kk": {
         "question": "Тип өшіру нені білдіреді?",
         "options": [
+          "Примитив Object болады",
           "Generics негізінен компилятормен тексеріледі",
-          "JVM-де барлық тип жоғалады",
-          "Примитив Object болады"
+          "JVM-де барлық тип жоғалады"
         ],
         "explanation": "Бұл кәдімгі runtime объект типін жоймайды."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-01-q5",
       "week": 1
     }

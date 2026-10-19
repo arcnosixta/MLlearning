@@ -73,22 +73,22 @@
       "ru": {
         "question": "Какой пакет нужен исполняемой программе?",
         "options": [
-          "main",
           "exec",
-          "run"
+          "run",
+          "main"
         ],
         "explanation": "Точка входа — func main в package main."
       },
       "kk": {
         "question": "Орындалатын бағдарламаға қай пакет керек?",
         "options": [
-          "main",
           "exec",
-          "run"
+          "run",
+          "main"
         ],
         "explanation": "Кіру нүктесі — package main ішіндегі func main."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "go-01-q1",
       "week": 1
     },
@@ -96,22 +96,22 @@
       "ru": {
         "question": "Нулевое значение bool?",
         "options": [
+          "nil",
           "true",
-          "false",
-          "nil"
+          "false"
         ],
         "explanation": "bool по умолчанию false."
       },
       "kk": {
         "question": "bool нөлдік мәні?",
         "options": [
+          "nil",
           "true",
-          "false",
-          "nil"
+          "false"
         ],
         "explanation": "bool бастапқыда false."
       },
-      "answer": 1,
+      "answer": 2,
       "id": "go-01-q2",
       "week": 1
     },
@@ -142,22 +142,22 @@
       "ru": {
         "question": "Что выведет fmt.Println(7/2)?",
         "options": [
-          "3",
           "3.5",
-          "4"
+          "4",
+          "3"
         ],
         "explanation": "Оба операнда целые."
       },
       "kk": {
         "question": "fmt.Println(7/2) не шығарады?",
         "options": [
-          "3",
           "3.5",
-          "4"
+          "4",
+          "3"
         ],
         "explanation": "Екі операнд бүтін."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "go-01-q4",
       "week": 1
     },
@@ -165,22 +165,22 @@
       "ru": {
         "question": "Где допустимо :=?",
         "options": [
+          "В любом месте файла",
           "Внутри функции",
-          "Только в import",
-          "В любом месте файла"
+          "Только в import"
         ],
         "explanation": "Краткое объявление не используют на уровне пакета."
       },
       "kk": {
         "question": ":= қайда қолданылады?",
         "options": [
+          "Файлдың кез келген жерінде",
           "Функция ішінде",
-          "Тек import ішінде",
-          "Файлдың кез келген жерінде"
+          "Тек import ішінде"
         ],
         "explanation": "Қысқа жариялау пакет деңгейінде қолданылмайды."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "go-01-q5",
       "week": 1
     }

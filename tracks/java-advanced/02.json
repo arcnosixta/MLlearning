@@ -74,22 +74,22 @@
       "ru": {
         "question": "Равные hashCode всегда означают equals?",
         "options": [
+          "Только у Map",
           "Нет",
-          "Да",
-          "Только у Map"
+          "Да"
         ],
         "explanation": "Коллизии допустимы."
       },
       "kk": {
         "question": "Тең hashCode әрқашан equals пе?",
         "options": [
+          "Тек Map ішінде",
           "Жоқ",
-          "Иә",
-          "Тек Map ішінде"
+          "Иә"
         ],
         "explanation": "Коллизияға рұқсат."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-02-q1",
       "week": 2
     },
@@ -120,22 +120,22 @@
       "ru": {
         "question": "List.copyOf делает глубокую копию объектов?",
         "options": [
-          "Нет",
           "Да",
-          "Только record"
+          "Только record",
+          "Нет"
         ],
         "explanation": "Элементы могут оставаться общими."
       },
       "kk": {
         "question": "List.copyOf объектіні терең көшіре ме?",
         "options": [
-          "Жоқ",
           "Иә",
-          "Тек record"
+          "Тек record",
+          "Жоқ"
         ],
         "explanation": "Элементтер ортақ қалуы мүмкін."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-02-q3",
       "week": 2
     },
@@ -143,22 +143,22 @@
       "ru": {
         "question": "Кто сортирует по ключу?",
         "options": [
+          "ArrayList",
           "TreeMap",
-          "HashMap",
-          "ArrayList"
+          "HashMap"
         ],
         "explanation": "TreeMap использует порядок ключей."
       },
       "kk": {
         "question": "Кілт бойынша кім сұрыптайды?",
         "options": [
+          "ArrayList",
           "TreeMap",
-          "HashMap",
-          "ArrayList"
+          "HashMap"
         ],
         "explanation": "TreeMap кілт ретін қолданады."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-02-q4",
       "week": 2
     },

@@ -73,22 +73,22 @@
       "ru": {
         "question": "Что делает enable?",
         "options": [
+          "Удаляет unit",
           "Настраивает запуск при загрузке",
-          "Всегда запускает немедленно",
-          "Удаляет unit"
+          "Всегда запускает немедленно"
         ],
         "explanation": "Текущий запуск — start."
       },
       "kk": {
         "question": "Enable не істейді?",
         "options": [
+          "Unit жояды",
           "Жүктелгенде іске қосуды баптайды",
-          "Әрқашан дереу іске қосады",
-          "Unit жояды"
+          "Әрқашан дереу іске қосады"
         ],
         "explanation": "Қазіргі іске қосу — start."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "sysadmin-02-q1",
       "week": 2
     },
@@ -119,22 +119,22 @@
       "ru": {
         "question": "active гарантирует успешный HTTP ответ?",
         "options": [
-          "Нет",
           "Да",
-          "Только порт 80"
+          "Только порт 80",
+          "Нет"
         ],
         "explanation": "Нужна функциональная проверка."
       },
       "kk": {
         "question": "Active сәтті HTTP жауабын кепілдей ме?",
         "options": [
-          "Жоқ",
           "Иә",
-          "Тек 80 порт"
+          "Тек 80 порт",
+          "Жоқ"
         ],
         "explanation": "Функционалдық тексеру керек."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "sysadmin-02-q3",
       "week": 2
     },
@@ -142,22 +142,22 @@
       "ru": {
         "question": "Чем фильтровать журнал по unit?",
         "options": [
+          "tar -u",
           "journalctl -u",
-          "chmod -u",
-          "tar -u"
+          "chmod -u"
         ],
         "explanation": "Это фильтр systemd journal."
       },
       "kk": {
         "question": "Журналды unit бойынша немен сүземіз?",
         "options": [
+          "tar -u",
           "journalctl -u",
-          "chmod -u",
-          "tar -u"
+          "chmod -u"
         ],
         "explanation": "Бұл systemd journal сүзгісі."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "sysadmin-02-q4",
       "week": 2
     },

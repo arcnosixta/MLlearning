@@ -73,22 +73,22 @@
       "ru": {
         "question": "Успех в паре result, err обычно означает…",
         "options": [
+          "result == 0",
           "err == nil",
-          "err == true",
-          "result == 0"
+          "err == true"
         ],
         "explanation": "Нулевой результат может быть корректным."
       },
       "kk": {
         "question": "result, err жұбындағы сәттілік…",
         "options": [
+          "result == 0",
           "err == nil",
-          "err == true",
-          "result == 0"
+          "err == true"
         ],
         "explanation": "Нөл нәтиже дұрыс болуы мүмкін."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "go-02-q1",
       "week": 2
     },
@@ -119,22 +119,22 @@
       "ru": {
         "question": "Зачем %w в fmt.Errorf?",
         "options": [
-          "Сохранить причину",
           "Удалить ошибку",
-          "Запустить goroutine"
+          "Запустить goroutine",
+          "Сохранить причину"
         ],
         "explanation": "Причина доступна errors.Is/As."
       },
       "kk": {
         "question": "fmt.Errorf ішіндегі %w не үшін?",
         "options": [
-          "Себепті сақтау",
           "Қатені жою",
-          "Goroutine бастау"
+          "Goroutine бастау",
+          "Себепті сақтау"
         ],
         "explanation": "Себеп errors.Is/As арқылы қолжетімді."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "go-02-q3",
       "week": 2
     },
@@ -142,22 +142,22 @@
       "ru": {
         "question": "Порядок двух defer: сначала A, затем B?",
         "options": [
+          "Одновременно",
           "AB",
-          "BA",
-          "Одновременно"
+          "BA"
         ],
         "explanation": "Отложенные вызовы — LIFO."
       },
       "kk": {
         "question": "Екі defer: алдымен A, кейін B. Реті?",
         "options": [
+          "Бір уақытта",
           "AB",
-          "BA",
-          "Бір уақытта"
+          "BA"
         ],
         "explanation": "Қалдырылған шақырулар LIFO."
       },
-      "answer": 1,
+      "answer": 2,
       "id": "go-02-q4",
       "week": 2
     },

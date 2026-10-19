@@ -25,12 +25,17 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+          cache: false
       - run: python -m pip install -r requirements.txt playwright
       - run: python -m playwright install --with-deps chromium
       - run: node --check app.js && node --check lab.js
       - run: python scripts/build.py
       - run: python courses/verify.py
       - run: python tests/verify_file_path.py
+      - run: python tests/verify_tracks.py
       - run: python tests/verify_java.py
       - run: node tests/java_core_check.js
       - run: python tests/verify_course.py
@@ -46,6 +51,7 @@ jobs:
           python tests/browser_storage.py
           python tests/browser_file_path.py
           python tests/browser_java.py
+          python tests/browser_tracks.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

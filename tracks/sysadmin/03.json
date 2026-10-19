@@ -97,22 +97,22 @@
       "ru": {
         "question": "Что значит 127.0.0.1 в привязке сервиса?",
         "options": [
-          "Loopback этой машины",
           "Все внешние интерфейсы",
-          "DNS провайдера"
+          "DNS провайдера",
+          "Loopback этой машины"
         ],
         "explanation": "Удалённый хост не подключится напрямую к этому loopback."
       },
       "kk": {
         "question": "Сервис байламындағы 127.0.0.1 не?",
         "options": [
-          "Осы машинаның loopback-і",
           "Барлық сыртқы интерфейс",
-          "Провайдер DNS-і"
+          "Провайдер DNS-і",
+          "Осы машинаның loopback-і"
         ],
         "explanation": "Қашық хост бұл loopback-ке тікелей қосылмайды."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "sysadmin-03-q2",
       "week": 3
     },
@@ -120,22 +120,22 @@
       "ru": {
         "question": "Что показывает ss -ltn?",
         "options": [
+          "Только DNS кэш",
           "Слушающие TCP-сокеты",
-          "Права файлов",
-          "Только DNS кэш"
+          "Права файлов"
         ],
         "explanation": "l — listening, t — TCP, n — numeric."
       },
       "kk": {
         "question": "ss -ltn нені көрсетеді?",
         "options": [
+          "Тек DNS кэші",
           "Тыңдайтын TCP сокеттер",
-          "Файл құқығы",
-          "Тек DNS кэші"
+          "Файл құқығы"
         ],
         "explanation": "l listening, t TCP, n numeric."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "sysadmin-03-q3",
       "week": 3
     },
@@ -166,22 +166,22 @@
       "ru": {
         "question": "getent hosts может учитывать hosts-файл?",
         "options": [
-          "Да, по NSS",
           "Нет никогда",
-          "Только в браузере"
+          "Только в браузере",
+          "Да, по NSS"
         ],
         "explanation": "Он следует системной конфигурации resolver."
       },
       "kk": {
         "question": "getent hosts hosts файлын ескере ала ма?",
         "options": [
-          "Иә, NSS бойынша",
           "Ешқашан жоқ",
-          "Тек браузерде"
+          "Тек браузерде",
+          "Иә, NSS бойынша"
         ],
         "explanation": "Жүйелік resolver баптауын қолданады."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "sysadmin-03-q5",
       "week": 3
     }

@@ -97,22 +97,22 @@
       "ru": {
         "question": "Что требуется операции parallel reduce?",
         "options": [
-          "Ассоциативность",
           "Случайность",
-          "Изменение глобального списка"
+          "Изменение глобального списка",
+          "Ассоциативность"
         ],
         "explanation": "Иначе разбиение меняет результат."
       },
       "kk": {
         "question": "Parallel reduce амалына не керек?",
         "options": [
-          "Ассоциативтілік",
           "Кездейсоқтық",
-          "Жаһандық тізімді өзгерту"
+          "Жаһандық тізімді өзгерту",
+          "Ассоциативтілік"
         ],
         "explanation": "Әйтпесе бөлу нәтижені өзгертеді."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-03-q2",
       "week": 3
     },
@@ -120,22 +120,22 @@
       "ru": {
         "question": "Какой default вычисляется сразу?",
         "options": [
+          "map всегда",
           "orElse",
-          "orElseGet",
-          "map всегда"
+          "orElseGet"
         ],
         "explanation": "Аргумент обычного вызова вычисляется до метода."
       },
       "kk": {
         "question": "Қай default бірден есептеледі?",
         "options": [
+          "map әрқашан",
           "orElse",
-          "orElseGet",
-          "map әрқашан"
+          "orElseGet"
         ],
         "explanation": "Қалыпты шақыру аргументі әдіске дейін есептеледі."
       },
-      "answer": 0,
+      "answer": 1,
       "id": "java-advanced-03-q3",
       "week": 3
     },
@@ -166,22 +166,22 @@
       "ru": {
         "question": "Зачем TreeMap в примере?",
         "options": [
-          "Стабильный порядок ключей",
           "Чтобы включить parallel",
-          "Для HTTP"
+          "Для HTTP",
+          "Стабильный порядок ключей"
         ],
         "explanation": "groupingBy получает поставщик Map."
       },
       "kk": {
         "question": "Мысалда TreeMap не үшін?",
         "options": [
-          "Тұрақты кілт реті",
           "Parallel қосу үшін",
-          "HTTP үшін"
+          "HTTP үшін",
+          "Тұрақты кілт реті"
         ],
         "explanation": "groupingBy Map supplier алады."
       },
-      "answer": 0,
+      "answer": 2,
       "id": "java-advanced-03-q5",
       "week": 3
     }
