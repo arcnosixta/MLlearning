@@ -7,7 +7,7 @@
   const questionId=id=>typeof id==='string'&&/^j(0[1-9]|1[0-4])-[ct][1-3]$/.test(id);
   const blankJava=()=>({completed:[],notes:{},quiz:{},terminal:[],lastWeek:null,active:null,history:[]});
   const trackIds=['go','onec','java-advanced','sysadmin'];
-  const trackLessons=new Set(['01','02','03','04','05','06']);
+  const trackLessons=new Set(window.IMTrackConfig.lessonIds);
   const blankTrack=()=>({completed:[],notes:{},quiz:{},terminal:[],lastLesson:null,active:null,history:[]});
   const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()]))});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
@@ -62,14 +62,15 @@
       if(!plain(input.tracks)||Object.keys(input.tracks).some(id=>!trackIds.includes(id)))throw new Error('Invalid tracks');
       for(const course of trackIds){
         if(input.tracks[course]===undefined)continue;
-        const t=input.tracks[course],qvalid=id=>typeof id==='string'&&new RegExp('^'+course+'-0[1-6]-q[1-5]$').test(id);
+        const t=input.tracks[course],qvalid=id=>typeof id==='string'&&new RegExp('^'+course+'-(0[1-9]|1[0-3])-q[1-5]$').test(id);
         if(!plain(t)||!Array.isArray(t.completed)||t.completed.some(id=>!trackLessons.has(id))||!Array.isArray(t.terminal)||t.terminal.some(id=>!trackLessons.has(id))||!plain(t.notes)||!plain(t.quiz)||(t.lastLesson!==null&&!trackLessons.has(t.lastLesson))||!Array.isArray(t.history)||t.history.length>10)throw new Error('Invalid track records');
         const record=blankTrack();record.completed=[...new Set(t.completed)];record.terminal=[...new Set(t.terminal)];record.lastLesson=t.lastLesson;
         for(const [id,value] of Object.entries(t.notes)){if(!trackLessons.has(id)||typeof value!=='string'||value.length>10000)throw new Error('Invalid track note');record.notes[id]=value}
         for(const [id,value] of Object.entries(t.quiz)){if(!qvalid(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid track answer');record.quiz[id]=value}
         function attempt(run,finished){
-          if(!plain(run)||!['mid','final'].includes(run.kind)||typeof run.id!=='string'||!/^[a-z0-9]+-[a-z0-9]+$/.test(run.id)||run.id.length>80||!Number.isInteger(run.seed)||run.seed<0||run.seed>4294967295||!Array.isArray(run.questionIds)||run.questionIds.length!==(run.kind==='mid'?15:30)||new Set(run.questionIds).size!==run.questionIds.length||run.questionIds.some(id=>!qvalid(id)||(run.kind==='mid'&&Number(id.slice(course.length+1,course.length+3))>3)))throw new Error('Invalid track exam');
-          if(!Number.isSafeInteger(run.startedAt)||run.startedAt<0||run.deadline!==run.startedAt+(run.kind==='mid'?20:40)*60000||!plain(run.answers)||(finished?(!Number.isSafeInteger(run.submittedAt)||run.submittedAt<run.startedAt):run.submittedAt!==null))throw new Error('Invalid track exam time');
+          const config=plain(run)&&Object.hasOwn(window.IMTrackConfig.controls,run.kind)?window.IMTrackConfig.controls[run.kind]:null;
+          if(!config||typeof run.id!=='string'||!/^[a-z0-9]+-[a-z0-9]+$/.test(run.id)||run.id.length>80||!Number.isInteger(run.seed)||run.seed<0||run.seed>4294967295||!Array.isArray(run.questionIds)||run.questionIds.length!==config.count||new Set(run.questionIds).size!==run.questionIds.length||run.questionIds.some(id=>!qvalid(id)||!config.weeks.includes(Number(id.slice(course.length+1,course.length+3)))))throw new Error('Invalid track exam');
+          if(!Number.isSafeInteger(run.startedAt)||run.startedAt<0||run.deadline!==run.startedAt+config.minutes*60000||!plain(run.answers)||(finished?(!Number.isSafeInteger(run.submittedAt)||run.submittedAt<run.startedAt):run.submittedAt!==null))throw new Error('Invalid track exam time');
           const answers={};for(const [id,value] of Object.entries(run.answers)){if(!run.questionIds.includes(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid track exam answer');answers[id]=value}
           return {id:run.id,kind:run.kind,seed:run.seed,startedAt:run.startedAt,deadline:run.deadline,submittedAt:run.submittedAt,questionIds:[...run.questionIds],answers};
         }
