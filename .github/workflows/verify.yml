@@ -38,6 +38,7 @@ jobs:
       - run: python tests/verify_tracks.py
       - run: python tests/verify_java.py
       - run: node tests/java_core_check.js
+      - run: node tests/track_core_check.js
       - run: python tests/verify_course.py
       - run: python tests/verify_locales.py
       - name: Verify browser interactions

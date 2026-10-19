@@ -8,7 +8,7 @@ seen=set()
 with tempfile.TemporaryDirectory() as temporary:
     work=Path(temporary)
     for track in tracks:
-        assert len(track['lessons'])==6
+        assert len(track['lessons'])==13
         for lesson in track['lessons']:
             for lang in ['ru','kk']:
                 t=lesson[lang]
@@ -42,5 +42,5 @@ with tempfile.TemporaryDirectory() as temporary:
                 assert 'Функция' in lesson['code'] or 'Процедура' in lesson['code']
                 assert len(lesson['ru']['context'])>70
             print('PASS',track['id'],lesson['id'],flush=True)
-assert len(seen)==120
-print('PASS 24 bilingual modules, 120 questions and compatible example runtimes; 1C not executed')
+assert len(seen)==260
+print('PASS 52 bilingual weeks, 260 questions and compatible example runtimes; 1C not executed')
