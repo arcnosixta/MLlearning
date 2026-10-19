@@ -6,7 +6,10 @@
   const javaIds=new Set(Array.from({length:14},(_,i)=>String(i+1).padStart(2,'0')));
   const questionId=id=>typeof id==='string'&&/^j(0[1-9]|1[0-4])-[ct][1-3]$/.test(id);
   const blankJava=()=>({completed:[],notes:{},quiz:{},terminal:[],lastWeek:null,active:null,history:[]});
-  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava()});
+  const trackIds=['go','onec','java-advanced','sysadmin'];
+  const trackLessons=new Set(['01','02','03','04','05','06']);
+  const blankTrack=()=>({completed:[],notes:{},quiz:{},terminal:[],lastLesson:null,active:null,history:[]});
+  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()]))});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   const controls={regression:{weight:[-0.5,3],bias:[-3,7]},scaling:{'scale-mode':['raw','standard','minmax'],multiplier:[1,100]},knn:{k:[1,11],'query-x':[0,10],'query-y':[0,10]}};
   function validateRun(run,finished){
@@ -55,6 +58,24 @@
       out.java.active=j.active===null?null:validateRun(j.active,false);out.java.history=j.history.map(run=>validateRun(run,true));
       if(new Set(out.java.history.map(r=>r.id)).size!==out.java.history.length)throw new Error('Duplicate attempt');
     }
+    if(input.tracks!==undefined){
+      if(!plain(input.tracks)||Object.keys(input.tracks).some(id=>!trackIds.includes(id)))throw new Error('Invalid tracks');
+      for(const course of trackIds){
+        if(input.tracks[course]===undefined)continue;
+        const t=input.tracks[course],qvalid=id=>typeof id==='string'&&new RegExp('^'+course+'-0[1-6]-q[1-5]$').test(id);
+        if(!plain(t)||!Array.isArray(t.completed)||t.completed.some(id=>!trackLessons.has(id))||!Array.isArray(t.terminal)||t.terminal.some(id=>!trackLessons.has(id))||!plain(t.notes)||!plain(t.quiz)||(t.lastLesson!==null&&!trackLessons.has(t.lastLesson))||!Array.isArray(t.history)||t.history.length>10)throw new Error('Invalid track records');
+        const record=blankTrack();record.completed=[...new Set(t.completed)];record.terminal=[...new Set(t.terminal)];record.lastLesson=t.lastLesson;
+        for(const [id,value] of Object.entries(t.notes)){if(!trackLessons.has(id)||typeof value!=='string'||value.length>10000)throw new Error('Invalid track note');record.notes[id]=value}
+        for(const [id,value] of Object.entries(t.quiz)){if(!qvalid(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid track answer');record.quiz[id]=value}
+        function attempt(run,finished){
+          if(!plain(run)||!['mid','final'].includes(run.kind)||typeof run.id!=='string'||!/^[a-z0-9]+-[a-z0-9]+$/.test(run.id)||run.id.length>80||!Number.isInteger(run.seed)||run.seed<0||run.seed>4294967295||!Array.isArray(run.questionIds)||run.questionIds.length!==(run.kind==='mid'?15:30)||new Set(run.questionIds).size!==run.questionIds.length||run.questionIds.some(id=>!qvalid(id)||(run.kind==='mid'&&Number(id.slice(course.length+1,course.length+3))>3)))throw new Error('Invalid track exam');
+          if(!Number.isSafeInteger(run.startedAt)||run.startedAt<0||run.deadline!==run.startedAt+(run.kind==='mid'?20:40)*60000||!plain(run.answers)||(finished?(!Number.isSafeInteger(run.submittedAt)||run.submittedAt<run.startedAt):run.submittedAt!==null))throw new Error('Invalid track exam time');
+          const answers={};for(const [id,value] of Object.entries(run.answers)){if(!run.questionIds.includes(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid track exam answer');answers[id]=value}
+          return {id:run.id,kind:run.kind,seed:run.seed,startedAt:run.startedAt,deadline:run.deadline,submittedAt:run.submittedAt,questionIds:[...run.questionIds],answers};
+        }
+        record.active=t.active===null?null:attempt(t.active,false);record.history=t.history.map(run=>attempt(run,true));if(new Set(record.history.map(r=>r.id)).size!==record.history.length)throw new Error('Duplicate track attempt');out.tracks[course]=record;
+      }
+    }
     return out;
   }
   let state=blank(),persistent=true;
@@ -80,6 +101,7 @@
     fileAnswer:(id,value)=>update({files:{...state.files,answers:{...state.files.answers,[id]:value}}}),
     fileComplete:id=>update({files:{...state.files,completed:[...new Set([...state.files.completed,id])]}}),
     javaUpdate:patch=>update({java:{...state.java,...patch}}),
+    trackUpdate:(course,patch)=>{if(!trackIds.includes(course))throw new Error('Unknown track');return update({tracks:{...state.tracks,[course]:{...state.tracks[course],...patch}}})},
     export:()=>JSON.stringify(state,null,2),
     import:text=>save(validate(JSON.parse(text))),
     resetProgress:()=>update({completed:[]}),
