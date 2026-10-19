@@ -1,0 +1,188 @@
+{
+  "id": "01",
+  "week": 1,
+  "course": "java-advanced",
+  "code": "import java.util.*;\npublic class Main {\n    static double sum(List<? extends Number> values) {\n        double total=0; for(Number n:values) total+=n.doubleValue(); return total;\n    }\n    static void addIds(List<? super Integer> values) { values.add(7); }\n    public static void main(String[] args) {\n        List<Number> target=new ArrayList<>(); addIds(target);\n        System.out.println(sum(List.of(2,3,4)));\n        System.out.println(target);\n    }\n}\n",
+  "output": "9.0\n[7]",
+  "source": "https://dev.java/learn/generics/",
+  "ru": {
+    "title": "Generics и границы wildcard",
+    "intro": "Перейди от Box<T> к типобезопасным API коллекций.",
+    "sections": [
+      {
+        "title": "Инвариантность",
+        "text": "List<Integer> не является List<Number>: иначе через вторую ссылку можно было бы добавить Double в список Integer. Стирание типов означает, что параметры generics в основном проверяет компилятор. Не обходи проверку raw-типами и unchecked-приведениями без документированной причины."
+      },
+      {
+        "title": "Producer extends, consumer super",
+        "text": "? extends Number позволяет читать элементы как Number, но не добавлять произвольные Number. ? super Integer позволяет добавлять Integer, но безопасно читать только Object. PECS помогает проектировать параметры метода; wildcard не нужен везде автоматически."
+      },
+      {
+        "title": "Обобщённые методы",
+        "text": "Параметр типа метода объявляют перед возвращаемым типом: static <T> T first(List<T> values). Ограничение T extends Comparable<? super T> позволяет сравнивать совместимые типы. Отдельно определи контракт пустого списка: исключение или Optional."
+      }
+    ],
+    "context": "Самостоятельный Main.java. Требуется JDK 17+.",
+    "task": "Напиши copy(List<? extends T> source, List<? super T> target). Покажи копирование Integer в Number и объясни, какие обратные вызовы не компилируются.",
+    "criteria": [
+      "Нет raw-типов.",
+      "Producer читается, consumer принимает значения.",
+      "Пустой вход обработан."
+    ]
+  },
+  "kk": {
+    "title": "Generics және wildcard шекаралары",
+    "intro": "Box<T>-ден тип қауіпсіз коллекция API-іне өт.",
+    "sections": [
+      {
+        "title": "Инварианттылық",
+        "text": "List<Integer> List<Number> емес: әйтпесе Integer тізіміне Double қосуға болар еді. Тип өшіруде generics параметрін негізінен компилятор тексереді. Raw тип пен unchecked түрлендіру арқылы тексеруді себепсіз айналып өтпе."
+      },
+      {
+        "title": "Producer extends, consumer super",
+        "text": "? extends Number элементті Number ретінде оқытады, бірақ кез келген Number қоспайды. ? super Integer Integer қосады, қауіпсіз оқу тек Object. PECS әдіс параметрін жобалауға көмектеседі, wildcard әр жерде міндетті емес."
+      },
+      {
+        "title": "Жалпыланған әдістер",
+        "text": "Әдіс тип параметрі қайтару типінен бұрын жазылады: static <T> T first(List<T> values). T extends Comparable<? super T> үйлесімді типті салыстыруға береді. Бос тізімге ерекшелік не Optional келісімін анықта."
+      }
+    ],
+    "context": "Дербес Main.java. JDK 17+ керек.",
+    "task": "copy(List<? extends T> source, List<? super T> target) жаз. Integer-ден Number-ге көшіруді көрсет және кері шақыру неге компиляцияланбайтынын түсіндір.",
+    "criteria": [
+      "Raw тип жоқ.",
+      "Producer оқылады, consumer мән қабылдайды.",
+      "Бос кіріс өңделген."
+    ]
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Как записать wildcard производителя Number?",
+      "hint": "PECS: producer extends."
+    },
+    "kk": {
+      "prompt": "Number өндірушісінің wildcard-ын жаз.",
+      "hint": "PECS: producer extends."
+    },
+    "answers": [
+      "? extends Number"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "List<Integer> — подтип List<Number>?",
+        "options": [
+          "Нет",
+          "Да",
+          "Только после cast"
+        ],
+        "explanation": "Generics инвариантны."
+      },
+      "kk": {
+        "question": "List<Integer> List<Number> туындысы ма?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "Тек cast кейін"
+        ],
+        "explanation": "Generics инвариантты."
+      },
+      "answer": 0,
+      "id": "java-advanced-01-q1",
+      "week": 1
+    },
+    {
+      "ru": {
+        "question": "Из List<? extends Number> безопасно читать как…",
+        "options": [
+          "Number",
+          "Integer всегда",
+          "String"
+        ],
+        "explanation": "Конкретный числовой подтип неизвестен."
+      },
+      "kk": {
+        "question": "List<? extends Number> ішінен қауіпсіз оқу…",
+        "options": [
+          "Number",
+          "Әрқашан Integer",
+          "String"
+        ],
+        "explanation": "Нақты сандық туынды белгісіз."
+      },
+      "answer": 0,
+      "id": "java-advanced-01-q2",
+      "week": 1
+    },
+    {
+      "ru": {
+        "question": "Куда можно добавить Integer?",
+        "options": [
+          "List<? super Integer>",
+          "List<? extends Integer>",
+          "List<?> всегда"
+        ],
+        "explanation": "Consumer super принимает Integer."
+      },
+      "kk": {
+        "question": "Integer қайда қосуға болады?",
+        "options": [
+          "List<? super Integer>",
+          "List<? extends Integer>",
+          "List<?> әрқашан"
+        ],
+        "explanation": "Consumer super Integer қабылдайды."
+      },
+      "answer": 0,
+      "id": "java-advanced-01-q3",
+      "week": 1
+    },
+    {
+      "ru": {
+        "question": "Где объявляют <T> у generic-метода?",
+        "options": [
+          "Перед возвращаемым типом",
+          "После тела",
+          "Только в import"
+        ],
+        "explanation": "Это параметр метода."
+      },
+      "kk": {
+        "question": "Generic әдісте <T> қайда?",
+        "options": [
+          "Қайтару типінен бұрын",
+          "Денеден кейін",
+          "Тек import ішінде"
+        ],
+        "explanation": "Бұл әдіс параметрі."
+      },
+      "answer": 0,
+      "id": "java-advanced-01-q4",
+      "week": 1
+    },
+    {
+      "ru": {
+        "question": "Что даёт стирание типов?",
+        "options": [
+          "Параметры generics в основном проверяются компилятором",
+          "Все типы исчезают из JVM",
+          "Примитивы становятся Object"
+        ],
+        "explanation": "Это не отменяет обычные runtime-типы объектов."
+      },
+      "kk": {
+        "question": "Тип өшіру нені білдіреді?",
+        "options": [
+          "Generics негізінен компилятормен тексеріледі",
+          "JVM-де барлық тип жоғалады",
+          "Примитив Object болады"
+        ],
+        "explanation": "Бұл кәдімгі runtime объект типін жоймайды."
+      },
+      "answer": 0,
+      "id": "java-advanced-01-q5",
+      "week": 1
+    }
+  ]
+}
