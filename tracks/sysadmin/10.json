@@ -2,7 +2,7 @@
   "id": "10",
   "week": 10,
   "course": "sysadmin",
-  "code": "#!/usr/bin/env bash\nset -eu\nprintf '%s\n' 200 500 200 503 | awk '{n++; if($1>=500)e++} END {printf \"errors=%d total=%d\n\",e,n}'\n",
+  "code": "#!/usr/bin/env bash\nset -eu\nprintf '%s\n' 200 500 200 503 | awk '{n++; if($1>=500)e++} END {printf \"errors=%d total=%d\\n\",e,n}'\n",
   "output": "errors=2 total=4",
   "source": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html",
   "ru": {
