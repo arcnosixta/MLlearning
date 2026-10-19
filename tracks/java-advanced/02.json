@@ -1,0 +1,189 @@
+{
+  "id": "02",
+  "week": 2,
+  "course": "java-advanced",
+  "code": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        List<String> original=new ArrayList<>(List.of(\"A\"));\n        List<String> view=Collections.unmodifiableList(original);\n        List<String> snapshot=List.copyOf(original);\n        original.add(\"B\");\n        System.out.println(view); System.out.println(snapshot);\n    }\n}\n",
+  "output": "[A, B]\n[A]",
+  "source": "https://dev.java/learn/api/collections-and-streams/collections-framework/",
+  "ru": {
+    "title": "Контракты коллекций и неизменяемость",
+    "intro": "Разберись в hashCode, порядке и разнице между обёрткой и копией.",
+    "sections": [
+      {
+        "title": "equals/hashCode как договор",
+        "text": "Равные объекты обязаны иметь равные hashCode; обратное не обязательно. Поля, определяющие хеш ключа, не должны меняться, пока ключ хранится в HashMap. Для immutable-идентификаторов record удобен, но вложенные изменяемые объекты не становятся неизменяемыми автоматически."
+      },
+      {
+        "title": "Копия и представление",
+        "text": "Collections.unmodifiableList — неизменяемое представление: изменения исходного списка видны через обёртку. List.copyOf создаёт снимок списка, но не глубокую копию элементов. Защищай вход и выход API от непреднамеренной мутации."
+      },
+      {
+        "title": "Порядок и сложность",
+        "text": "HashMap не обещает порядок; TreeMap упорядочивает по ключу; LinkedHashMap сохраняет порядок вставки при обычной конфигурации. Сложность доступа зависит от структуры и операции. Не используй сравнение через вычитание при риске переполнения: Integer.compare надёжнее."
+      }
+    ],
+    "context": "Самостоятельный Main.java; никаких внешних зависимостей.",
+    "task": "Создай immutable StudentId и Map<StudentId, String>. Покажи поиск равным новым ключом. Затем сравни unmodifiableList и copyOf на изменении исходного списка.",
+    "criteria": [
+      "Контракт equals/hashCode согласован.",
+      "Ключ не меняется.",
+      "Обёртка отличена от снимка."
+    ]
+  },
+  "kk": {
+    "title": "Коллекция келісімдері және өзгермейтіндік",
+    "intro": "hashCode, рет және орауыш пен көшірме айырмасын түсін.",
+    "sections": [
+      {
+        "title": "equals/hashCode келісімі",
+        "text": "Тең объектілердің hashCode-ы тең, кері тұжырым міндетті емес. HashMap кілтінің хешін анықтайтын өрістер ішінде тұрғанда өзгермесін. Immutable id-ге record ыңғайлы, бірақ ішкі өзгермелі объект автоматты өзгермейді."
+      },
+      {
+        "title": "Көшірме және көрініс",
+        "text": "Collections.unmodifiableList — өзгермейтін көрініс: бастапқы тізім өзгерісі орауышта көрінеді. List.copyOf тізім көшірмесін жасайды, бірақ элементті терең көшірмейді. API кірісі мен шығысын күтпеген өзгертуден қорға."
+      },
+      {
+        "title": "Рет және күрделілік",
+        "text": "HashMap ретті кепілдемейді, TreeMap кілтпен сұрыптайды, кәдімгі LinkedHashMap енгізу ретін сақтайды. Қатынау күрделілігі құрылым мен амалға тәуелді. Толып кету қаупінде азайту емес, Integer.compare қолдан."
+      }
+    ],
+    "context": "Дербес Main.java; сыртқы тәуелділік жоқ.",
+    "task": "Immutable StudentId және Map<StudentId, String> жаса. Тең жаңа кілтпен іздеуді көрсет. Бастапқы тізім өзгергенде unmodifiableList пен copyOf салыстыр.",
+    "criteria": [
+      "equals/hashCode келісімді.",
+      "Кілт өзгермейді.",
+      "Орауыш пен көшірме ажыратылған."
+    ]
+  },
+  "terminal": {
+    "ru": {
+      "prompt": "Какой метод List создаёт неизменяемый снимок коллекции?",
+      "hint": "Это не Collections.unmodifiableList."
+    },
+    "kk": {
+      "prompt": "List қай әдіспен өзгермейтін көшірме жасайды?",
+      "hint": "Бұл Collections.unmodifiableList емес."
+    },
+    "answers": [
+      "List.copyOf",
+      "List.copyOf()"
+    ]
+  },
+  "questions": [
+    {
+      "ru": {
+        "question": "Равные hashCode всегда означают equals?",
+        "options": [
+          "Нет",
+          "Да",
+          "Только у Map"
+        ],
+        "explanation": "Коллизии допустимы."
+      },
+      "kk": {
+        "question": "Тең hashCode әрқашан equals пе?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "Тек Map ішінде"
+        ],
+        "explanation": "Коллизияға рұқсат."
+      },
+      "answer": 0,
+      "id": "java-advanced-02-q1",
+      "week": 2
+    },
+    {
+      "ru": {
+        "question": "Что видит unmodifiableList после изменения источника?",
+        "options": [
+          "Изменение источника",
+          "Всегда старые данные",
+          "Пустой список"
+        ],
+        "explanation": "Это представление, не снимок."
+      },
+      "kk": {
+        "question": "Көз өзгергенде unmodifiableList не көреді?",
+        "options": [
+          "Көз өзгерісін",
+          "Әрқашан ескі деректі",
+          "Бос тізімді"
+        ],
+        "explanation": "Бұл көрініс, көшірме емес."
+      },
+      "answer": 0,
+      "id": "java-advanced-02-q2",
+      "week": 2
+    },
+    {
+      "ru": {
+        "question": "List.copyOf делает глубокую копию объектов?",
+        "options": [
+          "Нет",
+          "Да",
+          "Только record"
+        ],
+        "explanation": "Элементы могут оставаться общими."
+      },
+      "kk": {
+        "question": "List.copyOf объектіні терең көшіре ме?",
+        "options": [
+          "Жоқ",
+          "Иә",
+          "Тек record"
+        ],
+        "explanation": "Элементтер ортақ қалуы мүмкін."
+      },
+      "answer": 0,
+      "id": "java-advanced-02-q3",
+      "week": 2
+    },
+    {
+      "ru": {
+        "question": "Кто сортирует по ключу?",
+        "options": [
+          "TreeMap",
+          "HashMap",
+          "ArrayList"
+        ],
+        "explanation": "TreeMap использует порядок ключей."
+      },
+      "kk": {
+        "question": "Кілт бойынша кім сұрыптайды?",
+        "options": [
+          "TreeMap",
+          "HashMap",
+          "ArrayList"
+        ],
+        "explanation": "TreeMap кілт ретін қолданады."
+      },
+      "answer": 0,
+      "id": "java-advanced-02-q4",
+      "week": 2
+    },
+    {
+      "ru": {
+        "question": "Можно ли менять хеш-значимые поля ключа в Map?",
+        "options": [
+          "Не следует",
+          "Всегда нужно",
+          "Это ускоряет поиск"
+        ],
+        "explanation": "Поиск может потерять ключ в ожидаемой корзине."
+      },
+      "kk": {
+        "question": "Map ішінде кілттің хеш өрісін өзгерткен дұрыс па?",
+        "options": [
+          "Болмайды",
+          "Әрқашан керек",
+          "Іздеуді жылдамдатады"
+        ],
+        "explanation": "Іздеу кілтті күтілетін bucket-тен таппауы мүмкін."
+      },
+      "answer": 0,
+      "id": "java-advanced-02-q5",
+      "week": 2
+    }
+  ]
+}
