@@ -71,4 +71,6 @@ for path in sorted((ROOT/'teaching/content').glob('*.json')):
 teaching.sort(key=lambda x:(x['path'],x['id']!='start',x['id']))
 (OUT/'teaching.json').write_text(json.dumps(teaching,ensure_ascii=False),encoding='utf-8')
 shutil.copy2(ROOT/'teaching/styles.css',OUT/'teaching.css')
+if (ROOT/'teaching/examples').exists():
+    shutil.copytree(ROOT/'teaching/examples',OUT/'teaching-examples',dirs_exist_ok=True)
 print(f'Built {len(teaching)} bilingual teaching guides')
