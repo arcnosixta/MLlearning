@@ -9,7 +9,7 @@
   const trackIds=['go','onec','java-advanced','sysadmin'];
   const trackLessons=new Set(window.IMTrackConfig.lessonIds);
   const blankTrack=()=>({completed:[],notes:{},quiz:{},terminal:[],lastLesson:null,active:null,history:[]});
-  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()]))});
+  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()])),learning:{completed:[],practice:{}}});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   const controls={regression:{weight:[-0.5,3],bias:[-3,7]},scaling:{'scale-mode':['raw','standard','minmax'],multiplier:[1,100]},knn:{k:[1,11],'query-x':[0,10],'query-y':[0,10]}};
   function validateRun(run,finished){
@@ -77,6 +77,13 @@
         record.active=t.active===null?null:attempt(t.active,false);record.history=t.history.map(run=>attempt(run,true));if(new Set(record.history.map(r=>r.id)).size!==record.history.length)throw new Error('Duplicate track attempt');out.tracks[course]=record;
       }
     }
+    if(input.learning!==undefined){
+      const l=input.learning,limits={ml:24,files:7,java:14,go:13,onec:13,'java-advanced':13,sysadmin:13};
+      const keyValid=key=>{if(typeof key!=='string')return false;const [path,id,...rest]=key.split('/');return rest.length===0&&Object.hasOwn(limits,path)&&(id==='start'||(/^\d{2}$/.test(id)&&Number(id)>=1&&Number(id)<=limits[path]))};
+      if(!plain(l)||!Array.isArray(l.completed)||l.completed.some(k=>!keyValid(k))||!plain(l.practice))throw new Error('Invalid teaching records');
+      out.learning.completed=[...new Set(l.completed)];
+      for(const [key,value] of Object.entries(l.practice)){const parts=key.split('/'),number=parts.pop();if(!['1','2'].includes(number)||!keyValid(parts.join('/'))||typeof value!=='string'||value.length>10000)throw new Error('Invalid practice record');out.learning.practice[key]=value}
+    }
     return out;
   }
   let state=blank(),persistent=true;
@@ -103,6 +110,7 @@
     fileComplete:id=>update({files:{...state.files,completed:[...new Set([...state.files.completed,id])]}}),
     javaUpdate:patch=>update({java:{...state.java,...patch}}),
     trackUpdate:(course,patch)=>{if(!trackIds.includes(course))throw new Error('Unknown track');return update({tracks:{...state.tracks,[course]:{...state.tracks[course],...patch}}})},
+    learningUpdate:patch=>update({learning:{...state.learning,...patch}}),
     export:()=>JSON.stringify(state,null,2),
     import:text=>save(validate(JSON.parse(text))),
     resetProgress:()=>update({completed:[]}),

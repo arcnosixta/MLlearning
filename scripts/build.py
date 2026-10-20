@@ -11,7 +11,7 @@ for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'app.js', 
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
-app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','app.js','data-view.js','files-view.js','java/java-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js'])
+app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','teaching/view.js','app.js','data-view.js','files-view.js','java/java-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js'])
 (OUT/'app.js').write_text(app_source,encoding='utf-8')
 lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
 (OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
@@ -65,3 +65,10 @@ for track in tracks:
     shutil.copytree(ROOT/'tracks'/track['id']/'examples',OUT/'track-examples'/track['id'],dirs_exist_ok=True)
 (OUT/'tracks.json').write_text(json.dumps(tracks,ensure_ascii=False),encoding='utf-8')
 print('Built 4 tracks, 52 weeks and 260 questions; RK 30/30, session 60')
+teaching=[]
+for path in sorted((ROOT/'teaching/content').glob('*.json')):
+    teaching.extend(json.loads(path.read_text(encoding='utf-8')))
+teaching.sort(key=lambda x:(x['path'],x['id']!='start',x['id']))
+(OUT/'teaching.json').write_text(json.dumps(teaching,ensure_ascii=False),encoding='utf-8')
+shutil.copy2(ROOT/'teaching/styles.css',OUT/'teaching.css')
+print(f'Built {len(teaching)} bilingual teaching guides')
