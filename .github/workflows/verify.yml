@@ -36,6 +36,7 @@ jobs:
       - run: python courses/verify.py
       - run: python tests/verify_file_path.py
       - run: python tests/verify_tracks.py
+      - run: python tests/verify_teaching.py
       - run: python tests/verify_java.py
       - run: node tests/java_core_check.js
       - run: node tests/track_core_check.js
@@ -53,6 +54,7 @@ jobs:
           python tests/browser_file_path.py
           python tests/browser_java.py
           python tests/browser_tracks.py
+          python tests/browser_teaching.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
