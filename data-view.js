@@ -16,5 +16,5 @@ function renderData(){
       const saved=window.MLStore.import(text);completed=new Set(window.MLStore.get().completed);renderData();document.querySelector('#data-status').textContent=saved?'Данные восстановлены':'Хранилище недоступно: данные останутся только до закрытия страницы.';
     }catch{status.textContent='Файл не подходит: данные не изменены. Выбери резервную копию IMlearning.'}finally{event.target.value=''}
   };
-  document.querySelector('#clear-data').onclick=()=>{if(confirm('Удалить прогресс, ответы, заметки и настройки с этого устройства?')){const saved=window.MLStore.clear();completed.clear();renderData();document.querySelector('#data-status').textContent=saved?'Локальные данные удалены':'Не удалось очистить хранилище браузера.'}};
+  document.querySelector('#clear-data').onclick=()=>{if(confirm('Удалить прогресс, ответы, заметки и настройки с этого устройства?')){try{localStorage.removeItem('imlearning-last-route')}catch{}const saved=window.MLStore.clear();completed.clear();renderData();document.querySelector('#data-status').textContent=saved?'Локальные данные удалены':'Не удалось очистить хранилище браузера.'}};
 }
