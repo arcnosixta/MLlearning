@@ -17,7 +17,7 @@ with sync_playwright() as p:
     for lang in ['ru', 'kk']:
         def visit(route=''):
             page.goto(URL + '/?lang=' + lang + route)
-            page.locator('header nav a[href="#progress"]').wait_for()
+            page.locator('body[data-studio-page]').wait_for()
 
         visit()
         assert page.locator('.library-card').count() == 6
@@ -59,6 +59,15 @@ with sync_playwright() as p:
         assert page.locator('.studio-reading-tools nav a').count() > 3
         page.locator('.studio-reading-tools>.button').click()
         expect(page.locator('#teaching-answer-0')).to_be_focused()
+        expect(page.locator('.studio-practice-drawer')).to_be_visible()
+        page.locator('#teaching-answer-0').fill('My first solution')
+        page.keyboard.press('Escape')
+        expect(page.locator('.studio-practice-drawer')).to_have_count(0)
+        expect(page.locator('.studio-reading-tools>.button')).to_be_focused()
+        page.locator('.studio-reading-tools>.button').click()
+        expect(page.locator('#teaching-answer-0')).to_have_value('My first solution')
+        page.locator('.studio-drawer-head button').click()
+        expect(page.locator('.teaching-page>.teaching-guide #teaching-answer-0')).to_have_count(1)
         visit('#prepare')
         expect(page.locator('.studio-control-links>a')).to_have_count(15)
         page.locator('.studio-control-links a[href="#exam/rk1"]').click()
