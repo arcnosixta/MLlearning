@@ -67,6 +67,8 @@ with sync_playwright() as p:
         for width in [320, 390, 768, 1440]:
             page.set_viewport_size({'width': width, 'height': 900})
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), width
+            if width <= 390:
+                assert abs(page.locator('header .brand').bounding_box()['y'] - page.locator('.language-switch').bounding_box()['y']) < 16
         # Stored preferences and playing state are cleared by the data action.
         page.goto(URL + '/?lang=' + lang + '#data')
         page.locator('#clear-data').wait_for()
