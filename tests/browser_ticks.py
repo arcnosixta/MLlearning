@@ -44,8 +44,14 @@ with sync_playwright() as p:
         assert page.evaluate('window.tickHasSignal')
         assert .02 < page.evaluate('window.tickDuration') < .04
         assert page.evaluate("document.querySelector('#studio-audio').paused")
+        # Keep the whole card visible so scrolling doesn't hover unrelated controls.
+        page.locator('.library-card').first.evaluate("""async card => {
+          card.scrollIntoView({block:'center',behavior:'instant'});
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          await Promise.all(card.getAnimations({subtree:true}).map(a => a.finished.catch(() => {})));
+        }""")
         count = hover('.library-card h3')
-        assert hover('.library-card .course-symbol') == count
+        assert hover('.library-card .course-symbol') == count, lang
         assert hover('.library-card .button') == count + 1
         count = page.evaluate('window.tickCount')
         assert hover('.library-card h3') == count  # Returning from a child button.
