@@ -1,3 +1,4 @@
+from browser_ready import goto_ready
 import json
 import os
 import sys
@@ -11,12 +12,12 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':390,'height':844})
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.goto(url+'/?lang=kk#course')
+    goto_ready(page,url+'/?lang=kk#course')
     page.locator('.module-card').first.wait_for()
     assert page.locator('html').get_attribute('lang')=='kk'
     assert page.get_by_role('link',name='Негіздерден бастау',exact=False).count()==1
     for lesson in kk:
-        page.goto(url+'/?lang=kk#lesson/'+lesson['id'])
+        goto_ready(page,url+'/?lang=kk#lesson/'+lesson['id'])
         page.locator('.lesson-body h1').wait_for()
         assert page.locator('.lesson-body h1').inner_text()==lesson['title']
         assert page.locator('.lesson-intro').inner_text()==lesson['intro']
@@ -24,7 +25,7 @@ with sync_playwright() as p:
         assert page.locator('.quiz-result').inner_text().startswith('Дұрыс!')
         assert '/kk/' in page.locator('a[download]').get_attribute('href')
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-    page.goto(url+'/?lang=kk#lab')
+    goto_ready(page,url+'/?lang=kk#lab')
     page.locator('#fit').wait_for()
     for lab in ['scaling','knn','regression']:
         page.locator('[data-lab="'+lab+'"]').click()
@@ -35,7 +36,7 @@ with sync_playwright() as p:
     assert page.locator('#fit').inner_text()=='Найти лучшие w и b'
     page.locator('.language-switch a[lang="kk"]').click()
     page.locator('#fit').wait_for()
-    page.goto(url+'/#course')
+    goto_ready(page,url+'/#course')
     page.locator('.module-card').first.wait_for()
     assert page.locator('html').get_attribute('lang')=='kk'
     assert not errors,errors

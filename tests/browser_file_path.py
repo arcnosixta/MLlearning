@@ -1,3 +1,4 @@
+from browser_ready import goto_ready
 import json
 import os
 import sys
@@ -11,7 +12,7 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':1440,'height':1000})
     errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
     for lang in ['ru','kk']:
-        page.goto(url+'/?lang='+lang+'#course')
+        goto_ready(page,url+'/?lang='+lang+'#course')
         page.locator('.pathway-card').first.wait_for()
         assert page.locator('.pathway-card').count()==2
         page.locator('.pathway-card[href="#files"]').click()
@@ -21,7 +22,7 @@ with sync_playwright() as p:
         assert page.locator('.file-card').count()==1
         page.locator('#file-search').fill('')
         for item in catalog:
-            page.goto(url+'/?lang='+lang+'#files/'+item['id'])
+            goto_ready(page,url+'/?lang='+lang+'#files/'+item['id'])
             page.locator('#file-complete').wait_for()
             assert page.locator('.file-lesson h1').first.inner_text()==item[lang]['title']
             assert page.locator('[data-source-cell]').count()==item['cellCount']
@@ -29,14 +30,14 @@ with sync_playwright() as p:
             page.locator(f'[data-file-answer="{item[lang]["quiz"]["answer"]}"]').click()
             assert page.locator('.quiz-result').inner_text().startswith('Дұрыс!' if lang=='kk' else 'Верно!')
             assert page.locator('a[download]').get_attribute('href')==item['download']
-        page.goto(url+'/?lang='+lang+'#files')
+        goto_ready(page,url+'/?lang='+lang+'#files')
         page.locator('.file-card').first.wait_for()
         page.screenshot(path=str(ROOT/'artifacts'/f'file-path-{lang}.png'),full_page=True)
     # Both pathways may have lesson 01, but their records must be independent.
-    page.goto(url+'/?lang=ru#lesson/01')
+    goto_ready(page,url+'/?lang=ru#lesson/01')
     page.locator('#lesson-note').fill('Main pathway note')
     page.locator('#complete').click()
-    page.goto(url+'/?lang=ru#files/01')
+    goto_ready(page,url+'/?lang=ru#files/01')
     page.locator('#file-note').fill('File pathway note')
     page.locator('#file-complete').click()
     page.reload();page.locator('#file-note').wait_for()
@@ -51,10 +52,10 @@ with sync_playwright() as p:
     assert page.evaluate("()=>{const before=MLStore.export();const bad=JSON.parse(before);bad.files.completed=['99'];try{MLStore.import(JSON.stringify(bad));return false}catch{return MLStore.export()===before}}")
     page.set_viewport_size({'width':390,'height':844})
     for route in ['#files','#files/02','#files/06','#course']:
-        page.goto(url+'/?lang=kk'+route)
+        goto_ready(page,url+'/?lang=kk'+route)
         page.locator('.file-card' if route=='#files' else '#file-complete' if route.startswith('#files/') else '.pathway-card').first.wait_for()
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),route
-    page.goto(url+'/?lang=kk#files/06');page.locator('#file-complete').wait_for()
+    goto_ready(page,url+'/?lang=kk#files/06');page.locator('#file-complete').wait_for()
     page.locator('.saved-output').first.locator('summary').click()
     assert page.locator('.notebook img').count()>0
     page.screenshot(path=str(ROOT/'artifacts/file-lesson-mobile.png'),full_page=True)

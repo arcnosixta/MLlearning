@@ -1,3 +1,4 @@
+from browser_ready import goto_ready
 """Validate redesigned learning flows, real progress and accessible motion."""
 import os
 import sys
@@ -16,7 +17,7 @@ with sync_playwright() as p:
     page.on('dialog', lambda d: d.accept())
     for lang in ['ru', 'kk']:
         def visit(route=''):
-            page.goto(URL + '/?lang=' + lang + route)
+            goto_ready(page,URL + '/?lang=' + lang + route)
             page.locator('body[data-studio-page]').wait_for()
 
         visit()

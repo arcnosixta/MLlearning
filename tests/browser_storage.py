@@ -1,3 +1,4 @@
+from browser_ready import goto_ready
 """Exercise persistence, legacy migration, backups, rejection and storage failure."""
 import json
 import os
@@ -13,13 +14,13 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     errors=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
     page.on('dialog',lambda dialog:dialog.accept())
-    page.goto(url+'/#course')
+    goto_ready(page,url+'/#course')
     page.locator('.module-card').first.wait_for()
     page.evaluate("localStorage.clear(); localStorage.setItem('mllearning-progress','[\"01\"]')")
     page.reload()
     page.locator('.module-card').first.wait_for()
     assert page.evaluate('MLStore.get().completed')==['01']
-    page.goto(url+'/#lesson/09')
+    goto_ready(page,url+'/#lesson/09')
     page.locator('#lesson-note').fill('Менің жазбам <script>alert(1)</script> — личная заметка')
     page.locator('[data-answer="0"]').click()
     page.locator('#complete').click()
@@ -28,7 +29,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     assert 'Менің жазбам' in page.locator('#lesson-note').input_value()
     assert page.locator('[data-answer="0"]').get_attribute('class')=='correct'
     assert page.locator('#complete').inner_text().strip()=='Пройдено ✓'
-    page.goto(url+'/#lab')
+    goto_ready(page,url+'/#lab')
     page.locator('#weight').fill('2')
     page.locator('[data-lab="scaling"]').click()
     page.locator('#scale-mode').select_option('standard')
@@ -39,7 +40,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     assert page.locator('#multiplier').input_value()=='30'
     page.locator('[data-lab="regression"]').click()
     assert page.locator('#weight').input_value()=='2'
-    page.goto(url+'/#data')
+    goto_ready(page,url+'/#data')
     page.locator('#export-data').wait_for()
     before=page.evaluate('MLStore.get()')
     with page.expect_download() as pending:page.locator('#export-data').click()
@@ -57,7 +58,7 @@ with sync_playwright() as p, tempfile.TemporaryDirectory() as temporary:
     assert page.evaluate('MLStore.get().notes')==before['notes']
     # Simulate quota/security denial. UI must never claim a note was saved.
     page.evaluate("()=>{Storage.prototype.setItem=function(){throw new DOMException('Quota','QuotaExceededError')}}")
-    page.goto(url+'/#lesson/09')
+    goto_ready(page,url+'/#lesson/09')
     page.locator('#lesson-note').fill('not persisted')
     assert 'Хранилище недоступно' in page.locator('#note-status').inner_text()
     # A fresh context has independent records, even on the same device.

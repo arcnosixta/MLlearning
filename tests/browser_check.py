@@ -1,3 +1,4 @@
+from browser_ready import goto_ready
 """Browser smoke tests. Run against a served dist directory."""
 import sys
 from pathlib import Path
@@ -12,7 +13,7 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':1440,'height':1100}, device_scale_factor=1)
     errors=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
-    page.goto(url+'/#course')
+    goto_ready(page,url+'/#course')
     page.locator('.module-card').first.wait_for()
     assert page.locator('.module-card').count()==6
     page.screenshot(path=str(out/'desktop.png'),full_page=True)
@@ -21,17 +22,17 @@ with sync_playwright() as p:
     page.locator('.module-card').click()
     page.get_by_role('heading',name='PCA: сжимаем пространство признаков',exact=True).wait_for()
     for i in range(1,25):
-        page.goto(f'{url}/#lesson/{i:02d}')
+        goto_ready(page,f'{url}/#lesson/{i:02d}')
         page.locator('.lesson-body h1').wait_for()
         assert page.locator('pre code').inner_text().strip()
         assert page.locator('[data-answer]').count()==3
-    page.goto(f'{url}/#lesson/01')
+    goto_ready(page,f'{url}/#lesson/01')
     page.get_by_role('button',name='Регрессия',exact=True).click()
     assert 'Верно!' in page.locator('.quiz-result').inner_text()
     page.locator('#complete').click()
     page.reload()
     page.get_by_role('button',name='Пройдено ✓',exact=True).wait_for()
-    page.goto(f'{url}/#lab')
+    goto_ready(page,f'{url}/#lab')
     page.locator('#mse').wait_for()
     before=float(page.locator('#mse').inner_text().split()[1])
     page.locator('#fit').click()
@@ -47,12 +48,12 @@ with sync_playwright() as p:
     page.screenshot(path=str(out/'lab.png'),full_page=True)
     page.set_viewport_size({'width':390,'height':844})
     for route in ['#course', '#lesson/09', '#lab']:
-        page.goto(url+'/'+route)
+        goto_ready(page,url+'/'+route)
         if route=='#course':page.locator('.module-card').first.wait_for()
         elif 'lesson' in route:page.locator('.lesson-body h1').wait_for()
         else:page.locator('#class-result').wait_for()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), route
-    page.goto(url+'/#course')
+    goto_ready(page,url+'/#course')
     page.locator('.module-card').first.wait_for()
     page.screenshot(path=str(out/'mobile.png'),full_page=True)
     assert not errors,errors
