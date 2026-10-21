@@ -7,17 +7,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'dist'
 OUT.mkdir(exist_ok=True)
-for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'studio.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'track-config.js', 'storage.js']:
+for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'studio.css', 'motion.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'track-config.js', 'storage.js']:
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
-app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','teaching/view.js','app.js','data-view.js','files-view.js','java/java-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js','studio.js'])
+app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','teaching/view.js','app.js','data-view.js','files-view.js','java/java-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js','studio.js','sound.js','motion.js'])
 (OUT/'app.js').write_text(app_source,encoding='utf-8')
 lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
 (OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
 if (ROOT / 'examples').exists():
     shutil.copytree(ROOT / 'examples', OUT / 'examples', dirs_exist_ok=True)
 print(f'Built {len(lessons)} lessons in {OUT}')
+shutil.copytree(ROOT / 'audio', OUT / 'audio', dirs_exist_ok=True)
 
 # Generate localized assets from one application source, with longest-match,
 # single-pass replacements: translated words are never translated a second time.
