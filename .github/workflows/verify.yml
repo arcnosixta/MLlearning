@@ -57,6 +57,7 @@ jobs:
           python tests/browser_teaching.py
           python tests/browser_studio.py
           python tests/browser_motion.py
+          python tests/browser_ticks.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
