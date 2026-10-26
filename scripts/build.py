@@ -11,7 +11,7 @@ for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'studio.cs
     source = ROOT / name
     if source.exists():
         shutil.copy2(source, OUT / name)
-app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','teaching/view.js','app.js','data-view.js','files-view.js','java/java-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js','studio.js','sound.js','motion.js'])
+app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','teaching/view.js','app.js','data-view.js','files-view.js','java/java-view.js','java/full-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js','studio.js','sound.js','motion.js'])
 (OUT/'app.js').write_text(app_source,encoding='utf-8')
 lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
 (OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
@@ -75,3 +75,7 @@ shutil.copy2(ROOT/'teaching/styles.css',OUT/'teaching.css')
 if (ROOT/'teaching/examples').exists():
     shutil.copytree(ROOT/'teaching/examples',OUT/'teaching-examples',dirs_exist_ok=True)
 print(f'Built {len(teaching)} bilingual teaching guides')
+
+from build_java_full import build as build_java_full
+build_java_full()
+shutil.copy2(ROOT/'java/full.css', OUT/'java-full.css')

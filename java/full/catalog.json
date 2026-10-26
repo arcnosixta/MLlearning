@@ -1,0 +1,383 @@
+[
+  {
+    "id": "01",
+    "weeks": [
+      1
+    ],
+    "advanced": [],
+    "requiresRu": "Нет, начни здесь.",
+    "requiresKk": "Жоқ, осы жерден баста.",
+    "references": [
+      "EPAM: глава 1, печатные с. 11–29; JAvaSlide: раздел 1; Жава қаз: слайды 1–8"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "02",
+    "weeks": [
+      1
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01.",
+    "requiresKk": "01 тараулары.",
+    "references": [
+      "EPAM: глава 2, с. 30–48; Задачи: раздел 1"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "03",
+    "weeks": [
+      2,
+      3
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–02.",
+    "requiresKk": "01–02 тараулары.",
+    "references": [
+      "EPAM: глава 2, с. 49–56; Задачи: разделы 2–3"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "04",
+    "weeks": [
+      4
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–03.",
+    "requiresKk": "01–03 тараулары.",
+    "references": [
+      "EPAM: глава 2, с. 57–64; Жава қаз: слайды 33–68; Задачи: раздел 4"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "05",
+    "weeks": [
+      4
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–04.",
+    "requiresKk": "01–04 тараулары.",
+    "references": [
+      "EPAM: глава 3, с. 71–88; глава 4, с. 146–149; Задачи: раздел 5"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "06",
+    "weeks": [
+      5
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–05.",
+    "requiresKk": "01–05 тараулары.",
+    "references": [
+      "EPAM: глава 3, с. 65–120; JAvaSlide: раздел 5"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "07",
+    "weeks": [
+      6,
+      7
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–06.",
+    "requiresKk": "01–06 тараулары.",
+    "references": [
+      "EPAM: глава 4, с. 121–158; Задачи: раздел 11"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "08",
+    "weeks": [
+      7,
+      8
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–07.",
+    "requiresKk": "01–07 тараулары.",
+    "references": [
+      "EPAM: главы 3, 6; JAvaSlide: разделы 7, 11"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "09",
+    "weeks": [
+      5,
+      6,
+      8,
+      11
+    ],
+    "advanced": [
+      13
+    ],
+    "requiresRu": "Главы 01–08.",
+    "requiresKk": "01–08 тараулары.",
+    "references": [
+      "EPAM: главы 4–6; JAvaSlide: разделы 8, 11; Жава қаз: слайды 209–224"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "10",
+    "weeks": [
+      4
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–09.",
+    "requiresKk": "01–09 тараулары.",
+    "references": [
+      "EPAM: глава 8, с. 225–239, 254–263; Жава қаз: слайды 273–304; Задачи: раздел 7"
+    ],
+    "docs": "https://dev.java/learn/strings/"
+  },
+  {
+    "id": "11",
+    "weeks": [
+      12,
+      14
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–10.",
+    "requiresKk": "01–10 тараулары.",
+    "references": [
+      "EPAM: глава 8, с. 240–253; Жава қаз: слайды 305–328; Задачи: раздел 9"
+    ],
+    "docs": "https://dev.java/learn/date-time/"
+  },
+  {
+    "id": "12",
+    "weeks": [
+      9
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–11.",
+    "requiresKk": "01–11 тараулары.",
+    "references": [
+      "EPAM: глава 9, с. 264–289; JAvaSlide: раздел 9"
+    ],
+    "docs": "https://dev.java/learn/exceptions/"
+  },
+  {
+    "id": "13",
+    "weeks": [
+      11
+    ],
+    "advanced": [
+      1
+    ],
+    "requiresRu": "Главы 01–12.",
+    "requiresKk": "01–12 тараулары.",
+    "references": [
+      "EPAM: глава 3, с. 88–95; глава 11, с. 340; Жава қаз: слайды 234–252"
+    ],
+    "docs": "https://dev.java/learn/generics/"
+  },
+  {
+    "id": "14",
+    "weeks": [
+      10
+    ],
+    "advanced": [
+      2,
+      3
+    ],
+    "requiresRu": "Главы 01–13.",
+    "requiresKk": "01–13 тараулары.",
+    "references": [
+      "EPAM: глава 11, с. 320–330, 341–368; Задачи: раздел 6"
+    ],
+    "docs": "https://dev.java/learn/collections/"
+  },
+  {
+    "id": "15",
+    "weeks": [
+      13
+    ],
+    "advanced": [
+      4
+    ],
+    "requiresRu": "Главы 01–14.",
+    "requiresKk": "01–14 тараулары.",
+    "references": [
+      "EPAM: глава 7, с. 198–224"
+    ],
+    "docs": "https://dev.java/learn/lambda-expressions/"
+  },
+  {
+    "id": "16",
+    "weeks": [
+      13
+    ],
+    "advanced": [
+      4,
+      5
+    ],
+    "requiresRu": "Главы 01–15.",
+    "requiresKk": "01–15 тараулары.",
+    "references": [
+      "EPAM: глава 11, с. 331–340"
+    ],
+    "docs": "https://dev.java/learn/the-stream-api/"
+  },
+  {
+    "id": "17",
+    "weeks": [
+      12
+    ],
+    "advanced": [
+      8,
+      9
+    ],
+    "requiresRu": "Главы 01–16.",
+    "requiresKk": "01–16 тараулары.",
+    "references": [
+      "EPAM: глава 10, с. 290–319; JAvaSlide: разделы 10, 13, 14; Задачи: раздел 8"
+    ],
+    "docs": "https://dev.java/learn/java-io/"
+  },
+  {
+    "id": "18",
+    "weeks": [
+      14
+    ],
+    "advanced": [
+      6
+    ],
+    "requiresRu": "Главы 01–17.",
+    "requiresKk": "01–17 тараулары.",
+    "references": [
+      "EPAM: глава 12, с. 369–400"
+    ],
+    "docs": "https://dev.java/learn/concurrency/"
+  },
+  {
+    "id": "19",
+    "weeks": [
+      14
+    ],
+    "advanced": [
+      6,
+      7
+    ],
+    "requiresRu": "Главы 01–18.",
+    "requiresKk": "01–18 тараулары.",
+    "references": [
+      "EPAM: глава 12, с. 401–427"
+    ],
+    "docs": "https://dev.java/learn/concurrency/"
+  },
+  {
+    "id": "20",
+    "weeks": [
+      14
+    ],
+    "advanced": [
+      10
+    ],
+    "requiresRu": "Главы 01–19.",
+    "requiresKk": "01–19 тараулары.",
+    "references": [
+      "EPAM: глава 13, с. 428–460"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "21",
+    "weeks": [
+      14
+    ],
+    "advanced": [
+      11
+    ],
+    "requiresRu": "Главы 01–20.",
+    "requiresKk": "01–20 тараулары.",
+    "references": [
+      "EPAM: глава 14, с. 461–488"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "22",
+    "weeks": [
+      12,
+      14
+    ],
+    "advanced": [
+      12
+    ],
+    "requiresRu": "Главы 01–21.",
+    "requiresKk": "01–21 тараулары.",
+    "references": [
+      "EPAM: глава 15, с. 489–520"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "23",
+    "weeks": [
+      8,
+      14
+    ],
+    "advanced": [
+      13
+    ],
+    "requiresRu": "Главы 01–22.",
+    "requiresKk": "01–22 тараулары.",
+    "references": [
+      "JAvaSlide: раздел 15, шаблоны проектирования"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "24",
+    "weeks": [
+      14
+    ],
+    "advanced": [],
+    "requiresRu": "Главы 01–23.",
+    "requiresKk": "01–23 тараулары.",
+    "references": [
+      "Жава қаз: слайды 329–390, AWT, графика и layout"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "25",
+    "weeks": [
+      14
+    ],
+    "advanced": [
+      13
+    ],
+    "requiresRu": "Главы 01–24.",
+    "requiresKk": "01–24 тараулары.",
+    "references": [
+      "EPAM: приложения Log4j2 (с. 522–539) и TestNG (с. 540–558)"
+    ],
+    "docs": "https://dev.java/learn/"
+  },
+  {
+    "id": "26",
+    "weeks": [
+      3,
+      10,
+      14
+    ],
+    "advanced": [
+      13
+    ],
+    "requiresRu": "Главы 01–25.",
+    "requiresKk": "01–25 тараулары.",
+    "references": [
+      "Задачи: разделы 6 и 10, динамические структуры и автоматы"
+    ],
+    "docs": "https://dev.java/learn/"
+  }
+]

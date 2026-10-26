@@ -78,11 +78,11 @@
       }
     }
     if(input.learning!==undefined){
-      const l=input.learning,limits={ml:24,files:7,java:14,go:13,onec:13,'java-advanced':13,sysadmin:13};
+      const l=input.learning,limits={ml:24,files:7,java:14,'java-full':26,go:13,onec:13,'java-advanced':13,sysadmin:13};
       const keyValid=key=>{if(typeof key!=='string')return false;const [path,id,...rest]=key.split('/');return rest.length===0&&Object.hasOwn(limits,path)&&(id==='start'||(/^\d{2}$/.test(id)&&Number(id)>=1&&Number(id)<=limits[path]))};
       if(!plain(l)||!Array.isArray(l.completed)||l.completed.some(k=>!keyValid(k))||!plain(l.practice))throw new Error('Invalid teaching records');
       out.learning.completed=[...new Set(l.completed)];
-      for(const [key,value] of Object.entries(l.practice)){const parts=key.split('/'),number=parts.pop();if(!['1','2'].includes(number)||!keyValid(parts.join('/'))||typeof value!=='string'||value.length>10000)throw new Error('Invalid practice record');out.learning.practice[key]=value}
+      for(const [key,value] of Object.entries(l.practice)){const parts=key.split('/'),number=parts.pop();if(!(parts[0]==='java-full'?['1','2','3']:['1','2']).includes(number)||!keyValid(parts.join('/'))||typeof value!=='string'||value.length>10000)throw new Error('Invalid practice record');out.learning.practice[key]=value}
     }
     return out;
   }
