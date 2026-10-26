@@ -17,11 +17,42 @@ async function renderJavaFull(id){
   const key='java-full/'+id,text=chapter[lang];
   // HTML is generated and sanitized at build time; user input is assigned through .value.
   const body=text.html.replace(/\{\{answer:([123])\}\}/g,(_,n)=>`<label for="java-full-answer-${n}">${jt('Твоё решение','Сенің шешімің')} ${n}</label><textarea id="java-full-answer-${n}" class="java-note" data-full-answer="${key}/${n}" rows="5" maxlength="10000"></textarea>`);
-  main.innerHTML=`<div class="java-layout java-full"><aside class="java-sidebar"><a href="#java/full">← ${jt('Полная программа','Толық бағдарлама')}</a>${chapters.map(c=>`<a href="#java/topic/${c.id}" ${c.id===id?'class="active" aria-current="page"':''}>${c.id}. ${escapeHTML(c[lang].title)}</a>`).join('')}</aside><article class="java-lesson java-full-article"><a class="course-home-link" href="#java/full">← ${jt('Все главы','Барлық тарау')}</a><h1>${escapeHTML(text.title)}</h1><div class="java-meta"><span>Java 17+</span><span>${jt('Глава','Тарау')} ${id} / ${chapters.length}</span></div><p>${jt('Нужно знать','Алдын ала білу')}: ${escapeHTML(chapter[lang==='ru'?'requiresRu':'requiresKk'])}</p><a class="sources" href="java-full/${id}/Main.java" download>${jt('Скачать пример Main.java','Main.java мысалын жүктеу')} ↗</a><div class="java-full-content">${body}</div><p class="learning-save-status" role="status"></p><h2>${jt('Материалы к главе','Тарау материалдары')}</h2><ul>${chapter.references.map(r=>`<li>${escapeHTML(r)}</li>`).join('')}</ul><p><a class="sources" href="${escapeHTML(chapter.docs)}" target="_blank" rel="noopener">${jt('Документация Java','Java құжаттамасы')} ↗</a></p><div class="lesson-nav">${index?`<a class="button outline" href="#java/topic/${chapters[index-1].id}">← ${jt('Назад','Артқа')}</a>`:'<a class="button outline" href="#java/full">← Java</a>'}<button class="button green" id="java-full-complete">${record.completed.includes(key)?jt('Пройдено ✓','Аяқталды ✓'):jt('Я могу решить задачи','Есептерді шеше аламын')}</button>${index<chapters.length-1?`<a class="button" href="#java/topic/${chapters[index+1].id}">${jt('Следующая глава','Келесі тарау')} →</a>`:'<a class="button" href="#java/full">Java →</a>'}</div></article></div>`;
+  main.innerHTML=`<div class="java-layout java-full"><aside class="java-sidebar"><a href="#java/full">← ${jt('Полная программа','Толық бағдарлама')}</a>${chapters.map(c=>`<a href="#java/topic/${c.id}" ${c.id===id?'class="active" aria-current="page"':''}>${c.id}. ${escapeHTML(c[lang].title)}</a>`).join('')}</aside><article class="java-lesson java-full-article"><a class="course-home-link" href="#java/full">← ${jt('Все главы','Барлық тарау')}</a><h1>${escapeHTML(text.title)}</h1><div class="java-meta"><span>Java 17+</span><span>${jt('Глава','Тарау')} ${id} / ${chapters.length}</span></div><p>${jt('Нужно знать','Алдын ала білу')}: ${escapeHTML(chapter[lang==='ru'?'requiresRu':'requiresKk'])}</p><a class="sources" href="java-full/${id}/Main.java" download>${jt('Скачать пример Main.java','Main.java мысалын жүктеу')} ↗</a><div class="java-full-content">${body}</div>${chapter.lab?`<p><a class="sources" href="${chapter.lab}" download>${jt('Скачать Maven-лабораторную (ZIP)','Maven зертханасын жүктеу (ZIP)')} ↗</a></p>`:''}<p class="learning-save-status" role="status"></p><h2>${jt('Материалы к главе','Тарау материалдары')}</h2><ul>${chapter.references.map(r=>`<li>${escapeHTML(r)}</li>`).join('')}</ul><p><a class="sources" href="${escapeHTML(chapter.docs)}" target="_blank" rel="noopener">${jt('Документация Java','Java құжаттамасы')} ↗</a></p><div class="lesson-nav">${index?`<a class="button outline" href="#java/topic/${chapters[index-1].id}">← ${jt('Назад','Артқа')}</a>`:'<a class="button outline" href="#java/full">← Java</a>'}<button class="button green" id="java-full-complete">${record.completed.includes(key)?jt('Пройдено ✓','Аяқталды ✓'):jt('Я могу решить задачи','Есептерді шеше аламын')}</button>${index<chapters.length-1?`<a class="button" href="#java/topic/${chapters[index+1].id}">${jt('Следующая глава','Келесі тарау')} →</a>`:'<a class="button" href="#java/full">Java →</a>'}</div></article></div>`;
   const status=main.querySelector('.learning-save-status');
   main.querySelectorAll('[data-full-answer]').forEach(input=>{
     input.value=record.practice[input.dataset.fullAnswer]||'';
     input.oninput=()=>{const current=window.MLStore.get().learning;const saved=window.MLStore.learningUpdate({practice:{...current.practice,[input.dataset.fullAnswer]:input.value}});status.textContent=saved?jt('Решение сохранено','Шешім сақталды'):jt('Не удалось сохранить. Не закрывай страницу.','Сақтау мүмкін емес. Бетті жаппа.')};
   });
   main.querySelector('#java-full-complete').onclick=e=>{const current=window.MLStore.get().learning;const saved=window.MLStore.learningUpdate({completed:[...new Set([...current.completed,key])]});if(saved)e.target.textContent=jt('Пройдено ✓','Аяқталды ✓');else status.textContent=jt('Не удалось сохранить прогресс','Ілгерілеуді сақтау мүмкін емес')};
+}
+
+async function enhanceJavaFull(hash){
+  const week=hash.match(/^#(?:java\/week|learn\/java)\/(\d{2})$/);
+  const advanced=hash.match(/^#(?:track|learn)\/java-advanced\/(\d{2})$/);
+  const overview=hash==='#java'||hash==='#track/java-advanced';
+  if(!week&&!advanced&&!overview&&!['','#catalog','#progress'].includes(hash))return;
+  const chapters=await javaFullData();if(hash!==location.hash)return;
+  const lang=window.ML_LOCALE==='kk'?'kk':'ru';
+  if(hash===''||hash==='#catalog'){
+    main.querySelectorAll('[data-course-id="java"],[data-course-id="java-advanced"]').forEach(card=>{
+      if(card.querySelector('.java-full-link'))return;
+      const links=card.querySelector('.catalog-links')||card.appendChild(Object.assign(document.createElement('div'),{className:'catalog-links'}));
+      const link=document.createElement('a');link.className='sources java-full-link';link.href='#java/full';link.textContent=jt('Полный курс · 26 глав →','Толық курс · 26 тарау →');links.append(link);
+    });return;
+  }
+  if(main.querySelector('.java-full-links,.java-full-banner'))return;
+  const completed=chapters.filter(c=>window.MLStore.get().learning.completed.includes('java-full/'+c.id)).length;
+  const target=week||advanced?main.querySelector('.java-lesson,.teaching-page'):hash==='#progress'?main.querySelector('.studio-dashboard'):main.querySelector('.java-page,.tracks-page');
+  if(!target)return;
+  const block=document.createElement('aside');
+  if(week||advanced){
+    const number=Number((week||advanced)[1]),related=chapters.filter(c=>(week?c.weeks:c.advanced).includes(number));
+    block.className='java-full-links callout';
+    block.innerHTML=`<h2>${jt('Подробно по этой теме','Тақырыпты толық оқу')}</h2><ul>${related.map(c=>`<li><a class="sources" href="#java/topic/${c.id}">${escapeHTML(c[lang].title)} →</a></li>`).join('')}</ul><a class="sources" href="#java/full">${jt('Все 26 глав','Барлық 26 тарау')} →</a>`;
+    const intro=target.querySelector('.lesson-intro,.teaching-goal');if(intro)intro.after(block);else target.append(block);
+  }else{
+    block.className='teaching-start java-full-banner';
+    block.innerHTML=`<div><strong>${jt('Полный Java-курс по твоим материалам','Материалдарың бойынша толық Java курсы')}</strong><p>${jt('26 глав: подробная теория, код, задачи и разборы. От типов и ООП до JDBC, сетей, XML и GUI.','26 тарау: толық теория, код, есептер және шешімдер. Типтер мен ООП-тан JDBC, желі, XML және GUI-ге дейін.')} ${jt('Пройдено','Аяқталды')}: ${completed}/26.</p></div><a class="button" href="#java/full">${jt('Открыть полный курс','Толық курсты ашу')} ↗</a>`;
+    const heading=target.querySelector('h1');if(heading)heading.after(block);else target.prepend(block);
+  }
 }

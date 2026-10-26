@@ -2,6 +2,7 @@
 import json
 import re
 import shutil
+import zipfile
 from pathlib import Path
 
 import bleach
@@ -42,6 +43,17 @@ def build():
         target = out / entry['id']
         target.mkdir(exist_ok=True)
         shutil.copy2(folder / 'Main.java', target / 'Main.java')
+        if (folder / 'lab').exists():
+            # Fixed timestamps/order keep the downloadable lab byte-for-byte reproducible.
+            with zipfile.ZipFile(target / 'lab.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+                files = {'src/main/java/Main.java': (folder / 'Main.java').read_bytes()}
+                files.update({p.relative_to(folder / 'lab').as_posix(): p.read_bytes()
+                              for p in sorted((folder / 'lab').rglob('*')) if p.is_file()})
+                for name, data in sorted(files.items()):
+                    info = zipfile.ZipInfo(name, (2020, 1, 1, 0, 0, 0))
+                    info.compress_type = zipfile.ZIP_DEFLATED
+                    archive.writestr(info, data)
+            item['lab'] = f'java-full/{entry["id"]}/lab.zip'
         chapters.append(item)
     (out / 'catalog.json').write_text(json.dumps(chapters, ensure_ascii=False), encoding='utf-8')
     shutil.copy2(source / 'sources.json', out / 'sources.json')
