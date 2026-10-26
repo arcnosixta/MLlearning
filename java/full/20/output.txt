@@ -1,0 +1,2 @@
+students=2
+average=90
