@@ -1,0 +1,37 @@
+{
+  "description": "User-supplied sources; original binaries and extracted text remain private.",
+  "items": [
+    {
+      "id": "epam",
+      "filename": "Ihar_Blinou.Java.from.EPAM.2020.pdf",
+      "sha256": "d3b6eac06053b3fb23dadef2edc7ae2010a73181755edc9f4fbd6e5ceb5ca98a",
+      "format": "pdf",
+      "units": 562,
+      "unit": "physical page"
+    },
+    {
+      "id": "slides-ru",
+      "filename": "JAvaSlide.ppt",
+      "sha256": "9376012476a72e3e7fd80e763833aa786ccb568794423cd6cc24366e464b89e1",
+      "format": "ppt",
+      "units": 2508,
+      "unit": "text record (not slide number)"
+    },
+    {
+      "id": "slides-kk",
+      "filename": "Жава қаз.pptx",
+      "sha256": "f772ca145cc1bddc562b0467ff90019ca7cd1a57c923f1fbe1496592483d46ae",
+      "format": "pptx",
+      "units": 390,
+      "unit": "slide"
+    },
+    {
+      "id": "problems",
+      "filename": "Задачи.pdf",
+      "sha256": "aecabe88e970758ec275d55ffabfaf381f175699b0948e9d30e26e92a5c40e11",
+      "format": "pdf",
+      "units": 207,
+      "unit": "physical page"
+    }
+  ]
+}
