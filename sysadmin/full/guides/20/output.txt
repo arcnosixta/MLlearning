@@ -1,0 +1,3 @@
+sum=10
+items=3
+found=yes

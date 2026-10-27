@@ -39,6 +39,7 @@ jobs:
       - run: python tests/verify_teaching.py
       - run: python tests/verify_java.py
       - run: python tests/verify_java_full.py
+      - run: python tests/verify_sysadmin_full.py
       - name: Verify JDBC and Maven Java laboratory
         run: |
           python -c "import urllib.request,hashlib,pathlib; p=pathlib.Path('artifacts/h2.jar'); p.parent.mkdir(exist_ok=True); data=urllib.request.urlopen('https://repo.maven.apache.org/maven2/com/h2database/h2/2.3.232/h2-2.3.232.jar').read(); assert hashlib.sha256(data).hexdigest() == '8dae62d22db8982c3dcb3826edb9c727c5d302063a67eef7d63d82de401f07d3'; p.write_bytes(data)"
@@ -61,6 +62,7 @@ jobs:
           python tests/browser_file_path.py
           python tests/browser_java.py
           python tests/browser_java_full.py
+          python tests/browser_sysadmin_full.py
           python tests/browser_tracks.py
           python tests/browser_teaching.py
           python tests/browser_studio.py

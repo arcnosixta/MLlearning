@@ -1,0 +1,4 @@
+owner=6
+group=4
+other=0
+new-file=640

@@ -1,0 +1,3 @@
+mountpoint=/srv/data
+filesystem=ext4
+barriers=2

@@ -1,0 +1,2 @@
+hosts=2
+strict-host-checking=yes

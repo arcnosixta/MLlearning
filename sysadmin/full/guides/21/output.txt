@@ -1,0 +1,3 @@
+explicit-status=5
+pipeline=detected
+nounset=detected

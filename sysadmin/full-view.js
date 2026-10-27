@@ -1,0 +1,82 @@
+/* Original playlist videos plus explicitly authored, independent topic guides. */
+let sysadminFullPromise;
+function sysadminFullData(){
+  if(!sysadminFullPromise)sysadminFullPromise=fetch('sysadmin-full/catalog.json').then(r=>{if(!r.ok)throw new Error('Sysadmin playlist unavailable');return r.json()}).catch(e=>{sysadminFullPromise=null;throw e});
+  return sysadminFullPromise;
+}
+function sysadminFullText(item){return item[window.ML_LOCALE==='kk'?'kk':'ru']}
+function sysadminFullDuration(seconds){
+  const hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60);
+  return hours+' '+jt('ч','сағ')+' '+minutes+' '+jt('мин','мин');
+}
+async function renderSysadminFull(id){
+  const requested=location.hash,data=await sysadminFullData();if(requested!==location.hash)return;
+  const entries=data.entries,groups=data.groups,record=window.MLStore.get().learning;
+  const groupById=new Map(groups.map(group=>[group.id,group]));
+  const channel=typeof data.channel==='string'?data.channel:'YouTube';
+  if(!id){
+    const completed=entries.filter(entry=>record.completed.includes('sysadmin-full/'+entry.courseId)).length;
+    main.innerHTML=`<section class="tracks-page sysadmin-full"><a class="course-home-link" href="#track/sysadmin">← ${jt('Основной курс системного администрирования','Жүйелік әкімшілендірудің негізгі курсы')}</a><div class="eyebrow">LINUX / ${jt('ВЕСЬ ПЛЕЙЛИСТ','ТОЛЫҚ ПЛЕЙЛИСТ')}</div><h1>${jt('Системное администрирование: учись по всему плейлисту.','Жүйелік әкімшілендіру: бүкіл плейлист бойынша оқу.')}</h1><p class="lesson-intro">${jt('Все оригинальные видео в порядке автора, связанные разборы тем и практические задания. Смотри урок, проверяй команды на учебном стенде и сохраняй свои решения.','Автор ретімен барлық түпнұсқа бейне, тақырып түсіндірмелері және тәжірибелік тапсырмалар. Сабақты көріп, пәрмендерді оқу ортасында тексер және шешіміңді сақта.')}</p><div class="study-plan"><span>${entries.length} ${jt('видео','бейне')}</span><span>${groups.length} ${jt('разборов тем','тақырып талдауы')}</span><span>${escapeHTML(sysadminFullDuration(data.totalDurationSeconds||0))}</span><span>${jt('Пройдено','Аяқталды')}: ${completed}/${entries.length}</span></div><p>${jt('Автор оригинальных видео','Түпнұсқа бейне авторы')}: <strong>${escapeHTML(channel)}</strong>. <a class="sources" href="${escapeHTML(data.playlistUrl)}" target="_blank" rel="noopener">${jt('Открыть исходный плейлист на YouTube','Түпнұсқа плейлистті YouTube-та ашу')} ↗</a></p><p class="sysadmin-source-note">${jt('Текст ниже видео — самостоятельный разбор темы и лабораторная работа, а не стенограмма. Видео загружается только после нажатия кнопки просмотра. Список зафиксирован на','Бейне астындағы мәтін — стенограмма емес, жеке тақырып талдауы мен зертханалық жұмыс. Бейне тек көру батырмасы басылғанда жүктеледі. Тізім алынған күн')}: ${escapeHTML(data.retrievedDate||'')}.</p><div class="sysadmin-full-tools"><label>${jt('Поиск по видео и темам','Бейне мен тақырып іздеу')}<input class="search" id="sysadmin-full-search" type="search" placeholder="${jt('Например: DNS, права, Bash…','Мысалы: DNS, құқықтар, Bash…')}"></label><label>${jt('Тема','Тақырып')}<select id="sysadmin-full-group"><option value="all">${jt('Все темы','Барлық тақырып')}</option>${groups.map(group=>`<option value="${group.id}">${escapeHTML(sysadminFullText(group).title)}</option>`).join('')}</select></label><label>${jt('Прогресс','Ілгерілеу')}<select id="sysadmin-full-progress"><option value="all">${jt('Все видео','Барлық бейне')}</option><option value="todo">${jt('Ещё не пройдены','Әлі аяқталмаған')}</option><option value="done">${jt('Пройденные','Аяқталған')}</option></select></label></div><p id="sysadmin-full-count" role="status"></p><div class="sysadmin-video-list" id="sysadmin-full-list"></div></section>`;
+    const search=main.querySelector('#sysadmin-full-search'),groupFilter=main.querySelector('#sysadmin-full-group'),progress=main.querySelector('#sysadmin-full-progress');
+    function draw(){
+      const query=search.value.toLocaleLowerCase().trim();
+      const current=window.MLStore.get().learning;
+      const visible=entries.filter(entry=>{
+        const done=current.completed.includes('sysadmin-full/'+entry.courseId),group=groupById.get(entry.guideId);
+        return (groupFilter.value==='all'||entry.guideId===groupFilter.value)&&(progress.value==='all'||(progress.value==='done'?done:!done))&&(!query||(entry.title+' '+(group?sysadminFullText(group).title:'')).toLocaleLowerCase().includes(query));
+      });
+      main.querySelector('#sysadmin-full-count').textContent=jt('Показано','Көрсетілген')+': '+visible.length+' / '+entries.length;
+      main.querySelector('#sysadmin-full-list').innerHTML=visible.length?visible.map(entry=>{
+        const done=current.completed.includes('sysadmin-full/'+entry.courseId),group=groupById.get(entry.guideId);
+        return `<a class="sysadmin-video-card ${done?'is-done':''}" data-video-id="${entry.id}" href="#sysadmin/topic/${entry.courseId}"><span class="sysadmin-video-number">${entry.courseId}</span><div><span class="eyebrow">${escapeHTML(group?sysadminFullText(group).title:'Linux')}</span><h2>${escapeHTML(entry.title)}</h2><span class="sysadmin-video-meta">${escapeHTML(entry.duration)} · ${escapeHTML(channel)}${done?' · ✓':''}</span></div><span aria-hidden="true">↗</span></a>`;
+      }).join(''):`<p class="empty">${jt('Ничего не найдено. Измени запрос или фильтр.','Ештеңе табылмады. Іздеу не сүзгіні өзгерт.')}</p>`;
+    }
+    search.oninput=draw;groupFilter.onchange=draw;progress.onchange=draw;draw();return;
+  }
+  const index=entries.findIndex(entry=>entry.courseId===id),entry=entries[index],group=entry&&groupById.get(entry.guideId);
+  if(!entry||!group){main.innerHTML=`<section class="tracks-page"><h1>${jt('Видео не найдено','Бейне табылмады')}</h1><a class="button" href="#sysadmin/full">${jt('Весь плейлист','Толық плейлист')} →</a></section>`;return}
+  const key='sysadmin-full/'+entry.courseId,text=sysadminFullText(group),related=entries.filter(video=>video.guideId===group.id);
+  const body=text.html.replace(/\{\{answer:([123])\}\}/g,(_,number)=>`<label for="sysadmin-answer-${number}">${jt('Твоё решение','Сенің шешімің')} ${number}</label><textarea id="sysadmin-answer-${number}" class="java-note" data-sysadmin-answer="${key}/${number}" rows="5" maxlength="10000"></textarea>`);
+  main.innerHTML=`<div class="java-layout sysadmin-full"><aside class="java-sidebar"><a href="#sysadmin/full">← ${jt('Весь плейлист','Толық плейлист')}</a><h2>${jt('Видео по теме','Тақырып бейнелері')}</h2>${related.map(video=>`<a href="#sysadmin/topic/${video.courseId}" ${video.courseId===id?'class="active" aria-current="page"':''}>${video.courseId}. ${escapeHTML(video.title)}</a>`).join('')}<a href="#track/sysadmin">${jt('Основной курс и РК','Негізгі курс және РК')} →</a></aside><article class="java-lesson sysadmin-full-article"><a class="course-home-link" href="#sysadmin/full">← ${jt('Все видео','Барлық бейне')}</a><h1>${escapeHTML(entry.title)}</h1><div class="java-meta"><span>${jt('Видео','Бейне')} ${entry.courseId} / ${entries.length}</span><span>${escapeHTML(entry.duration)}</span><span>${escapeHTML(channel)}</span></div><p>${jt('Оригинальное название и видео автора','Автордың түпнұсқа атауы мен бейнесі')}. <a class="sources" href="${escapeHTML(entry.url)}" target="_blank" rel="noopener">${jt('Смотреть на YouTube','YouTube-та көру')} ↗</a></p><div class="sysadmin-player" id="sysadmin-player"><button class="sysadmin-video-load" id="sysadmin-video-load" type="button"><span class="sysadmin-play-icon" aria-hidden="true">▶</span><span>${jt('Загрузить оригинальное видео','Түпнұсқа бейнені жүктеу')}</span><small>${jt('Плеер YouTube загрузится после нажатия','YouTube ойнатқышы басқаннан кейін жүктеледі')}</small></button></div><h2>${jt('Разбор темы','Тақырып талдауы')}: ${escapeHTML(text.title)}</h2><p class="sysadmin-source-note">${jt('Это самостоятельное объяснение и практика по общей теме связанных видео, а не дословная стенограмма автора. Сначала посмотри оригинал, затем проверь понимание на учебном стенде.','Бұл автордың сөзбе-сөз стенограммасы емес, байланысты бейнелер тақырыбының жеке түсіндірмесі мен тәжірибесі. Алдымен түпнұсқаны көріп, кейін түсінгеніңді оқу ортасында тексер.')}</p><a class="sources" href="${escapeHTML(group.download)}" download>${jt('Скачать учебный lab.sh','Оқу lab.sh файлын жүктеу')} ↗</a><div class="sysadmin-full-content">${body}</div><p class="sysadmin-save-status" role="status"></p><h2>${jt('Связанные видео этой темы','Осы тақырыпқа байланысты бейнелер')}</h2><ul>${related.map(video=>`<li><a class="sources" href="#sysadmin/topic/${video.courseId}">${video.courseId}. ${escapeHTML(video.title)}</a></li>`).join('')}</ul><div class="lesson-nav">${index?`<a class="button outline" href="#sysadmin/topic/${entries[index-1].courseId}">← ${jt('Предыдущее видео','Алдыңғы бейне')}</a>`:'<a class="button outline" href="#sysadmin/full">← Linux</a>'}<button class="button green" id="sysadmin-full-complete">${record.completed.includes(key)?jt('Пройдено ✓','Аяқталды ✓'):jt('Я разобрал видео и тему','Бейне мен тақырыпты меңгердім')}</button>${index<entries.length-1?`<a class="button" href="#sysadmin/topic/${entries[index+1].courseId}">${jt('Следующее видео','Келесі бейне')} →</a>`:'<a class="button" href="#sysadmin/full">Linux →</a>'}</div></article></div>`;
+  const status=main.querySelector('.sysadmin-save-status');
+  main.querySelectorAll('[data-sysadmin-answer]').forEach(input=>{
+    input.value=record.practice[input.dataset.sysadminAnswer]||'';
+    input.oninput=()=>{const current=window.MLStore.get().learning,saved=window.MLStore.learningUpdate({practice:{...current.practice,[input.dataset.sysadminAnswer]:input.value}});status.textContent=saved?jt('Решение сохранено на устройстве','Шешім құрылғыда сақталды'):jt('Не удалось сохранить. Не закрывай страницу.','Сақтау мүмкін емес. Бетті жаппа.')};
+  });
+  main.querySelector('#sysadmin-full-complete').onclick=event=>{
+    const current=window.MLStore.get().learning,saved=window.MLStore.learningUpdate({completed:[...new Set([...current.completed,key])]});
+    if(saved)event.target.textContent=jt('Пройдено ✓','Аяқталды ✓');else status.textContent=jt('Не удалось сохранить прогресс','Ілгерілеуді сақтау мүмкін емес');
+  };
+  main.querySelector('#sysadmin-video-load').onclick=()=>{
+    const frame=document.createElement('iframe');
+    frame.src='https://www.youtube-nocookie.com/embed/'+entry.id+'?autoplay=1&rel=0';
+    frame.title=entry.title;frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
+    main.querySelector('#sysadmin-player').replaceChildren(frame);
+  };
+}
+async function enhanceSysadminFull(hash){
+  const week=hash.match(/^#(?:track|learn)\/sysadmin\/(\d{2})$/),overview=hash==='#track/sysadmin';
+  if(!week&&!overview&&!['','#catalog','#progress'].includes(hash))return;
+  const data=await sysadminFullData();if(hash!==location.hash)return;
+  if(hash===''||hash==='#catalog'){
+    const card=main.querySelector('[data-course-id="sysadmin"]');if(!card||card.querySelector('.sysadmin-full-link'))return;
+    const links=card.querySelector('.catalog-links')||card.appendChild(Object.assign(document.createElement('div'),{className:'catalog-links'}));
+    const link=document.createElement('a');link.className='sources sysadmin-full-link';link.href='#sysadmin/full';link.textContent=data.entries.length+' '+jt('видео · весь плейлист →','бейне · толық плейлист →');links.append(link);return;
+  }
+  if(main.querySelector('.sysadmin-full-banner,.sysadmin-full-links'))return;
+  const target=week?main.querySelector('.java-lesson,.teaching-page'):hash==='#progress'?main.querySelector('.studio-dashboard'):main.querySelector('.tracks-page');
+  if(!target)return;
+  const completed=data.entries.filter(entry=>window.MLStore.get().learning.completed.includes('sysadmin-full/'+entry.courseId)).length;
+  const block=document.createElement('aside');
+  if(week){
+    const related=data.groups.filter(group=>(group.relatedWeeks||[]).includes(Number(week[1])));
+    block.className='callout sysadmin-full-links';
+    block.innerHTML=`<h2>${jt('Видео и подробный разбор темы','Бейне және толық тақырып талдауы')}</h2><ul>${related.map(group=>{const first=data.entries.find(entry=>entry.guideId===group.id);return first?`<li><a class="sources" href="#sysadmin/topic/${first.courseId}">${escapeHTML(sysadminFullText(group).title)} →</a></li>`:''}).join('')}</ul><a class="sources" href="#sysadmin/full">${jt('Все видео плейлиста','Плейлисттің барлық бейнесі')} →</a>`;
+    const intro=target.querySelector('.lesson-intro,.teaching-goal');if(intro)intro.after(block);else target.append(block);
+  }else{
+    block.className='teaching-start sysadmin-full-banner';
+    block.innerHTML=`<div><strong>${jt('Полный плейлист по системному администрированию','Жүйелік әкімшілендірудің толық плейлисті')}</strong><p>${data.entries.length} ${jt('оригинальных видео, разборы тем и лабораторные работы.','түпнұсқа бейне, тақырып талдаулары және зертханалық жұмыстар.')} ${jt('Пройдено','Аяқталды')}: ${completed}/${data.entries.length}.</p></div><a class="button" href="#sysadmin/full">${jt('Учиться по плейлисту','Плейлист бойынша оқу')} ↗</a>`;
+    const heading=target.querySelector('h1');if(heading)heading.after(block);else target.prepend(block);
+  }
+}

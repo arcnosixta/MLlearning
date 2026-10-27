@@ -1,0 +1,2 @@
+event=42 auid=1001 euid=0 success=yes path=/srv/course/report.txt
+event=43 auid=1002 euid=1002 success=no path=/srv/course/config.txt

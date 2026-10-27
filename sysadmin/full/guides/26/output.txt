@@ -1,0 +1,4 @@
+valid+valid=allow
+valid+invalid=deny
+invalid+valid=deny
+invalid+invalid=deny

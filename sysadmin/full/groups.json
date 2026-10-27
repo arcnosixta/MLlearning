@@ -1,0 +1,633 @@
+[
+  {
+    "id": "01",
+    "titleRu": "Стенд и вводный маршрут",
+    "lessonNumbers": [
+      0,
+      1
+    ],
+    "videoIds": [
+      "K8W4VUJQdX4",
+      "TtoLNzFC26s"
+    ],
+    "relatedWeeks": [
+      1,
+      13
+    ]
+  },
+  {
+    "id": "02",
+    "titleRu": "Командная строка и потоки",
+    "lessonNumbers": [
+      2,
+      3
+    ],
+    "videoIds": [
+      "ekPwVf9OeQs",
+      "_jdlB86PUhE"
+    ],
+    "relatedWeeks": [
+      1,
+      6
+    ]
+  },
+  {
+    "id": "03",
+    "titleRu": "Файлы, каталоги и ссылки",
+    "lessonNumbers": [
+      4,
+      5,
+      6
+    ],
+    "videoIds": [
+      "qcExsO3cJbU",
+      "wSIEfEFs__c",
+      "zYLA2WhNofI"
+    ],
+    "relatedWeeks": [
+      1,
+      4
+    ]
+  },
+  {
+    "id": "04",
+    "titleRu": "Файловые системы и монтирование",
+    "lessonNumbers": [
+      7,
+      27
+    ],
+    "videoIds": [
+      "-E-LfLVLKoM",
+      "-Cmxni4jWJs"
+    ],
+    "relatedWeeks": [
+      4,
+      11
+    ]
+  },
+  {
+    "id": "05",
+    "titleRu": "Пакеты dpkg/APT и репозитории",
+    "lessonNumbers": [
+      8,
+      9,
+      68
+    ],
+    "videoIds": [
+      "TunjMjEGiv0",
+      "LX08B6_17vE",
+      "YcMYugMN0Vo"
+    ],
+    "relatedWeeks": [
+      1,
+      13
+    ]
+  },
+  {
+    "id": "06",
+    "titleRu": "Vim: режимы и практика",
+    "lessonNumbers": [
+      10,
+      11
+    ],
+    "videoIds": [
+      "Jyedx5ftmxk",
+      "5vsw9mwqfg8"
+    ],
+    "relatedWeeks": [
+      1,
+      13
+    ]
+  },
+  {
+    "id": "07",
+    "titleRu": "Пользователи, группы, su/sudo и минимальные полномочия",
+    "lessonNumbers": [
+      12,
+      22,
+      53,
+      104
+    ],
+    "videoIds": [
+      "lvG7N2NoogY",
+      "CeAEfcNlnN8",
+      "Jrd3peWaqYw",
+      "SpJduKZAdLw"
+    ],
+    "relatedWeeks": [
+      5,
+      13
+    ]
+  },
+  {
+    "id": "08",
+    "titleRu": "DAC файлов и каталогов, риски SUID",
+    "lessonNumbers": [
+      13,
+      14,
+      73
+    ],
+    "videoIds": [
+      "z9QXFXOI0f0",
+      "PPqiQ08pmto",
+      "6TF6t0um39U"
+    ],
+    "relatedWeeks": [
+      1,
+      5
+    ]
+  },
+  {
+    "id": "09",
+    "titleRu": "Процессы и ресурсные лимиты",
+    "lessonNumbers": [
+      15,
+      71
+    ],
+    "videoIds": [
+      "fDNaU_dbquw",
+      "LXFoVUrHbjE"
+    ],
+    "relatedWeeks": [
+      2,
+      11
+    ]
+  },
+  {
+    "id": "10",
+    "titleRu": "Адресация, маршрутизация и диагностика канала",
+    "lessonNumbers": [
+      16,
+      24,
+      37
+    ],
+    "videoIds": [
+      "z4Ym3GDP0Pk",
+      "lKgqpYs14Ss",
+      "vYf52U6ZLes"
+    ],
+    "relatedWeeks": [
+      3,
+      8
+    ]
+  },
+  {
+    "id": "11",
+    "titleRu": "DHCP, TFTP и DNS/BIND",
+    "lessonNumbers": [
+      17,
+      78,
+      79,
+      80,
+      81
+    ],
+    "videoIds": [
+      "xBhlAw4vSLY",
+      "5CMe1IU9vS4",
+      "rGuyPntswAw",
+      "Ht017jXBdZM",
+      "KuMzLQr1pK8"
+    ],
+    "relatedWeeks": [
+      3,
+      8
+    ]
+  },
+  {
+    "id": "12",
+    "titleRu": "Развёртывание приложений: Traffic Monitor и NetBox",
+    "lessonNumbers": [
+      18,
+      25,
+      26
+    ],
+    "videoIds": [
+      "gKkUQdCJhxU",
+      "QzXPb8qdFRI",
+      "ADbbdZA3FT4"
+    ],
+    "relatedWeeks": [
+      6,
+      13
+    ]
+  },
+  {
+    "id": "13",
+    "titleRu": "SSH: доступ, ключи и ограничения",
+    "lessonNumbers": [
+      19,
+      20
+    ],
+    "videoIds": [
+      "Q6E34VpLqKM",
+      "G_cgPHBv_x4"
+    ],
+    "relatedWeeks": [
+      5,
+      8
+    ]
+  },
+  {
+    "id": "14",
+    "titleRu": "Управление службами systemd",
+    "lessonNumbers": [
+      21
+    ],
+    "videoIds": [
+      "76l6bj70E2k"
+    ],
+    "relatedWeeks": [
+      2,
+      7
+    ]
+  },
+  {
+    "id": "15",
+    "titleRu": "DAC/MAC, SELinux и AppArmor",
+    "lessonNumbers": [
+      23
+    ],
+    "videoIds": [
+      "3Tf5yQJJbz8"
+    ],
+    "relatedWeeks": [
+      5,
+      8
+    ]
+  },
+  {
+    "id": "16",
+    "titleRu": "PostgreSQL: размещение, запросы и перенос",
+    "lessonNumbers": [
+      28,
+      29,
+      30
+    ],
+    "videoIds": [
+      "L0Jlo_AVieo",
+      "DTfRHrij1g0",
+      "ktvRw8WnvkQ"
+    ],
+    "relatedWeeks": [
+      4,
+      12
+    ]
+  },
+  {
+    "id": "17",
+    "titleRu": "Bash: язык, управление и read",
+    "lessonNumbers": [
+      31,
+      32,
+      33,
+      36
+    ],
+    "videoIds": [
+      "5UJtJMTKZNg",
+      "Ct9p-5RSmM0",
+      "8UEo_NuK4QA",
+      "1BUZvqf7Udg"
+    ],
+    "relatedWeeks": [
+      6
+    ]
+  },
+  {
+    "id": "18",
+    "titleRu": "Bash: перенаправления и свои дескрипторы",
+    "lessonNumbers": [
+      38,
+      39
+    ],
+    "videoIds": [
+      "O9GO6BL6UhE",
+      "xZXk7E83L44"
+    ],
+    "relatedWeeks": [
+      6
+    ]
+  },
+  {
+    "id": "19",
+    "titleRu": "Bash: сигналы, фон и расписание",
+    "lessonNumbers": [
+      40,
+      41,
+      42
+    ],
+    "videoIds": [
+      "OjN451Ctt9E",
+      "4QcXW-50Lrc",
+      "4OEv1jGWdTE"
+    ],
+    "relatedWeeks": [
+      6,
+      7
+    ]
+  },
+  {
+    "id": "20",
+    "titleRu": "Bash: функции, аргументы, массивы и библиотеки",
+    "lessonNumbers": [
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "videoIds": [
+      "SL2QU3F8rcY",
+      "lswTL8mdlWM",
+      "cTZSXW-_f-E",
+      "aGMNgLLcZWk",
+      "zT8bM3OcG1g",
+      "brlNvdgrJyM",
+      "0zBkqPZUi8w"
+    ],
+    "relatedWeeks": [
+      6
+    ]
+  },
+  {
+    "id": "21",
+    "titleRu": "Bash: ошибки и неназначенные переменные",
+    "lessonNumbers": [
+      50,
+      51
+    ],
+    "videoIds": [
+      "1xJUte_2bkU",
+      "7SyaWtS5jiY"
+    ],
+    "relatedWeeks": [
+      6,
+      13
+    ]
+  },
+  {
+    "id": "22",
+    "titleRu": "sed: фильтрация и преобразование текста",
+    "lessonNumbers": [
+      52,
+      54,
+      55,
+      56
+    ],
+    "videoIds": [
+      "XhY_nCo4TJY",
+      "HpI4-5lw8lo",
+      "0-yZqG-7hu0",
+      "s4tRKin9mzU"
+    ],
+    "relatedWeeks": [
+      6,
+      10
+    ]
+  },
+  {
+    "id": "23",
+    "titleRu": "awk: поля, переменные, циклы и отчёты",
+    "lessonNumbers": [
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "videoIds": [
+      "Q6ZUVv_Vx_I",
+      "5PYl7cD7m_4",
+      "UDedkJYXcxY",
+      "SCEDkBKR_wI",
+      "aCz25jWDQA8",
+      "FTHyPErxNwY"
+    ],
+    "relatedWeeks": [
+      6,
+      10
+    ]
+  },
+  {
+    "id": "24",
+    "titleRu": "Регулярные выражения и практикум",
+    "lessonNumbers": [
+      63,
+      64,
+      65,
+      66
+    ],
+    "videoIds": [
+      "BTTj_y2KKT8",
+      "qs67oHH64Vw",
+      "eLu0dvtFgFw",
+      "ofdmD4qdAaM"
+    ],
+    "relatedWeeks": [
+      6,
+      10
+    ]
+  },
+  {
+    "id": "25",
+    "titleRu": "Сетевая защита: port knocking, Nmap, Fail2ban, Suricata",
+    "lessonNumbers": [
+      67,
+      69,
+      70,
+      99,
+      101
+    ],
+    "videoIds": [
+      "tSOrrndClDE",
+      "Dj_f548Ke_4",
+      "eAhix3dWDMA",
+      "sYmU85yVUYA",
+      "dMwmt1Syucw"
+    ],
+    "relatedWeeks": [
+      8,
+      10
+    ]
+  },
+  {
+    "id": "26",
+    "titleRu": "Аутентификация: 2FA и PAM",
+    "lessonNumbers": [
+      74,
+      75,
+      84
+    ],
+    "videoIds": [
+      "tfA7aJf1_XQ",
+      "JxR6FTkPgxo",
+      "IqXXWVTFoAk"
+    ],
+    "relatedWeeks": [
+      5,
+      8
+    ]
+  },
+  {
+    "id": "27",
+    "titleRu": "IP-телефония FreeSwitch и FusionPBX",
+    "lessonNumbers": [
+      34,
+      35,
+      72
+    ],
+    "videoIds": [
+      "tXOpweMsQnE",
+      "Lt1ATa1R34c",
+      "Bd7D-dnEtRo"
+    ],
+    "relatedWeeks": [
+      3,
+      13
+    ]
+  },
+  {
+    "id": "28",
+    "titleRu": "iptables, фильтрация и NAT/роутер",
+    "lessonNumbers": [
+      76,
+      77
+    ],
+    "videoIds": [
+      "gYbz5QI-GhY",
+      "XgAJgkpHlQs"
+    ],
+    "relatedWeeks": [
+      3,
+      8
+    ]
+  },
+  {
+    "id": "29",
+    "titleRu": "Центр сертификации OpenSSL и HTTPS/Nginx",
+    "lessonNumbers": [
+      82,
+      83
+    ],
+    "videoIds": [
+      "LT8XgnCI3hE",
+      "adr18W-pk30"
+    ],
+    "relatedWeeks": [
+      5,
+      8
+    ]
+  },
+  {
+    "id": "30",
+    "titleRu": "SWAP, RAID/mdadm и LVM",
+    "lessonNumbers": [
+      85,
+      90,
+      91,
+      92,
+      93,
+      94
+    ],
+    "videoIds": [
+      "lj91mfDUmM4",
+      "Z_BKkwBzCE0",
+      "8GUxGRWQ9Go",
+      "EKW3iRnF5YQ",
+      "ouK9_VaLTLw",
+      "7LNMK3Whyz0"
+    ],
+    "relatedWeeks": [
+      4,
+      11,
+      12
+    ]
+  },
+  {
+    "id": "31",
+    "titleRu": "VPN/PPP: PPTP, L2TP, PPPoE, IPsec и strongSwan",
+    "lessonNumbers": [
+      86,
+      87,
+      88,
+      102,
+      103
+    ],
+    "videoIds": [
+      "NkeXheAv4pA",
+      "EZIAJS0nvfE",
+      "zB2MtF0Xbpw",
+      "5JKO4Dzh5yc",
+      "9s704aoJkac"
+    ],
+    "relatedWeeks": [
+      3,
+      8
+    ]
+  },
+  {
+    "id": "32",
+    "titleRu": "Централизованные идентификации FreeIPA",
+    "lessonNumbers": [
+      89
+    ],
+    "videoIds": [
+      "6sHkxYNJv1g"
+    ],
+    "relatedWeeks": [
+      5,
+      13
+    ]
+  },
+  {
+    "id": "33",
+    "titleRu": "Управление трафиком: tc netem и ingress policing",
+    "lessonNumbers": [
+      95,
+      100
+    ],
+    "videoIds": [
+      "CrJkvqDoBkc",
+      "hlfEgOlsf5Q"
+    ],
+    "relatedWeeks": [
+      3,
+      8,
+      10
+    ]
+  },
+  {
+    "id": "34",
+    "titleRu": "Docker: контейнер, Dockerfile, Compose",
+    "lessonNumbers": [
+      96,
+      97,
+      98
+    ],
+    "videoIds": [
+      "4j7yybAP7vs",
+      "Mzuu1LFicyQ",
+      "0Qtxq_sSadk"
+    ],
+    "relatedWeeks": [
+      9
+    ]
+  },
+  {
+    "id": "35",
+    "titleRu": "Аудит auditd и расследование",
+    "lessonNumbers": [
+      105
+    ],
+    "videoIds": [
+      "LvbX8c8awA4"
+    ],
+    "relatedWeeks": [
+      10,
+      12,
+      13
+    ]
+  }
+]

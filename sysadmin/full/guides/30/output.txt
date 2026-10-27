@@ -1,0 +1,5 @@
+raid0=40 GiB
+raid1=10 GiB
+raid5=30 GiB
+vg-free=25 extents
+allocation=rejected

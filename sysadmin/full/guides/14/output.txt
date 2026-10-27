@@ -1,0 +1,3 @@
+after-enable: active=no enabled=yes
+after-disable: active=yes enabled=no
+after-stop: active=no enabled=no

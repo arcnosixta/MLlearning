@@ -1,0 +1,3 @@
+coreutils=9.0
+bash=5.2
+installed=2

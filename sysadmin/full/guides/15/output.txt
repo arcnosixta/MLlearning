@@ -1,0 +1,3 @@
+dac=allow mac=allow result=allow
+dac=allow mac=deny result=deny
+dac=deny mac=allow result=deny

@@ -1,0 +1,3 @@
+admin-new=ACCEPT
+other-new=DROP
+reply=ACCEPT

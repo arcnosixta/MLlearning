@@ -1,0 +1,2 @@
+stdout:result=42
+stderr:notice=checked

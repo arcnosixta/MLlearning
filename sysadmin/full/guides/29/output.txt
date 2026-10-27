@@ -1,0 +1,2 @@
+trusted=yes
+wrong-host=rejected

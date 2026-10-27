@@ -1,0 +1,2 @@
+worker-status=7
+handled-signals=1
