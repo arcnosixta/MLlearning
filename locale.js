@@ -20,7 +20,7 @@
       document.querySelectorAll('[aria-label],meta[name="description"]').forEach(el=>{for(const name of ['aria-label','content'])if(el.hasAttribute(name))el.setAttribute(name,translate(el.getAttribute(name)))});
     }
     const switcher=document.createElement('div');switcher.className='language-switch';switcher.setAttribute('role','group');switcher.setAttribute('aria-label',lang==='kk'?'Тілді таңдау':'Выбор языка');
-    for(const [value,label] of [['ru','RU'],['kk','ҚАЗ']]){const a=document.createElement('a');const url=new URL(location.href);url.searchParams.set('lang',value);a.href=url.pathname+url.search+url.hash;a.textContent=label;a.lang=value;a.hreflang=value;a.classList.toggle('active',value===lang);a.addEventListener('click',e=>{e.preventDefault();url.hash=location.hash;location.href=url.pathname+url.search+url.hash});switcher.append(a)}
+    for(const [value,label] of [['ru','RU'],['kk','ҚАЗ']]){const a=document.createElement('a');const url=new URL(location.href);url.searchParams.set('lang',value);a.href=url.pathname+url.search+url.hash;a.textContent=label;a.lang=value;a.hreflang=value;a.classList.toggle('active',value===lang);a.addEventListener('click',e=>{e.preventDefault();const current=new URL(location.href);current.searchParams.set('lang',value);location.href=current.pathname+current.search+current.hash});switcher.append(a)}
     document.querySelector('header').append(switcher);
     const script=document.createElement('script');script.src=lang==='kk'?'app.kk.js':'app.js';document.head.append(script);
   });
