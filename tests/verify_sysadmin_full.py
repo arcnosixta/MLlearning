@@ -31,6 +31,10 @@ for original, entry in zip(playlist['entries'], entries):
     assert re.fullmatch(r'[A-Za-z0-9_-]{11}', entry['id'])
     assert entry['url'] == 'https://www.youtube.com/watch?v=' + entry['id']
     assert entry['durationSeconds'] > 0 and entry['title']
+    for lang in ['ru','kk']:
+        assert entry['brief'][lang]['goal'] and entry['brief'][lang]['check']
+    detail=json.loads((ROOT/'dist/sysadmin-full/lessons'/(entry['courseId']+'.json')).read_text(encoding='utf-8'))
+    assert detail['id']==entry['id'] and detail['brief']==entry['brief']
     assert entry['id'] in group_by_id[entry['guideId']]['videoIds']
 assert {group['id'] for group in groups} == {entry['guideId'] for entry in entries}
 

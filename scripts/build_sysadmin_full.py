@@ -23,6 +23,14 @@ def build():
     definitions = json.loads((source / 'groups.json').read_text(encoding='utf-8'))
     validate_sysadmin(source, playlist, definitions)
     paths = json.loads((source / 'paths.json').read_text(encoding='utf-8'))
+    briefs = json.loads((source / 'briefs.json').read_text(encoding='utf-8'))
+    if [brief['id'] for brief in briefs] != [f'{n:03d}' for n in range(1, 107)]:
+        raise ValueError('Every video needs its own ordered learning brief')
+    for lang in ['ru', 'kk']:
+        for field in ['goal', 'check']:
+            values = [brief[lang][field] for brief in briefs]
+            if any(not value.strip() for value in values) or len(set(values)) != 106:
+                raise ValueError('Learning briefs must be specific to every video')
     known = {group['id'] for group in definitions}
     if len({path['id'] for path in paths}) != len(paths) or any(not path['groups'] or len(set(path['groups'])) != len(path['groups']) or not set(path['groups']) <= known for path in paths):
         raise ValueError('Invalid learning pathway')
@@ -69,13 +77,18 @@ def build():
     for entry in playlist['entries']:
         assert VIDEO_ID.fullmatch(entry['id']), entry['id']
         assert urlsplit(entry['url']).scheme == 'https' and urlsplit(entry['url']).hostname in {'www.youtube.com', 'youtube.com'}, entry['url']
-        entries.append({**entry, 'courseId': str(entry['index']).zfill(3),
-                        'guideId': video_groups.get(entry['id'])})
+        item = {**entry, 'courseId': str(entry['index']).zfill(3),
+                'guideId': video_groups.get(entry['id']), 'brief': briefs[entry['index']-1]}
+        lesson_out = out / 'lessons'
+        lesson_out.mkdir(exist_ok=True)
+        (lesson_out / (item['courseId'] + '.json')).write_text(json.dumps(item, ensure_ascii=False), encoding='utf-8')
+        entries.append(item)
     data = {**{key: value for key, value in playlist.items() if key != 'entries'},
             'entries': entries, 'groups': groups, 'paths': paths}
     (out / 'catalog.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
     summaries = [{key: value for key, value in group.items() if key not in {'code', 'output', 'ru', 'kk'}} |
                  {lang: {key: value for key, value in group[lang].items() if key != 'html'} for lang in ['ru', 'kk']}
                  for group in groups]
-    (out / 'index.json').write_text(json.dumps({**data, 'groups': summaries}, ensure_ascii=False), encoding='utf-8')
+    index_entries = [{key: value for key, value in entry.items() if key != 'brief'} for entry in entries]
+    (out / 'index.json').write_text(json.dumps({**data, 'groups': summaries, 'entries': index_entries}, ensure_ascii=False), encoding='utf-8')
     print(f'Built full sysadmin playlist: {len(entries)} original videos, {len(groups)} bilingual topic guides')
