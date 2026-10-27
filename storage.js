@@ -9,7 +9,7 @@
   const trackIds=['go','onec','java-advanced','sysadmin'];
   const trackLessons=new Set(window.IMTrackConfig.lessonIds);
   const blankTrack=()=>({completed:[],notes:{},quiz:{},terminal:[],lastLesson:null,active:null,history:[]});
-  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()])),learning:{completed:[],practice:{}}});
+  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()])),learning:{completed:[],practice:{},review:{}}});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   const controls={regression:{weight:[-0.5,3],bias:[-3,7]},scaling:{'scale-mode':['raw','standard','minmax'],multiplier:[1,100]},knn:{k:[1,11],'query-x':[0,10],'query-y':[0,10]}};
   function validateRun(run,finished){
@@ -82,6 +82,7 @@
       const keyValid=key=>{if(typeof key!=='string')return false;const [path,id,...rest]=key.split('/');return rest.length===0&&Object.hasOwn(limits,path)&&(path==='sysadmin-full'?(/^\d{3}$/.test(id)&&Number(id)>=1&&Number(id)<=limits[path]):((id==='start'&&path!=='sysadmin-practice')||(/^\d{2}$/.test(id)&&Number(id)>=1&&Number(id)<=limits[path])))};
       if(!plain(l)||!Array.isArray(l.completed)||l.completed.some(k=>!keyValid(k))||!plain(l.practice))throw new Error('Invalid teaching records');
       out.learning.completed=[...new Set(l.completed)];
+      if(l.review!==undefined){if(!plain(l.review))throw new Error('Invalid review');for(const [key,value] of Object.entries(l.review)){if(!/^sysadmin\/(0[1-9]|[12]\d|3[0-5])$/.test(key)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid review answer');out.learning.review[key]=value}}
       for(const [key,value] of Object.entries(l.practice)){const parts=key.split('/'),number=parts.pop();if(!(['java-full','sysadmin-full'].includes(parts[0])?['1','2','3']:['1','2']).includes(number)||!keyValid(parts.join('/'))||typeof value!=='string'||value.length>10000)throw new Error('Invalid practice record');out.learning.practice[key]=value}
     }
     return out;

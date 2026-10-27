@@ -26,3 +26,7 @@ function bindFullCompletion(button,key,labels,status){
   function draw(){const done=MLStore.get().learning.completed.includes(key);button.textContent=labels[done?1:0];button.setAttribute('aria-pressed',String(done))}
   draw();button.onclick=()=>{const current=MLStore.get().learning,done=current.completed.includes(key),completed=done?current.completed.filter(value=>value!==key):[...current.completed,key];const stored=MLStore.learningUpdate({completed});draw();if(status)status.textContent=stored?jt('Отметка сохранена','Белгі сақталды'):jt('Хранилище недоступно: отметка останется только до закрытия страницы.','Сақтау қолжетімсіз: белгі бет жабылғанша ғана қалады.')};
 }
+function focusFullCourseHeading(){
+  if(!/^#(?:java|sysadmin)\/(?:full|review|topic\/)/.test(location.hash))return;
+  const heading=main.querySelector('h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}
+}
