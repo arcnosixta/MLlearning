@@ -43,5 +43,11 @@ with sync_playwright() as p:
     goto_ready(page,URL+'/?lang=ru#java/topic/01')
     button=page.locator('#java-full-complete');button.click();button.click()
     assert button.get_attribute('aria-pressed')=='false'
+    goto_ready(page,URL+'/?lang=ru#sysadmin/full')
+    page.locator('#sysadmin-full-path').select_option('bash')
+    assert page.locator('.sysadmin-video-card').count()==32
+    assert page.locator('#sysadmin-resume').get_attribute('href')=='#sysadmin/topic/032'
+    page.reload();page.locator('#sysadmin-full-path').wait_for();assert page.locator('#sysadmin-full-path').input_value()=='bash'
+    page.locator('#sysadmin-full-reset').click();assert page.locator('.sysadmin-video-card').count()==106
     browser.close()
 print('PASS filters survive browser Back, reload and actual language switching')

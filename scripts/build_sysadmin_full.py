@@ -22,6 +22,10 @@ def build():
     playlist = json.loads((source / 'playlist.json').read_text(encoding='utf-8'))
     definitions = json.loads((source / 'groups.json').read_text(encoding='utf-8'))
     validate_sysadmin(source, playlist, definitions)
+    paths = json.loads((source / 'paths.json').read_text(encoding='utf-8'))
+    known = {group['id'] for group in definitions}
+    if len({path['id'] for path in paths}) != len(paths) or any(not path['groups'] or len(set(path['groups'])) != len(path['groups']) or not set(path['groups']) <= known for path in paths):
+        raise ValueError('Invalid learning pathway')
     out = ROOT / 'dist/sysadmin-full'
     out.mkdir(parents=True, exist_ok=True)
     cleaner = bleach.Cleaner(
@@ -68,7 +72,7 @@ def build():
         entries.append({**entry, 'courseId': str(entry['index']).zfill(3),
                         'guideId': video_groups.get(entry['id'])})
     data = {**{key: value for key, value in playlist.items() if key != 'entries'},
-            'entries': entries, 'groups': groups}
+            'entries': entries, 'groups': groups, 'paths': paths}
     (out / 'catalog.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
     summaries = [{key: value for key, value in group.items() if key not in {'code', 'output', 'ru', 'kk'}} |
                  {lang: {key: value for key, value in group[lang].items() if key != 'html'} for lang in ['ru', 'kk']}
