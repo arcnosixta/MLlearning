@@ -25,6 +25,16 @@ def build():
     validate_sysadmin(source, playlist, definitions)
     paths = json.loads((source / 'paths.json').read_text(encoding='utf-8'))
     briefs = json.loads((source / 'briefs.json').read_text(encoding='utf-8'))
+    review = json.loads((source / 'review.json').read_text(encoding='utf-8'))
+    if [question['id'] for question in review] != [group['id'] for group in definitions]:
+        raise ValueError('Every topic needs one scenario review question')
+    for question in review:
+        if type(question['answer']) is not int or question['answer'] not in range(3):
+            raise ValueError('Invalid review answer')
+        for lang in ['ru', 'kk']:
+            text = question[lang]
+            if not text['question'] or not text['explanation'] or len(text['options']) != 3 or len(set(text['options'])) != 3:
+                raise ValueError('Incomplete bilingual review question')
     if [brief['id'] for brief in briefs] != [f'{n:03d}' for n in range(1, 107)]:
         raise ValueError('Every video needs its own ordered learning brief')
     for lang in ['ru', 'kk']:
@@ -51,7 +61,7 @@ def build():
         code = (folder / 'lab.sh').read_text(encoding='utf-8')
         output = (folder / 'output.txt').read_text(encoding='utf-8').strip()
         download = f'sysadmin-full/labs/{ident}/lab.sh'
-        item = {**definition, 'code': code, 'output': output, 'download': download}
+        item = {**definition, 'code': code, 'output': output, 'download': download, 'review': review[int(ident)-1]}
         for lang in ['ru', 'kk']:
             raw = (folder / f'{lang}.md').read_text(encoding='utf-8')
             title, body = raw.split('\n', 1)
@@ -91,11 +101,12 @@ def build():
     data = {**{key: value for key, value in playlist.items() if key != 'entries'},
             'entries': entries, 'groups': groups, 'paths': paths}
     (out / 'catalog.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
-    summaries = [{key: value for key, value in group.items() if key not in {'code', 'output', 'ru', 'kk'}} |
+    summaries = [{key: value for key, value in group.items() if key not in {'code', 'output', 'ru', 'kk', 'review'}} |
                  {lang: {key: value for key, value in group[lang].items() if key != 'html'} for lang in ['ru', 'kk']}
                  for group in groups]
     index_entries = [{key: value for key, value in entry.items() if key != 'brief'} for entry in entries]
     (out / 'index.json').write_text(json.dumps({**data, 'groups': summaries, 'entries': index_entries}, ensure_ascii=False), encoding='utf-8')
+    (out / 'review.json').write_text(json.dumps(review, ensure_ascii=False), encoding='utf-8')
     bundled['PLAYLIST.md'] = ('# Оригинальные видео / Түпнұсқа бейнелер\n\n' + '\n'.join(
         f'{entry["courseId"]}. [{entry["title"]}]({entry["url"]}) — {entry["duration"]}' for entry in entries)).encode('utf-8')
     write_study_bundle(out / 'study.zip', bundled, '''# Linux — учебный архив / оқу архиві

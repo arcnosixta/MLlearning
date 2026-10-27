@@ -50,6 +50,11 @@ with tempfile.TemporaryDirectory() as temporary:
         assert download.is_file() and download.is_relative_to(ROOT / 'dist/sysadmin-full/labs')
         assert group['code'] == download.read_text(encoding='utf-8')
         assert group['output'] == (folder / 'output.txt').read_text(encoding='utf-8').strip()
+        assert group['review']['id'] == ident
+        assert type(group['review']['answer']) is int and group['review']['answer'] in range(3)
+        for lang in ['ru', 'kk']:
+            question = group['review'][lang]
+            assert len(set(question['options'])) == 3 and question['question'] and question['explanation']
         for lang, minimum in [('ru', 150), ('kk', 75)]:
             text = group[lang]
             html = text['html']
