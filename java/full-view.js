@@ -24,7 +24,7 @@ async function renderJavaFull(id){
     input.value=record.practice[input.dataset.fullAnswer]||'';
     input.oninput=()=>{const current=window.MLStore.get().learning;const saved=window.MLStore.learningUpdate({practice:{...current.practice,[input.dataset.fullAnswer]:input.value}});status.textContent=saved?jt('Решение сохранено','Шешім сақталды'):jt('Не удалось сохранить. Не закрывай страницу.','Сақтау мүмкін емес. Бетті жаппа.')};
   });
-  main.querySelector('#java-full-complete').onclick=e=>{const current=window.MLStore.get().learning;const saved=window.MLStore.learningUpdate({completed:[...new Set([...current.completed,key])]});if(saved)e.target.textContent=jt('Пройдено ✓','Аяқталды ✓');else status.textContent=jt('Не удалось сохранить прогресс','Ілгерілеуді сақтау мүмкін емес')};
+  bindFullCompletion(main.querySelector('#java-full-complete'),key,[jt('Отметить главу пройденной','Тарауды аяқталды деп белгілеу'),jt('Пройдено ✓ · отменить','Аяқталды ✓ · алып тастау')],status);
 }
 
 async function enhanceJavaFull(hash){

@@ -30,5 +30,18 @@ with sync_playwright() as p:
     page.locator('.java-full-article').wait_for()
     page.go_back();page.locator('#java-full-search').wait_for()
     assert page.locator('#java-full-search').input_value()=='JDBC'
+    goto_ready(page,URL+'/?lang=ru#sysadmin/topic/001')
+    page.locator('[data-sysadmin-answer]').first.fill('keep my work')
+    button=page.locator('#sysadmin-full-complete');button.click();assert button.get_attribute('aria-pressed')=='true'
+    page.locator('#sysadmin-practice-complete').click()
+    button.click();assert button.get_attribute('aria-pressed')=='false'
+    assert page.locator('[data-sysadmin-answer]').first.input_value()=='keep my work'
+    assert page.evaluate("MLStore.get().learning.completed.includes('sysadmin-practice/01')")
+    assert not page.evaluate("MLStore.get().learning.completed.includes('sysadmin-full/001')")
+    page.evaluate('MLStore.import(MLStore.export())');page.reload();page.locator('#sysadmin-practice-complete').wait_for()
+    assert page.locator('#sysadmin-practice-complete').get_attribute('aria-pressed')=='true'
+    goto_ready(page,URL+'/?lang=ru#java/topic/01')
+    button=page.locator('#java-full-complete');button.click();button.click()
+    assert button.get_attribute('aria-pressed')=='false'
     browser.close()
 print('PASS filters survive browser Back, reload and actual language switching')

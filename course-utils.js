@@ -22,3 +22,7 @@ function fullCourseSaveFilters(prefix,values){
   history.replaceState(history.state,'',url.pathname+url.search+url.hash);
   document.querySelectorAll('.language-switch a').forEach(link=>{const next=new URL(url);next.searchParams.set('lang',link.lang);link.href=next.pathname+next.search+next.hash});
 }
+function bindFullCompletion(button,key,labels,status){
+  function draw(){const done=MLStore.get().learning.completed.includes(key);button.textContent=labels[done?1:0];button.setAttribute('aria-pressed',String(done))}
+  draw();button.onclick=()=>{const current=MLStore.get().learning,done=current.completed.includes(key),completed=done?current.completed.filter(value=>value!==key):[...current.completed,key];const stored=MLStore.learningUpdate({completed});draw();if(status)status.textContent=stored?jt('Отметка сохранена','Белгі сақталды'):jt('Хранилище недоступно: отметка останется только до закрытия страницы.','Сақтау қолжетімсіз: белгі бет жабылғанша ғана қалады.')};
+}
