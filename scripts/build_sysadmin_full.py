@@ -12,6 +12,7 @@ from urllib.parse import urlsplit
 import bleach
 import markdown
 from validate_full_sources import validate_sysadmin
+from course_downloads import write_study_bundle, standalone_markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 VIDEO_ID = re.compile(r'^[A-Za-z0-9_-]{11}$')
@@ -41,6 +42,7 @@ def build():
               'blockquote', 'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'details', 'summary'},
         attributes={'a': ['href', 'title']}, protocols={'https', 'http'}, strip=True)
     groups = []
+    bundled = {}
     video_groups = {}
     for definition in definitions:
         ident = definition['id']
@@ -59,12 +61,15 @@ def build():
             label = 'Ожидаемый вывод' if lang == 'ru' else 'Күтілетін нәтиже'
             example = '\n```bash\n' + code.rstrip() + '\n```\n\n**' + label + ':**\n\n```text\n' + output + '\n```\n'
             body = body.replace('{{example}}', example)
+            bundled[f'{ident}/{lang}.md'] = standalone_markdown(raw, example)
             rendered = cleaner.clean(markdown.markdown(body, extensions=['fenced_code', 'tables', 'sane_lists']))
             item[lang] = {'title': title[2:].strip(), 'html': rendered,
                           'description': re.sub(r'[*`]', '', body.strip().split('\n')[0])}
         target = out / 'labs' / ident
         target.mkdir(parents=True, exist_ok=True)
         shutil.copy2(folder / 'lab.sh', target / 'lab.sh')
+        bundled[f'{ident}/lab.sh'] = code.encode('utf-8')
+        bundled[f'{ident}/output.txt'] = (output + '\n').encode('utf-8')
         for video in definition['videoIds']:
             assert VIDEO_ID.fullmatch(video), video
             assert video not in video_groups, ('Video assigned twice', video)
@@ -91,4 +96,29 @@ def build():
                  for group in groups]
     index_entries = [{key: value for key, value in entry.items() if key != 'brief'} for entry in entries]
     (out / 'index.json').write_text(json.dumps({**data, 'groups': summaries, 'entries': index_entries}, ensure_ascii=False), encoding='utf-8')
+    bundled['PLAYLIST.md'] = ('# Оригинальные видео / Түпнұсқа бейнелер\n\n' + '\n'.join(
+        f'{entry["courseId"]}. [{entry["title"]}]({entry["url"]}) — {entry["duration"]}' for entry in entries)).encode('utf-8')
+    write_study_bundle(out / 'study.zip', bundled, '''# Linux — учебный архив / оқу архиві
+
+35 Bash-примеров, ожидаемые результаты и RU/ҚАЗ разборы. Видео остаются на YouTube;
+в PLAYLIST.md находятся все106 исходных ссылок, для просмотра нужен интернет.
+
+Распакуй в отдельную папку. Нужны Bash4+, awk, sed, grep, sort, coreutils;
+для29/lab.sh также нужен OpenSSL с проверкой имени сертификата.
+В Linux/WSL/Git Bash выполни:
+
+```sh
+bash 01/lab.sh
+```
+
+Сравни вывод с01/output.txt. Примеры не требуют root, сети или реальных служб.
+Большинство моделируют состояние на фиксированных учебных данных; они не заменяют
+серверную лабораторную на VM. Скрипт29 создаёт только временный учебный сертификат.
+Не запускай Bash-файлы через PowerShell как PowerShell-код.
+Реальные настройки дисков, firewall, SSH, sudo/PAM изучаются на отдельном стенде.
+Прогресс сайта и личные ответы не входят в архив: экспортируй их в разделе данных.
+
+При наличии sha256sum: `sha256sum -c MANIFEST.sha256` проверяет целостность файлов.
+Әр бөлімнің lab.sh файлын Bash ішінде орындап, output.txt нәтижесімен салыстыр.
+''')
     print(f'Built full sysadmin playlist: {len(entries)} original videos, {len(groups)} bilingual topic guides')

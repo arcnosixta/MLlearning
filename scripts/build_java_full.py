@@ -8,6 +8,7 @@ from pathlib import Path
 import bleach
 import markdown
 from validate_full_sources import validate_java
+from course_downloads import write_study_bundle, standalone_markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,6 +24,7 @@ def build():
               'blockquote', 'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'details', 'summary'},
         attributes={'a': ['href', 'title']}, protocols={'https', 'http'}, strip=True)
     chapters = []
+    bundled = {}
     for entry in syllabus:
         folder = source / entry['id']
         code = (folder / 'Main.java').read_text(encoding='utf-8')
@@ -37,12 +39,15 @@ def build():
             label = 'Ожидаемый вывод' if lang == 'ru' else 'Күтілетін нәтиже'
             example = '\n```java\n' + code.rstrip() + '\n```\n\n**' + label + ':**\n\n```text\n' + output + '\n```\n'
             body = body.replace('{{example}}', example)
+            bundled[f'{entry["id"]}/{lang}.md'] = standalone_markdown(text, example)
             rendered = cleaner.clean(markdown.markdown(body, extensions=['fenced_code', 'tables', 'sane_lists']))
             item[lang] = {'title': title[2:].strip(), 'html': rendered,
                           'description': re.sub(r'[*`]', '', body.strip().split('\n')[0])}
         target = out / entry['id']
         target.mkdir(exist_ok=True)
         shutil.copy2(folder / 'Main.java', target / 'Main.java')
+        bundled[f'{entry["id"]}/Main.java'] = code.encode('utf-8')
+        bundled[f'{entry["id"]}/output.txt'] = (output + '\n').encode('utf-8')
         if (folder / 'lab').exists():
             # Fixed timestamps/order keep the downloadable lab byte-for-byte reproducible.
             with zipfile.ZipFile(target / 'lab.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
@@ -54,6 +59,7 @@ def build():
                     info.compress_type = zipfile.ZIP_DEFLATED
                     archive.writestr(info, data)
             item['lab'] = f'java-full/{entry["id"]}/lab.zip'
+            bundled[f'{entry["id"]}/lab.zip'] = (target / 'lab.zip').read_bytes()
         chapters.append(item)
         # Write again after optional lab metadata has been attached.
         (target / 'chapter.json').write_text(json.dumps(item, ensure_ascii=False), encoding='utf-8')
@@ -63,4 +69,23 @@ def build():
              for item in chapters]
     (out / 'index.json').write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
     shutil.copy2(source / 'sources.json', out / 'sources.json')
+    write_study_bundle(out / 'study.zip', bundled, '''# Java — учебный архив / оқу архиві
+
+26 независимых примеров и русские/казахские разборы. Нужен JDK 17+.
+Распакуй архив в отдельную папку. Каждый Main запускается отдельно:
+
+```sh
+javac --release 17 -encoding UTF-8 01/Main.java
+java -cp 01 Main
+```
+
+Ожидаемый вывод — в output.txt соответствующей главы, теория и задачи — в ru.md/kk.md.
+Основные примеры не требуют внешних библиотек. Глава20 без аргумента не исполняет SQL;
+реальная JDBC-лабораторная требует H2. GUI главы24 требует экрана только с --window.
+Дополнительная Maven-лабораторная: распакуй25/lab.zip отдельно, затем mvn test.
+Решения в Markdown заполняются самостоятельно; браузерный прогресс в этот архив не входит.
+
+При наличии sha256sum: `sha256sum -c MANIFEST.sha256` проверяет целостность файлов.
+Java мысалдарын әр каталогтан бөлек орында. Нәтиже output.txt ішінде.
+''')
     print(f'Built {len(chapters)} full bilingual Java chapters')
