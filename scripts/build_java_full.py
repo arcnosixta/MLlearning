@@ -7,6 +7,7 @@ from pathlib import Path
 
 import bleach
 import markdown
+from validate_full_sources import validate_java
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,8 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def build():
     source = ROOT / 'java/full'
     out = ROOT / 'dist/java-full'
-    out.mkdir(parents=True, exist_ok=True)
     syllabus = json.loads((source / 'catalog.json').read_text(encoding='utf-8'))
+    validate_java(source, syllabus)
+    out.mkdir(parents=True, exist_ok=True)
     cleaner = bleach.Cleaner(
         tags={'p', 'h2', 'h3', 'h4', 'pre', 'code', 'ul', 'ol', 'li', 'strong', 'em',
               'blockquote', 'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'details', 'summary'},
@@ -23,8 +25,6 @@ def build():
     chapters = []
     for entry in syllabus:
         folder = source / entry['id']
-        if not folder.exists():
-            continue  # Chapters can be authored incrementally; coverage is verified by tests.
         code = (folder / 'Main.java').read_text(encoding='utf-8')
         output = (folder / 'output.txt').read_text(encoding='utf-8').strip()
         item = {**entry, 'code': code, 'output': output}

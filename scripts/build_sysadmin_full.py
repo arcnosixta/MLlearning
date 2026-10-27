@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 
 import bleach
 import markdown
+from validate_full_sources import validate_sysadmin
 
 ROOT = Path(__file__).resolve().parents[1]
 VIDEO_ID = re.compile(r'^[A-Za-z0-9_-]{11}$')
@@ -18,11 +19,9 @@ VIDEO_ID = re.compile(r'^[A-Za-z0-9_-]{11}$')
 
 def build():
     source = ROOT / 'sysadmin/full'
-    if not (source / 'playlist.json').exists() or not (source / 'groups.json').exists():
-        print('Full sysadmin playlist sources are not ready yet')
-        return
     playlist = json.loads((source / 'playlist.json').read_text(encoding='utf-8'))
     definitions = json.loads((source / 'groups.json').read_text(encoding='utf-8'))
+    validate_sysadmin(source, playlist, definitions)
     out = ROOT / 'dist/sysadmin-full'
     out.mkdir(parents=True, exist_ok=True)
     cleaner = bleach.Cleaner(
@@ -35,8 +34,6 @@ def build():
         ident = definition['id']
         assert re.fullmatch(r'\d{2}', ident), ident
         folder = source / 'guides' / ident
-        if not folder.exists():
-            continue  # Allows concurrent authorship; the verifier enforces final coverage.
         code = (folder / 'lab.sh').read_text(encoding='utf-8')
         output = (folder / 'output.txt').read_text(encoding='utf-8').strip()
         download = f'sysadmin-full/labs/{ident}/lab.sh'
