@@ -9,7 +9,7 @@ async function renderJavaFull(id){
     const search=main.querySelector('#java-full-search'),progress=main.querySelector('#java-full-progress'),filters=fullCourseFilters('java',{q:'',progress:'all'});
     search.value=filters.q;progress.value=['todo','done'].includes(filters.progress)?filters.progress:'all';
     const cards=[...main.querySelectorAll('.week-card')];
-    function draw(){let count=0;fullCourseSaveFilters('java',{q:search.value,progress:progress.value});const query=search.value.toLocaleLowerCase().trim();cards.forEach((card,i)=>{const c=chapters[i],done=MLStore.get().learning.completed.includes('java-full/'+c.id),visible=(!query||(c[lang].title+' '+c[lang].description).toLocaleLowerCase().includes(query))&&(progress.value==='all'||(progress.value==='done'?done:!done));card.hidden=!visible;if(visible)count++});const first=cards.find((card,i)=>!card.hidden&&!MLStore.get().learning.completed.includes('java-full/'+chapters[i].id))||cards.find(card=>!card.hidden),next=main.querySelector('#java-full-next');next.hidden=!first;if(first){next.href=first.getAttribute('href');next.textContent=jt('Перейти к следующей главе','Келесі тарауға өту')}main.querySelector('#java-full-count').textContent=jt('Показано','Көрсетілген')+': '+count+' / '+chapters.length}
+    function draw(){let count=0;const current=MLStore.get().learning;fullCourseSaveFilters('java',{q:search.value,progress:progress.value});const query=search.value.toLocaleLowerCase().trim();cards.forEach((card,i)=>{const c=chapters[i],done=current.completed.includes('java-full/'+c.id),visible=(!query||(c[lang].title+' '+c[lang].description).toLocaleLowerCase().includes(query))&&(progress.value==='all'||(progress.value==='done'?done:!done));card.hidden=!visible;if(visible)count++});const first=cards.find((card,i)=>!card.hidden&&!current.completed.includes('java-full/'+chapters[i].id))||cards.find(card=>!card.hidden),next=main.querySelector('#java-full-next');next.hidden=!first;if(first){next.href=first.getAttribute('href');next.textContent=jt('Перейти к следующей главе','Келесі тарауға өту')}main.querySelector('#java-full-count').textContent=jt('Показано','Көрсетілген')+': '+count+' / '+chapters.length}
     search.oninput=draw;progress.onchange=draw;draw();
     return;
   }
@@ -33,7 +33,7 @@ async function enhanceJavaFull(hash){
   const overview=hash==='#java'||hash==='#track/java-advanced';
   if(!week&&!advanced&&!overview&&!['','#catalog','#progress'].includes(hash))return;
   const chapters=await javaFullData();if(hash!==location.hash)return;
-  const lang=window.ML_LOCALE==='kk'?'kk':'ru';
+  const lang=window.ML_LOCALE==='kk'?'kk':'ru',learning=MLStore.get().learning;
   if(hash===''||hash==='#catalog'){
     main.querySelectorAll('[data-course-id="java"],[data-course-id="java-advanced"]').forEach(card=>{
       if(card.querySelector('.java-full-link'))return;
@@ -42,7 +42,7 @@ async function enhanceJavaFull(hash){
     });return;
   }
   if(main.querySelector('.java-full-links,.java-full-banner'))return;
-  const completed=chapters.filter(c=>window.MLStore.get().learning.completed.includes('java-full/'+c.id)).length;
+  const completed=chapters.filter(c=>learning.completed.includes('java-full/'+c.id)).length;
   const target=week||advanced?main.querySelector('.java-lesson,.teaching-page'):hash==='#progress'?main.querySelector('.studio-dashboard'):main.querySelector('.java-page,.tracks-page');
   if(!target)return;
   const block=document.createElement('aside');

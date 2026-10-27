@@ -32,7 +32,9 @@ jobs:
       - run: python -m pip install -r requirements.txt playwright
       - run: python -m playwright install --with-deps chromium
       - run: node --check app.js && node --check lab.js
+      - run: python tests/full_source_check.py
       - run: python scripts/build.py
+      - run: python tests/course_bundle_check.py
       - run: python courses/verify.py
       - run: python tests/verify_file_path.py
       - run: python tests/verify_tracks.py
@@ -63,6 +65,9 @@ jobs:
           python tests/browser_java.py
           python tests/browser_java_full.py
           python tests/browser_sysadmin_full.py
+          python tests/browser_course_loading.py
+          python tests/browser_course_study.py
+          python tests/browser_course_review.py
           python tests/browser_tracks.py
           python tests/browser_teaching.py
           python tests/browser_studio.py

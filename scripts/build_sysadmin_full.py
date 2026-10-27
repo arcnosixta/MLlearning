@@ -107,22 +107,25 @@ def build():
     index_entries = [{key: value for key, value in entry.items() if key != 'brief'} for entry in entries]
     (out / 'index.json').write_text(json.dumps({**data, 'groups': summaries, 'entries': index_entries}, ensure_ascii=False), encoding='utf-8')
     (out / 'review.json').write_text(json.dumps(review, ensure_ascii=False), encoding='utf-8')
+    bundled['REVIEW.json'] = json.dumps(review, ensure_ascii=False, indent=2).encode('utf-8')
+    bundled['LESSON_GOALS.json'] = json.dumps(briefs, ensure_ascii=False, indent=2).encode('utf-8')
     bundled['PLAYLIST.md'] = ('# Оригинальные видео / Түпнұсқа бейнелер\n\n' + '\n'.join(
         f'{entry["courseId"]}. [{entry["title"]}]({entry["url"]}) — {entry["duration"]}' for entry in entries)).encode('utf-8')
     write_study_bundle(out / 'study.zip', bundled, '''# Linux — учебный архив / оқу архиві
 
 35 Bash-примеров, ожидаемые результаты и RU/ҚАЗ разборы. Видео остаются на YouTube;
-в PLAYLIST.md находятся все106 исходных ссылок, для просмотра нужен интернет.
+В REVIEW.json находятся 35 сценариев с ответами, в LESSON_GOALS.json — цели каждого видео.
+В PLAYLIST.md находятся все 106 исходных ссылок, для просмотра нужен интернет.
 
 Распакуй в отдельную папку. Нужны Bash4+, awk, sed, grep, sort, coreutils;
-для29/lab.sh также нужен OpenSSL с проверкой имени сертификата.
+для 29/lab.sh также нужен OpenSSL с проверкой имени сертификата.
 В Linux/WSL/Git Bash выполни:
 
 ```sh
 bash 01/lab.sh
 ```
 
-Сравни вывод с01/output.txt. Примеры не требуют root, сети или реальных служб.
+Сравни вывод с 01/output.txt. Примеры не требуют root, сети или реальных служб.
 Большинство моделируют состояние на фиксированных учебных данных; они не заменяют
 серверную лабораторную на VM. Скрипт29 создаёт только временный учебный сертификат.
 Не запускай Bash-файлы через PowerShell как PowerShell-код.
