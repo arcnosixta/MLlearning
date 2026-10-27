@@ -58,6 +58,9 @@ def build():
             assert video not in video_groups, ('Video assigned twice', video)
             video_groups[video] = ident
         groups.append(item)
+        guide_out = out / 'guides'
+        guide_out.mkdir(exist_ok=True)
+        (guide_out / (ident + '.json')).write_text(json.dumps(item, ensure_ascii=False), encoding='utf-8')
     entries = []
     for entry in playlist['entries']:
         assert VIDEO_ID.fullmatch(entry['id']), entry['id']
@@ -67,4 +70,8 @@ def build():
     data = {**{key: value for key, value in playlist.items() if key != 'entries'},
             'entries': entries, 'groups': groups}
     (out / 'catalog.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+    summaries = [{key: value for key, value in group.items() if key not in {'code', 'output', 'ru', 'kk'}} |
+                 {lang: {key: value for key, value in group[lang].items() if key != 'html'} for lang in ['ru', 'kk']}
+                 for group in groups]
+    (out / 'index.json').write_text(json.dumps({**data, 'groups': summaries}, ensure_ascii=False), encoding='utf-8')
     print(f'Built full sysadmin playlist: {len(entries)} original videos, {len(groups)} bilingual topic guides')

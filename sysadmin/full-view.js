@@ -1,16 +1,12 @@
 /* Original playlist videos plus explicitly authored, independent topic guides. */
-let sysadminFullPromise;
-function sysadminFullData(){
-  if(!sysadminFullPromise)sysadminFullPromise=fetch('sysadmin-full/catalog.json').then(r=>{if(!r.ok)throw new Error('Sysadmin playlist unavailable');return r.json()}).catch(e=>{sysadminFullPromise=null;throw e});
-  return sysadminFullPromise;
-}
+function sysadminFullData(){return fullCourseJSON('sysadmin-full/index.json')}
 function sysadminFullText(item){return item[window.ML_LOCALE==='kk'?'kk':'ru']}
 function sysadminFullDuration(seconds){
   const hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60);
   return hours+' '+jt('ч','сағ')+' '+minutes+' '+jt('мин','мин');
 }
 async function renderSysadminFull(id){
-  const requested=location.hash,data=await sysadminFullData();if(requested!==location.hash)return;
+  const requested=location.hash;let data;try{data=await sysadminFullData()}catch{if(requested===location.hash)fullCourseFailure('#sysadmin/full');return}if(requested!==location.hash)return;
   const entries=data.entries,groups=data.groups,record=window.MLStore.get().learning;
   const groupById=new Map(groups.map(group=>[group.id,group]));
   const channel=typeof data.channel==='string'?data.channel:'YouTube';
@@ -33,7 +29,7 @@ async function renderSysadminFull(id){
     }
     search.oninput=draw;groupFilter.onchange=draw;progress.onchange=draw;draw();return;
   }
-  const index=entries.findIndex(entry=>entry.courseId===id),entry=entries[index],group=entry&&groupById.get(entry.guideId);
+  const index=entries.findIndex(entry=>entry.courseId===id),entry=entries[index];let group=entry&&groupById.get(entry.guideId);if(group){try{group=await fullCourseJSON('sysadmin-full/guides/'+group.id+'.json')}catch{if(requested===location.hash)fullCourseFailure('#sysadmin/full');return}if(requested!==location.hash)return;}
   if(!entry||!group){main.innerHTML=`<section class="tracks-page"><h1>${jt('Видео не найдено','Бейне табылмады')}</h1><a class="button" href="#sysadmin/full">${jt('Весь плейлист','Толық плейлист')} →</a></section>`;return}
   const key='sysadmin-full/'+entry.courseId,text=sysadminFullText(group),related=entries.filter(video=>video.guideId===group.id);
   const body=text.html.replace(/\{\{answer:([123])\}\}/g,(_,number)=>`<label for="sysadmin-answer-${number}">${jt('Твоё решение','Сенің шешімің')} ${number}</label><textarea id="sysadmin-answer-${number}" class="java-note" data-sysadmin-answer="${key}/${number}" rows="5" maxlength="10000"></textarea>`);

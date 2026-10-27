@@ -1,18 +1,14 @@
 /* Complete textbook route; the semester and its exam IDs remain stable. */
-let javaFullPromise;
-function javaFullData(){
-  if(!javaFullPromise)javaFullPromise=fetch('java-full/catalog.json').then(r=>{if(!r.ok)throw new Error('Java chapters unavailable');return r.json()}).catch(e=>{javaFullPromise=null;throw e});
-  return javaFullPromise;
-}
+function javaFullData(){return fullCourseJSON('java-full/index.json')}
 async function renderJavaFull(id){
-  const requested=location.hash,chapters=await javaFullData();if(requested!==location.hash)return;
+  const requested=location.hash;let chapters;try{chapters=await javaFullData()}catch{if(requested===location.hash)fullCourseFailure('#java/full');return}if(requested!==location.hash)return;
   const lang=window.ML_LOCALE==='kk'?'kk':'ru',record=window.MLStore.get().learning;
   if(!id){
     const completed=chapters.filter(c=>record.completed.includes('java-full/'+c.id)).length;
     main.innerHTML=`<section class="java-page java-full"><a class="course-home-link" href="#java">← ${jt('Семестр Java','Java семестрі')}</a><div class="eyebrow">JAVA / ${jt('ПОЛНЫЙ КУРС','ТОЛЫҚ КУРС')}</div><h1>${jt('Java: от первой программы до приложения.','Java: алғашқы бағдарламадан қосымшаға дейін.')}</h1><p class="lesson-intro">${jt('Подробные главы по книге Java from EPAM, двум презентациям и сборнику задач. Теория, запускаемый код, три задачи с разбором и самопроверка в каждой главе.','Java from EPAM кітабы, екі презентация және есептер жинағы бойынша толық тараулар. Әр тарауда теория, іске қосылатын код, шешімі бар үш есеп және өзін тексеру.')}</p><p>${jt('Пройдено','Аяқталды')}: ${completed} / ${chapters.length} · Java 17+ · RU / ҚАЗ</p><p>${jt('Сначала прочитай объяснение, предскажи вывод и запусти Main.java. Решай задачи до открытия разбора. Ответы сохраняются на этом устройстве и входят в экспорт данных.','Алдымен түсіндірмені оқып, нәтижені болжа және Main.java орында. Талдауды ашпай есепті шеш. Жауаптар осы құрылғыда сақталып, деректер экспортына кіреді.')}</p><div class="java-controls"><a class="chip" href="#java">${jt('14 недель и РК','14 апта және РК')}</a><a class="chip" href="#track/java-advanced">${jt('Углублённая практика','Тереңдетілген тәжірибе')}</a></div><div class="week-grid">${chapters.map(c=>`<a class="week-card ${record.completed.includes('java-full/'+c.id)?'done':''}" href="#java/topic/${c.id}"><span class="eyebrow">${jt('Глава','Тарау')} ${c.id}</span><h3>${escapeHTML(c[lang].title)}</h3><p>${escapeHTML(c[lang].description)}</p><div class="week-bottom"><span>${jt('Теория · код · 3 задачи','Теория · код · 3 есеп')}</span><span>${record.completed.includes('java-full/'+c.id)?'✓':'↗'}</span></div></a>`).join('')}</div></section>`;
     return;
   }
-  const index=chapters.findIndex(c=>c.id===id),chapter=chapters[index];
+  const index=chapters.findIndex(c=>c.id===id);let chapter=chapters[index];if(chapter){try{chapter=await fullCourseJSON('java-full/'+id+'/chapter.json')}catch{if(requested===location.hash)fullCourseFailure('#java/full');return}if(requested!==location.hash)return;}
   if(!chapter){main.innerHTML=`<section class="java-page"><h1>${jt('Глава не найдена','Тарау табылмады')}</h1><a class="button" href="#java/full">${jt('Все главы','Барлық тарау')} →</a></section>`;return}
   const key='java-full/'+id,text=chapter[lang];
   // HTML is generated and sanitized at build time; user input is assigned through .value.

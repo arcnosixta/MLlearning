@@ -55,6 +55,12 @@ def build():
                     archive.writestr(info, data)
             item['lab'] = f'java-full/{entry["id"]}/lab.zip'
         chapters.append(item)
+        # Write again after optional lab metadata has been attached.
+        (target / 'chapter.json').write_text(json.dumps(item, ensure_ascii=False), encoding='utf-8')
     (out / 'catalog.json').write_text(json.dumps(chapters, ensure_ascii=False), encoding='utf-8')
+    index = [{key: value for key, value in item.items() if key not in {'code', 'output', 'ru', 'kk'}} |
+             {lang: {key: value for key, value in item[lang].items() if key != 'html'} for lang in ['ru', 'kk']}
+             for item in chapters]
+    (out / 'index.json').write_text(json.dumps(index, ensure_ascii=False), encoding='utf-8')
     shutil.copy2(source / 'sources.json', out / 'sources.json')
     print(f'Built {len(chapters)} full bilingual Java chapters')
