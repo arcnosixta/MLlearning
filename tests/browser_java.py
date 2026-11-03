@@ -56,9 +56,9 @@ with sync_playwright() as p:
     assert page.evaluate("()=>{const backup=MLStore.export(),old=JSON.parse(backup);delete old.java;MLStore.import(JSON.stringify(old));const ok=MLStore.get().java.completed.length===0;MLStore.import(backup);return ok}")
     assert page.evaluate("()=>{const before=MLStore.export(),bad=JSON.parse(before);bad.java.completed=['99'];try{MLStore.import(JSON.stringify(bad));return false}catch{return MLStore.export()===before}}")
     page.set_viewport_size({'width':390,'height':844})
-    for route in ['', '#java','#java/week/07','#exam/rk1','#exams','#course','#files']:
+    for route in ['', '#java','#java/week/07','#exam/rk1','#exams','#course','#course/labs']:
         goto_ready(page,url+'/?lang=kk'+route)
-        selector='.campus-hero' if not route else '.week-card' if route=='#java' else '#java-complete' if '/week/' in route else '#exam-start' if route=='#exam/rk1' else '.exam-tile' if route=='#exams' else '.module-card' if route=='#course' else '.file-card'
+        selector='.campus-hero' if not route else '.week-card' if route=='#java' else '#java-complete' if '/week/' in route else '#exam-start' if route=='#exam/rk1' else '.exam-tile' if route=='#exams' else '.ml-weeks li'
         page.locator(selector).first.wait_for()
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),route
     goto_ready(page,url+'/?lang=kk');page.locator('.campus-hero').wait_for();page.screenshot(path=str(ROOT/'artifacts/imlearning-mobile.png'),full_page=True)

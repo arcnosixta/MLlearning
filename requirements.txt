@@ -1,7 +1,9 @@
-# Exact versions used to verify all 24 downloadable examples.
+# Pinned build and ML laboratory dependencies.
 numpy==2.5.3
 pandas==3.0.5
 scikit-learn==1.9.1
 joblib==1.6.0
 Markdown==3.11.1
 bleach==6.4.0
+matplotlib==3.11.2
+seaborn==0.13.2

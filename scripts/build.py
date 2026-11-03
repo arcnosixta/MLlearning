@@ -7,49 +7,37 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'dist'
 OUT.mkdir(exist_ok=True)
-for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'studio.css', 'motion.css', 'app.js', 'icon.svg', 'lab.js', 'locale.js', 'track-config.js', 'storage.js']:
-    source = ROOT / name
-    if source.exists():
-        shutil.copy2(source, OUT / name)
-app_source='\n'.join((ROOT/name).read_text(encoding='utf-8') for name in ['java/terminal.js','java/exam-core.js','teaching/view.js','app.js','data-view.js','files-view.js','java/java-view.js','course-utils.js','java/full-view.js','sysadmin/full-view.js','sysadmin/review-view.js','java/exam-view.js','tracks/view.js','tracks/exam-view.js','studio.js','sound.js','motion.js'])
-(OUT/'app.js').write_text(app_source,encoding='utf-8')
-lessons = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'lessons').glob('*.json'))]
-(OUT / 'lessons.json').write_text(json.dumps(lessons, ensure_ascii=False), encoding='utf-8')
-if (ROOT / 'examples').exists():
-    shutil.copytree(ROOT / 'examples', OUT / 'examples', dirs_exist_ok=True)
-print(f'Built {len(lessons)} lessons in {OUT}')
+# Clear only retired ML artifacts left behind by previous builds.
+for name in ('examples', 'file-lessons', 'notebooks', 'teaching-examples/ml', 'teaching-examples/files'):
+    retired = OUT / name
+    if retired.exists():
+        if not retired.resolve().is_relative_to(OUT.resolve()) or not OUT.resolve().is_relative_to(ROOT):
+            raise ValueError(f'Unexpected retired asset location: {retired}')
+        shutil.rmtree(retired)
+for name in ('lessons.json', 'lessons.kk.json', 'file-course.json', 'lab.js', 'lab.kk.js'):
+    (OUT / name).unlink(missing_ok=True)
+
+for name in ['index.html', 'styles.css', 'academy.css', 'tracks.css', 'studio.css', 'motion.css', 'icon.svg', 'locale.js', 'track-config.js', 'storage.js']:
+    shutil.copy2(ROOT / name, OUT / name)
+app_source = '\n'.join((ROOT / name).read_text(encoding='utf-8') for name in [
+    'java/terminal.js', 'java/exam-core.js', 'teaching/view.js', 'app.js', 'data-view.js',
+    'java/java-view.js', 'course-utils.js', 'java/full-view.js', 'sysadmin/full-view.js', 'sysadmin/review-view.js',
+    'java/exam-view.js', 'tracks/view.js', 'tracks/exam-view.js', 'studio.js', 'sound.js', 'motion.js',
+])
+ml_source = '\n'.join((ROOT / 'ml' / name).read_text(encoding='utf-8') for name in ['chart.js', 'course.js', 'reader.js'])
+(OUT / 'app.js').write_text(app_source + '\n' + ml_source, encoding='utf-8')
 shutil.copytree(ROOT / 'audio', OUT / 'audio', dirs_exist_ok=True)
 
-# Generate localized assets from one application source, with longest-match,
-# single-pass replacements: translated words are never translated a second time.
-dictionary = json.loads((ROOT/'i18n/ui.kk.json').read_text(encoding='utf-8'))
-pattern = re.compile('|'.join(re.escape(k) for k in sorted(dictionary,key=len,reverse=True)))
-for name in ['app', 'lab']:
-    text = app_source if name == 'app' else (ROOT/f'{name}.js').read_text(encoding='utf-8')
-    text = pattern.sub(lambda match:dictionary[match[0]], text)
-    if name == 'app':
-        text = text.replace("fetch('lessons.json')", "fetch('lessons.kk.json')")
-        text = text.replace("s.src='lab.js'", "s.src='lab.kk.js'")
-        text = text.replace('href="examples/', 'href="examples/kk/')
-    (OUT/f'{name}.kk.js').write_text(text,encoding='utf-8')
-shutil.copy2(ROOT/'i18n/ui.kk.json', OUT/'ui.kk.json')
-translations=json.loads((ROOT/'i18n/lessons.kk.json').read_text(encoding='utf-8'))
-assert len(translations)==len(lessons)==24
-localized=[]
-(OUT/'examples/kk').mkdir(exist_ok=True)
-code_words={'условные единицы':'шартты бірлік','Учебная модель с нулевым свободным членом':'Бос мүшесі нөлге тең оқу моделі','Цена для':'Баға, аудан','Нужен хотя бы один элемент':'Кемінде бір элемент қажет','футбол команда гол':'футбол команда гол','хоккей команда матч':'хоккей команда матч','спорт победа футбол':'спорт жеңіс футбол','код программа python':'код бағдарлама python','python данные код':'python деректер код','программа алгоритм данные':'бағдарлама алгоритм деректер','данные python':'деректер python'}
-code_pattern=re.compile('|'.join(re.escape(k) for k in sorted(code_words,key=len,reverse=True)))
-for original, translated in zip(lessons,translations):
-    row={**original,**translated}
-    assert set(translated)=={'title','intro','theory','insight','expected','task','hint','quiz'}
-    row['code']=code_pattern.sub(lambda m:code_words[m[0]],original['code'])
-    localized.append(row)
-    (OUT/'examples/kk'/f"{row['id']}.py").write_text(row['code'],encoding='utf-8')
-(OUT/'lessons.kk.json').write_text(json.dumps(localized,ensure_ascii=False),encoding='utf-8')
-print('Built complete Kazakh interface, 24 lessons and localized examples')
+# Keep the existing translation dictionary for older interface modules.
+# ML uses its own explicit RU/KK strings and is appended after substitution.
+dictionary = json.loads((ROOT / 'i18n/ui.kk.json').read_text(encoding='utf-8'))
+pattern = re.compile('|'.join(re.escape(key) for key in sorted(dictionary, key=len, reverse=True)))
+translated = pattern.sub(lambda match: dictionary[match[0]], app_source)
+(OUT / 'app.kk.js').write_text(translated + '\n' + ml_source, encoding='utf-8')
+shutil.copy2(ROOT / 'i18n/ui.kk.json', OUT / 'ui.kk.json')
 
-from build_notebooks import build as build_notebooks
-build_notebooks()
+from build_ml import build as build_ml
+build_ml(OUT)
 
 java_weeks=[json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT/'java/weeks').glob('*.json'))]
 assert len(java_weeks)==14

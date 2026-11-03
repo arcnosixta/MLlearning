@@ -9,7 +9,10 @@
   const trackIds=['go','onec','java-advanced','sysadmin'];
   const trackLessons=new Set(window.IMTrackConfig.lessonIds);
   const blankTrack=()=>({completed:[],notes:{},quiz:{},terminal:[],lastLesson:null,active:null,history:[]});
-  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()])),learning:{completed:[],practice:{},review:{}}});
+  const mlWeek=id=>typeof id==='string'&&/^(0[1-9]|1[0-4])$/.test(id);
+  const mlTopic=id=>/^(0[1-9]|1[0-4]|project)\/[1-6]$/.test(id);
+  const blankML=()=>({completed:[],lastWeek:null,notes:{},answers:{},practice:{}});
+  const blank=()=>({version:1,updatedAt:new Date().toISOString(),completed:[],answers:{},notes:{},lastLesson:null,labs:{active:'regression'},language:'ru',files:blankFiles(),mlSemester:blankML(),java:blankJava(),tracks:Object.fromEntries(trackIds.map(id=>[id,blankTrack()])),learning:{completed:[],practice:{},review:{}}});
   const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
   const controls={regression:{weight:[-0.5,3],bias:[-3,7]},scaling:{'scale-mode':['raw','standard','minmax'],multiplier:[1,100]},knn:{k:[1,11],'query-x':[0,10],'query-y':[0,10]}};
   function validateRun(run,finished){
@@ -77,6 +80,25 @@
         record.active=t.active===null?null:attempt(t.active,false);record.history=t.history.map(run=>attempt(run,true));if(new Set(record.history.map(r=>r.id)).size!==record.history.length)throw new Error('Duplicate track attempt');out.tracks[course]=record;
       }
     }
+    if(input.mlSemester!==undefined){
+      const ml=input.mlSemester;
+      if(!plain(ml)||!Array.isArray(ml.completed)||ml.completed.some(id=>!mlWeek(id))||
+         !(ml.lastWeek===null||mlWeek(ml.lastWeek))||![ml.notes,ml.answers,ml.practice].every(plain))throw new Error('Invalid ML semester');
+      out.mlSemester.completed=[...new Set(ml.completed)];
+      out.mlSemester.lastWeek=ml.lastWeek;
+      for(const [id,value] of Object.entries(ml.notes)){
+        if(!(mlWeek(id)||id==='project')||typeof value!=='string'||value.length>10000)throw new Error('Invalid ML note');
+        out.mlSemester.notes[id]=value;
+      }
+      for(const [id,value] of Object.entries(ml.answers)){
+        if(!mlTopic(id)||!Number.isInteger(value)||value<0||value>2)throw new Error('Invalid ML answer');
+        out.mlSemester.answers[id]=value;
+      }
+      for(const [id,value] of Object.entries(ml.practice)){
+        if(!mlTopic(id)||typeof value!=='string'||value.length>10000)throw new Error('Invalid ML solution');
+        out.mlSemester.practice[id]=value;
+      }
+    }
     if(input.learning!==undefined){
       const l=input.learning,limits={ml:24,files:7,java:14,'java-full':26,'sysadmin-full':106,'sysadmin-practice':35,go:13,onec:13,'java-advanced':13,sysadmin:13};
       const keyValid=key=>{if(typeof key!=='string')return false;const [path,id,...rest]=key.split('/');return rest.length===0&&Object.hasOwn(limits,path)&&(path==='sysadmin-full'?(/^\d{3}$/.test(id)&&Number(id)>=1&&Number(id)<=limits[path]):((id==='start'&&path!=='sysadmin-practice')||(/^\d{2}$/.test(id)&&Number(id)>=1&&Number(id)<=limits[path])))};
@@ -103,27 +125,12 @@
     get:()=>structuredClone(state),
     isPersistent:()=>persistent,
     update,
-    answer:(id,value)=>update({answers:{...state.answers,[id]:value}}),
-    note:(id,value)=>update({notes:{...state.notes,[id]:value}}),
-    fileVisit:id=>update({files:{...state.files,lastLesson:id}}),
-    fileNote:(id,value)=>update({files:{...state.files,notes:{...state.files.notes,[id]:value}}}),
-    fileAnswer:(id,value)=>update({files:{...state.files,answers:{...state.files.answers,[id]:value}}}),
-    fileComplete:id=>update({files:{...state.files,completed:[...new Set([...state.files.completed,id])]}}),
+    mlUpdate:patch=>update({mlSemester:{...state.mlSemester,...patch}}),
     javaUpdate:patch=>update({java:{...state.java,...patch}}),
     trackUpdate:(course,patch)=>{if(!trackIds.includes(course))throw new Error('Unknown track');return update({tracks:{...state.tracks,[course]:{...state.tracks[course],...patch}}})},
     learningUpdate:patch=>update({learning:{...state.learning,...patch}}),
     export:()=>JSON.stringify(state,null,2),
     import:text=>save(validate(JSON.parse(text))),
-    resetProgress:()=>update({completed:[]}),
     clear:()=>{state=blank();try{localStorage.removeItem(KEY);localStorage.removeItem('mllearning-progress');localStorage.removeItem('mllearning-language');persistent=true;return true}catch{persistent=false;return false}},
-    bindLab:(el,type)=>{
-      el._storageListeners?.abort();
-      const controller=new AbortController();el._storageListeners=controller;
-      const saved=state.labs[type]||{};
-      for(const [id,value] of Object.entries(saved)){const control=el.querySelector('#'+id);if(control)control.value=value}
-      if(Object.keys(saved).length){const input=el.querySelector('select,input');input?.dispatchEvent(new Event(input.tagName==='SELECT'?'change':'input',{bubbles:true}))}
-      function record(){const values={};for(const control of el.querySelectorAll('input[id],select[id]'))values[control.id]=control.value;update({labs:{...state.labs,active:type,[type]:values}})}
-      for(const event of ['input','change','click'])el.addEventListener(event,record,{signal:controller.signal});record();
-    }
   };
 })();

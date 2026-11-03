@@ -52,7 +52,7 @@ with sync_playwright() as p:
         visit('#track/go')
         expect(page.locator('.studio-knowledge-node.is-done')).to_have_count(1)
         visit('#progress')
-        expect(page.locator('.studio-progress-list article')).to_have_count(7)
+        expect(page.locator('.studio-progress-list article')).to_have_count(6)
         expect(page.locator('[role="progressbar"][aria-label="Go"]')).to_have_attribute('aria-valuenow', '1')
         visit()
         expect(page.locator('.studio-hero a[href="#track/go/01"]')).to_have_count(1)
@@ -91,7 +91,7 @@ with sync_playwright() as p:
     # Both reading and navigation remain usable at narrow and wide widths.
     for width in [320, 390, 768, 1440, 1920]:
         page.set_viewport_size({'width': width, 'height': 900})
-        for route in ['', '#java', '#track/sysadmin', '#learn/java/start', '#lesson/01', '#progress', '#prepare', '#files/01']:
+        for route in ['', '#java', '#track/sysadmin', '#learn/java/start', '#course/week/01', '#progress', '#prepare', '#course/labs']:
             visit(route)
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width, route)
             if width in [390, 1440] and route in ['', '#learn/java/start']:

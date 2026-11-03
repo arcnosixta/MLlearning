@@ -3,9 +3,9 @@ import json,os,subprocess,tempfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 data=json.loads((ROOT/'dist/teaching.json').read_text(encoding='utf-8'))
-limits={'ml':24,'files':7,'java':14,'go':13,'onec':13,'java-advanced':13,'sysadmin':13}
+limits={'java':14,'go':13,'onec':13,'java-advanced':13,'sysadmin':13}
 expected={(path,ident) for path,count in limits.items() for ident in ['start']+[f'{n:02d}' for n in range(1,count+1)]}
-assert len(data)==104 and {(x['path'],x['id']) for x in data}==expected
+assert len(data)==71 and {(x['path'],x['id']) for x in data}==expected
 assert len({(x['path'],x['id']) for x in data})==len(data)
 texts={lang:set() for lang in ['ru','kk']}
 with tempfile.TemporaryDirectory() as temporary:
@@ -29,8 +29,7 @@ with tempfile.TemporaryDirectory() as temporary:
             r=subprocess.run(args,cwd=temporary,text=True,capture_output=True,encoding='utf-8',timeout=90,env=dict(os.environ,GO111MODULE='off',GOWORK='off',GOTOOLCHAIN='local'))
             assert r.returncode==0,(item['path'],r.stderr)
             return r.stdout.strip()
-        if item['path'] in ['ml','files']:actual=run(['python',str(source)])
-        elif item['path']=='go':actual=run(['go','run',str(source)])
+        if item['path']=='go':actual=run(['go','run',str(source)])
         elif item['path'] in ['java','java-advanced']:
             run(['javac','--release','17','-encoding','UTF-8','-d',temporary,str(source)])
             actual=run(['java','-cp',temporary,'Main'])
@@ -39,4 +38,4 @@ with tempfile.TemporaryDirectory() as temporary:
             assert 'Процедура' in item['code'] and item['ru']['runtime'];continue
         assert actual==item['output'].strip(),(item['path'],actual,item['output'])
         print('PASS first file',item['path'],flush=True)
-print('PASS 97 topic-specific bilingual guides and 7 introductory lessons; 1C runtime unavailable')
+print('PASS 66 topic-specific bilingual guides and 5 introductory lessons; 1C runtime unavailable')
