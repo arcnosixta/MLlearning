@@ -14,7 +14,7 @@ function mlPlot(cases, current, topic, independentAxes, width) {
   const seriesColor = series => mlPlotColors[labels.indexOf(mlText(series.label)) % mlPlotColors.length];
   const bars = current.series.filter(series => series.kind === 'bar');
   const compact = width < 420;
-  const [left, right, top, bottom] = [60, width - (compact ? 16 : 27), 20, compact ? 181 : 238];
+  const [left, right, top, bottom] = [60, width - 27, 20, compact ? 181 : 238];
   const tickCount = compact ? 3 : 5;
   const xs = all.map(([x]) => x), ys = all.map(([, y]) => y);
   const [xmin, xmax] = mlExtent(xs);
@@ -40,19 +40,20 @@ function mlPlot(cases, current, topic, independentAxes, width) {
     }
     return series.points.map(([x, y]) => `<circle cx="${sx(x)}" cy="${sy(y)}" r="3.2" fill="${color}" opacity=".78"/>`).join('');
   }).join('');
+  const textFit = (label, limit) => label.length * 6.5 > limit ? `textLength="${limit}" lengthAdjust="spacingAndGlyphs"` : '';
   const tickText = xTicks.map(([x, label]) => {
     const y = bottom + 17;
     const tilt = compact && current.xTicks && label.length > 5;
-    return `<text x="${sx(x)}" y="${y}" text-anchor="${tilt ? 'end' : 'middle'}" ${tilt ? `transform="rotate(-36 ${sx(x)} ${y})"` : ''}>${escapeHTML(label)}</text>`;
+    const fit = tilt ? textFit(label, Math.min(74, (sx(x) - 6) / .81)) : '';
+    return `<text x="${sx(x)}" y="${y}" text-anchor="${tilt ? 'end' : 'middle'}" ${tilt ? `transform="rotate(-36 ${sx(x)} ${y})"` : ''} ${fit}>${escapeHTML(label)}</text>`;
   }).join('');
-  const axisLength = (label, limit) => label.length * 6.5 > limit ? `textLength="${limit}" lengthAdjust="spacingAndGlyphs"` : '';
   const xTitle = bottom + (compact && current.xTicks ? 61 : 43);
   return `<svg class="ml-plot" role="img" aria-label="${escapeHTML(`${topic.title} · ${mlText(current.label)} · ${topic.xLabel} / ${topic.yLabel}`)}" viewBox="0 0 ${width} ${xTitle + 9}">
     ${yTicks.map(y => `<path class="ml-gridline" d="M${left} ${sy(y)}H${right}"/><text x="${left - 8}" y="${sy(y) + 4}" text-anchor="end">${escapeHTML(fmt(y))}</text>`).join('')}
     <path class="ml-axis" d="M${left} ${top}V${bottom}H${right}"/>${marks}
     ${tickText}
-    <text x="${(left + right) / 2}" y="${xTitle}" text-anchor="middle" ${axisLength(topic.xLabel, right - left + 15)}>${escapeHTML(topic.xLabel)}</text>
-    <text transform="translate(13 ${(top + bottom) / 2}) rotate(-90)" text-anchor="middle" ${axisLength(topic.yLabel, bottom - top)}>${escapeHTML(topic.yLabel)}</text>
+    <text x="${(left + right) / 2}" y="${xTitle}" text-anchor="middle" ${textFit(topic.xLabel, right - left + 15)}>${escapeHTML(topic.xLabel)}</text>
+    <text transform="translate(13 ${(top + bottom) / 2}) rotate(-90)" text-anchor="middle" ${textFit(topic.yLabel, bottom - top)}>${escapeHTML(topic.yLabel)}</text>
   </svg><ul class="ml-legend" aria-label="${jt('Легенда графика', 'График түсіндірмесі')}">${current.series.map(series => `<li><span ${series.dashed ? 'class="ml-dashed"' : ''} style="--series:${seriesColor(series)}"></span>${escapeHTML(mlText(series.label))}</li>`).join('')}</ul>`;
 }
 
