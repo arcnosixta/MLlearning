@@ -24,7 +24,7 @@ app_source = '\n'.join((ROOT / name).read_text(encoding='utf-8') for name in [
     'java/java-view.js', 'course-utils.js', 'java/full-view.js', 'sysadmin/full-view.js', 'sysadmin/review-view.js',
     'java/exam-view.js', 'tracks/view.js', 'tracks/exam-view.js', 'studio.js', 'sound.js', 'motion.js',
 ])
-ml_source = '\n'.join((ROOT / 'ml' / name).read_text(encoding='utf-8') for name in ['chart.js', 'course.js', 'reader.js'])
+ml_source = '\n'.join((ROOT / 'ml' / name).read_text(encoding='utf-8') for name in ['chart.js', 'course.js', 'python-view.js', 'reader.js'])
 (OUT / 'app.js').write_text(app_source + '\n' + ml_source, encoding='utf-8')
 shutil.copytree(ROOT / 'audio', OUT / 'audio', dirs_exist_ok=True)
 

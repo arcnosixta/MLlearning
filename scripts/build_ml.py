@@ -105,5 +105,6 @@ def build(out):
         else:
             index['weeks'].append(summary)
     write(target / 'index.json', index)
+    shutil.copyfile(source / 'python-worker.js', target / 'python-worker.js')
     shutil.copyfile(source / 'styles.css', out / 'ml.css')
     print(f'Built ML 3305: 14 weeks, capstone and {topic_count} bilingual experiments')

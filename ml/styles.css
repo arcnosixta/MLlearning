@@ -31,6 +31,23 @@
 .ml-reader code { color:inherit; font-size:.85rem; }
 .ml-reader details { margin:.65rem 0; }
 .ml-reader summary { cursor:pointer; color:var(--ml-blue); font-weight:650; }
+.ml-python { min-width:0; padding:.75rem; border:1px solid var(--ml-line); border-radius:.55rem; background:#fff; }
+.ml-python > label { display:block; margin:.55rem 0 .25rem; font:700 .9rem ui-monospace, monospace; }
+.ml-reader .ml-python textarea { min-height:12rem; padding:.7rem; background:#142440; color:#f8fbff; font:16px/1.5 ui-monospace, Consolas, monospace; tab-size:4; }
+.ml-python-dataset { font-size:.88rem; color:#39547d; }
+.ml-python-actions, .ml-python-selects { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin:.7rem 0; }
+.ml-python-actions .button { text-align:left; }
+.ml-python-actions button:disabled { opacity:.56; cursor:default; }
+#ml-python-status { min-height:1.5em; margin:.5rem 0; }
+#ml-python-status[data-state=error] { color:#933c17; }
+#ml-python-status[data-state=success] { color:#116847; }
+.ml-python-console pre { min-height:3rem; max-height:18rem; font:14px/1.45 ui-monospace, Consolas, monospace; }
+.ml-python-stderr { color:#ffccac; }
+.ml-python-figures { display:grid; gap:.55rem; }
+.ml-python-figures img { display:block; max-width:100%; height:auto; border:1px solid var(--ml-line); border-radius:.4rem; }
+.ml-python-selects label { flex:1 1 12rem; min-width:0; }
+.ml-python-selects select { width:100%; color:var(--ml-ink); font:inherit; background:#fff; padding:.4rem; border:1px solid #92a5c8; border-radius:.4rem; }
+#ml-python-experiment figure { margin:.6rem 0; }
 .ml-topic, .ml-assignment { background:#fff; border:1px solid var(--ml-line); padding:clamp(.9rem, 3.2vw, 2rem); border-radius:.85rem; scroll-margin-top:6rem; }
 .ml-topic h2 { font-size:clamp(1.4rem, 3.6vw, 2.15rem); }
 .ml-example { border-left:3px solid #5679be; background:var(--ml-paper); padding:.8rem 1rem; margin:1.2rem 0; }

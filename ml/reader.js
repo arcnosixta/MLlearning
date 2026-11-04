@@ -35,10 +35,10 @@ function mlWeekPage(lesson, data) {
     <div class="ml-reading-body">
       <section class="ml-objectives"><h2>${jt('Чему ты научишься', 'Не үйренесің')}</h2><ul>${week.goals.map(goal => `<li>${escapeHTML(goal)}</li>`).join('')}</ul></section>
       <section class="ml-downloads"><h2>${jt('Повтори опыт в Python', 'Тәжірибені Python-да қайтала')}</h2>
-      <p>${jt('В браузере можно сравнить готовые расчёты. Скачай архив, распакуй его и запусти lab.py, чтобы менять параметры и получать собственные результаты.', 'Браузерде дайын есептеулерді салыстыруға болады. Параметрлерді өзгертіп, өз нәтижеңді алу үшін архивті жүктеп, ашып, lab.py файлын іске қос.')}</p>
-      <pre><code>python -m pip install -r requirements.txt\npython lab.py &gt; results.json</code></pre>
+      <p>${jt('Открой редактор, измени параметры и запусти расчёт. Для работы с локальным Python или дополнительными примерами скачай архив.', 'Редакторды ашып, параметрлерді өзгерт те есептеуді іске қос. Жергілікті Python не қосымша мысалдар үшін архивті жүкте.')}</p>
+      ${mlPythonHTML(id, lesson.assets)}
       <div class="hero-actions"><a class="button outline" href="ml/${id}/lab.zip" download>${jt('Скачать лабораторную', 'Зертхананы жүктеу')} ZIP ↓</a><a class="sources" href="ml/${id}/lab.py" download>lab.py ↓</a>${lesson.assets.map(file => `<a class="sources" href="ml/${id}/${file}" download>${escapeHTML(file)} ↓</a>`).join('')}</div>
-      <details class="ml-code" data-source="ml/${id}/lab.py"><summary>${jt('Посмотреть Python-код', 'Python кодын қарау')}</summary><pre><code></code></pre></details></section>
+      <details><summary>${jt('Запуск скачанного архива', 'Жүктелген архивті іске қосу')}</summary><pre><code>python -m pip install -r requirements.txt\npython lab.py &gt; results.json</code></pre></details></section>
       ${week.topics.map((topic, index) => mlTopicHTML(topic, data.topics[index], index)).join('')}
       <section class="ml-assignment" id="ml-topic-assignment" tabindex="-1"><h2>${jt('Самостоятельная работа', 'Өзіндік жұмыс')}</h2><p>${escapeHTML(week.assignment)}</p>
       ${project ? `<p><strong>${jt('Отложенный тест', 'Соңғы тест')}</strong> · ROC-AUC ${escapeHTML(data.heldOutAUC)} · ${jt('базовый вариант', 'базалық нұсқа')} ${escapeHTML(data.baselineAUC)}</p>` : ''}
@@ -62,7 +62,7 @@ function mlWeekPage(lesson, data) {
     mlBindQuiz(main.querySelector(`[data-ml-quiz="${n}"]`), topic, record, key);
   });
   mlBindNote(main.querySelector('#ml-note'), 'notes', id, record.notes[id]);
-  mlBindCode(main.querySelector('.ml-code'));
+  mlPythonDispose = mlBindPython(main.querySelector('.ml-python'), lesson, week);
   if (!project) mlBindCompletion(main.querySelector('#ml-complete'), id);
 }
 
@@ -121,23 +121,6 @@ function mlBindQuiz(quiz, topic, record, key) {
     if (!saved) toast(jt('Ответ сохранён до закрытия страницы', 'Жауап бет жабылғанша сақталды'));
   });
   draw(record.answers[key]);
-}
-
-function mlBindCode(details) {
-  const code = details.querySelector('code');
-  let loaded = false;
-  details.addEventListener('toggle', async () => {
-    if (!details.open || loaded) return;
-    code.textContent = jt('Загрузка…', 'Жүктелуде…');
-    try {
-      const response = await fetch(details.dataset.source, {signal: AbortSignal.timeout(8000)});
-      if (!response.ok) throw new Error('Python source unavailable');
-      code.textContent = await response.text();
-      loaded = true;
-    } catch {
-      code.textContent = jt('Код не загрузился. Открой блок ещё раз или скачай архив.', 'Код жүктелмеді. Блокты қайта аш немесе архивті жүкте.');
-    }
-  });
 }
 
 function mlBindCompletion(button, id) {

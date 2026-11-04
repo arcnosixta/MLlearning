@@ -6,6 +6,8 @@ async function route() {
   const hash = location.hash;
   const [, section, id] = hash.split('/');
   mlPlotObserver?.disconnect();
+  mlPythonDispose?.();
+  mlPythonDispose = undefined;
   clearInterval(examTimer);
   clearInterval(trackExamTimer);
   if (hash === '#sysadmin/review') await renderSysadminReview();

@@ -46,9 +46,10 @@ with sync_playwright() as p:
         print(f'PASS all ML sections and interactive plots in {lang}', flush=True)
     goto_ready(page, f'{URL}/?lang=kk#course/week/01')
     page.locator('.ml-points summary').first.click()
-    assert page.locator('.ml-table tbody tr').first.is_visible()
-    page.locator('.ml-code summary').click()
-    page.locator('.ml-code code').get_by_text('import', exact=False).wait_for()
+    page.locator('.ml-table tbody tr').first.wait_for()
+    page.locator('.ml-code > summary').click()
+    page.locator('#ml-python-status[data-state="ready"]').wait_for()
+    assert 'import' in page.locator('#ml-python-editor').input_value()
     with page.expect_download() as pending:
         page.locator('a[download][href$="lab.zip"]').click()
     assert pending.value.suggested_filename == 'lab.zip'
