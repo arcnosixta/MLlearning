@@ -103,6 +103,11 @@ with sync_playwright() as playwright:
     page.locator('#ml-python-reset').click()
     expect(page.locator('#ml-python-editor')).to_have_value(original)
     assert 'математика 42' in run_code(page, 'print("математика", 6 * 7)\n')
+    assert page.locator('#ml-python-output').evaluate('''output => {
+        const style = getComputedStyle(output);
+        return output.clientHeight >= 224 && parseFloat(style.fontSize) >= 16 &&
+            style.whiteSpace === 'pre-wrap' && style.overflowWrap === 'anywhere' && style.resize === 'vertical';
+    }''')
 
     assert 'plot marker' in run_code(page, '''\
 import matplotlib.pyplot as plt

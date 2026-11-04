@@ -41,7 +41,16 @@
 #ml-python-status { min-height:1.5em; margin:.5rem 0; }
 #ml-python-status[data-state=error] { color:#933c17; }
 #ml-python-status[data-state=success] { color:#116847; }
-.ml-python-console pre { min-height:3rem; max-height:18rem; font:14px/1.45 ui-monospace, Consolas, monospace; }
+.ml-python-console pre {
+  height:clamp(14rem, 42dvh, 28rem);
+  max-height:75dvh;
+  padding:1rem;
+  resize:vertical;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font:16px/1.55 ui-monospace, Consolas, monospace;
+}
+.ml-python-console pre:empty { height:5rem; }
 .ml-python-stderr { color:#ffccac; }
 .ml-python-figures { display:grid; gap:.55rem; }
 .ml-python-figures img { display:block; max-width:100%; height:auto; border:1px solid var(--ml-line); border-radius:.4rem; }
