@@ -100,7 +100,8 @@ function mlBindPython(details, lesson, week) {
       appendOutput(message.text, message.stream);
     } else if (message.type === 'error') {
       appendOutput(`\n${String(message.message ?? '')}\n`, 'stderr');
-      finish('error');
+      // A failed runtime or package download may be cached inside this worker.
+      finish('error', undefined, status.dataset.state !== 'running');
     } else if (message.type === 'result') {
       const images = Array.isArray(message.figures) ? message.figures.slice(0, 6) : [];
       for (const [index, data] of images.entries()) {
