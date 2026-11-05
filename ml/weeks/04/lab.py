@@ -1,103 +1,62 @@
-"""Week 4 | python lab.py. All observations are synthetic."""
-
-import json
-
+"""Pipeline: заполняем пропуски и кодируем категории только по train."""
+import os
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import LinearRegression
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, OrdinalEncoder, StandardScaler
+from sklearn.metrics import mean_absolute_error
+
+LANGUAGE = os.environ.get("IMLEARNING_LANG", "ru")
 
 
 def text(ru, kk):
-    return {"ru": ru, "kk": kk}
+    return kk if LANGUAGE == "kk" else ru
 
 
-def series(ru, kk, kind, x, y):
-    return {"label": text(ru, kk), "kind": kind,
-            "points": [[round(float(a), 4), round(float(b), 4)] for a, b in zip(x, y, strict=True)]}
+# Вымышленные поездки. Первые 8 строк — train, последние 4 — test.
+data = pd.DataFrame({
+    "km": [1, 2, 3, 4, np.nan, 6, 7, 8, 2, 5, 9, np.nan],
+    "mode": ["bus", "tram", "bus", "tram", "bus", "tram", "bus", "tram",
+             "bus", "tram", "metro", "bus"],
+    "minutes": [9, 12, 15, 18, 19, 25, 27, 30, 14, 22, 32, 17],
+})
+X = data[["km", "mode"]]
+y = data["minutes"]
+X_train, X_test = X.iloc[:8], X.iloc[8:]
+y_train, y_test = y.iloc[:8], y.iloc[8:]
 
+numeric = make_pipeline(SimpleImputer(strategy="median"), StandardScaler())
+prepare = ColumnTransformer([
+    ("distance", numeric, ["km"]),
+    ("transport", OneHotEncoder(handle_unknown="ignore"), ["mode"]),
+])
+model = make_pipeline(prepare, LinearRegression())
+model.fit(X_train, y_train)  # Test не участвует в подборе преобразований.
+prediction = model.predict(X_test)
+baseline = np.full(len(y_test), y_train.mean())
 
-def case(ru, kk, note_ru, note_kk, *curves):
-    return {"label": text(ru, kk), "note": text(note_ru, note_kk), "series": curves}
+print(text("Учебные поездки: train=8, test=4.", "Оқу сапарлары: train=8, test=4."))
+print(text("Пропуски заполнены по train; metro — новая категория test.",
+           "Бос мәндер train бойынша толтырылды; metro — test жаңа санаты."))
+print(text("MAE среднего train, мин:", "Train орташа мәнінің MAE, мин:"),
+      f"{mean_absolute_error(y_test, baseline):.2f}")
+print(text("MAE Pipeline, мин:", "Pipeline MAE, мин:"),
+      f"{mean_absolute_error(y_test, prediction):.2f}")
+print(text("Всего 4 проверки: надёжность в реальном мире не измерена.",
+           "Бар болғаны 4 тексеру: нақты өмірдегі сенімділік өлшенбеген."))
 
-
-def missing_values():
-    x = np.array([12, 15, np.nan, 17, 22, np.nan, 32, 95]).reshape(-1, 1)
-    rows = np.arange(1, len(x) + 1)
-    known = np.isfinite(x[:, 0])
-    observed = series("Известно", "Белгілі", "scatter", rows[known], x[known, 0])
-    out = [case("Оставить пропуски", "Бос мәндерді сақтау", "У третьей и шестой записей измерения нет, поэтому точки не рисуются.", "Үшінші және алтыншы жазбада өлшем жоқ, сондықтан нүкте салынбайды.", observed)]
-    for method, ru, kk in [("mean", "Заполнить средним", "Орташа мәнмен толтыру"), ("median", "Заполнить медианой", "Медианамен толтыру")]:
-        filled = SimpleImputer(strategy=method).fit_transform(x)[:, 0]
-        out.append(case(ru, kk, "Подставленное значение показано отдельно. Сравните влияние большого наблюдения.", "Қойылған мән бөлек көрсетілген. Үлкен бақылаудың әсерін салыстырыңыз.", observed, series("Восстановлено", "Толтырылған", "scatter", rows[~known], filled[~known])))
-    return out
-
-
-def encoding():
-    train = np.array(["A", "B", "C", "B"]).reshape(-1, 1)
-    test = np.array(["C", "A", "B", "D"]).reshape(-1, 1)
-    rows = np.arange(1, len(train) + 1)
-    ordinal = OrdinalEncoder().fit_transform(train)[:, 0]
-    encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False).fit(train)
-
-    def flags(data):
-        matrix = encoder.transform(data)
-        return [series(f"Категория {label}", f"{label} санаты", "line", rows, matrix[:, i])
-                for i, label in enumerate(encoder.categories_[0])]
-
-    return [
-        case("Целые коды", "Бүтін кодтар", "Коды 0, 1, 2 создают расстояния между условными названиями.", "0, 1, 2 кодтары шартты атаулардың арасына қашықтық енгізеді.", series("Код", "Код", "bar", rows, ordinal)),
-        case("One-hot на train", "Train дерегіндегі one-hot", "У каждой известной категории свой индикатор.", "Әр белгілі санаттың жеке индикаторы бар.", *flags(train)),
-        case("Новая категория на test", "Test дерегіндегі жаңа санат", "У четвёртой записи категория D, которой не было при обучении. Все три индикатора равны нулю.", "Төртінші жазбадағы D санаты үйрету кезінде кездеспеді. Үш индикатор да нөл.", *flags(test)),
-    ]
-
-
-def scaling():
-    train = np.array([12, 15, 17, 22, 32, 42]).reshape(-1, 1)
-    test = np.array([51, 7]).reshape(-1, 1)
-    rows = np.arange(1, len(train) + len(test) + 1)
-    scaled = [
-        ("Исходный масштаб", "Бастапқы масштаб", "Это одна и та же числовая колонка. Последние два значения были отложены.", "Бұл бір сандық баған. Соңғы екі мән бөлек қалдырылды.", train, test),
-    ]
-    for scaler, ru, kk, note_ru, note_kk in [
-        (StandardScaler(), "StandardScaler", "StandardScaler", "Вычитается среднее train, затем значение делится на стандартное отклонение train.", "Train орташа мәні алынады, содан кейін train стандартты ауытқуына бөлінеді."),
-        (MinMaxScaler(), "MinMaxScaler", "MinMaxScaler", "Диапазон train стал от 0 до 1. Новые значения могут выйти за этот диапазон.", "Train ауқымы 0 мен 1 арасына түсті. Жаңа мәндер осы ауқымнан шығуы мүмкін."),
-    ]:
-        scaled.append((ru, kk, note_ru, note_kk, scaler.fit_transform(train), scaler.transform(test)))
-    return [case(ru, kk, note_ru, note_kk, series("Train", "Train", "scatter", rows[:len(train)], a[:, 0]),
-                 series("Test", "Test", "scatter", rows[len(train):], b[:, 0]))
-            for ru, kk, note_ru, note_kk, a, b in scaled]
-
-
-def pipelines():
-    train = pd.DataFrame({"minutes": [12, 15, 18, np.nan, 27, 34, 38, 44],
-                          "zone": ["A", "B", "A", "A", "B", "A", "B", "B"]})
-    test = pd.DataFrame({"minutes": [65, np.nan, 72, 70], "zone": ["A", "B", "C", "B"]})
-    train_y = [8, 12, 10, 14, 15, 17, 21, 24]
-    test_y = [32, 15, 35, 37]
-
-    def preprocessing():
-        numeric = Pipeline([("impute", SimpleImputer(strategy="median")),
-                            ("scale", StandardScaler())])
-        category = Pipeline([("impute", SimpleImputer(strategy="most_frequent")),
-                             ("onehot", OneHotEncoder(handle_unknown="ignore"))])
-        return ColumnTransformer([("number", numeric, ["minutes"]), ("category", category, ["zone"])])
-
-    clean = Pipeline([("prepare", preprocessing()), ("regression", LinearRegression())]).fit(train, train_y)
-    # Deliberately wrong comparison: test statistics inform fitted preprocessing.
-    leaked = preprocessing().fit(pd.concat([train, test], ignore_index=True))
-    leaked_model = LinearRegression().fit(leaked.transform(train), train_y)
-    rows = np.arange(1, len(test) + 1)
-    observed = series("Факт test", "Нақты test", "scatter", rows, test_y)
-    return [
-        case("Простой ориентир", "Қарапайым бағдар", "Среднее целевой переменной на train служит базовым прогнозом.", "Train мақсатты мәндерінің орташа саны базалық болжам болады.", observed, series("Среднее train", "Train орташа мәні", "line", rows, [np.mean(train_y)] * len(test))),
-        case("Разделение до fit", "fit алдында бөлу", "Pipeline обучает преобразования только на train. На test вызывается predict.", "Pipeline түрлендірулерді тек train дерегінде үйретеді. Test дерегіне predict қолданылады.", observed, series("Прогноз без утечки", "Дерек ағуынсыз болжам", "scatter", rows, clean.predict(test))),
-        case("Утечка для сравнения", "Салыстыруға арналған дерек ағуы", "Обработка видела test. Даже если ошибки случайно меньше, такую оценку нельзя использовать.", "Өңдеу test дерегін көрді. Қателер кездейсоқ аз болса да, бұл бағалауды қолдануға болмайды.", observed, series("Прогноз с утечкой", "Дерек ағуы бар болжам", "scatter", rows, leaked_model.predict(leaked.transform(test)))),
-    ]
-
-
-if __name__ == "__main__":
-    print(json.dumps({"topics": [missing_values(), encoding(), scaling(), pipelines()]}))
+positions = np.arange(len(y_test))
+plt.figure(figsize=(7, 4))
+plt.bar(positions - 0.18, y_test, width=0.36, label=text("Факт", "Нақты"))
+plt.bar(positions + 0.18, prediction, width=0.36, label=text("Прогноз", "Болжам"))
+plt.xticks(positions, ["1", "2", "3 (metro)", "4"])
+plt.xlabel(text("Поездка test", "Test сапары"))
+plt.ylabel(text("Длительность, мин", "Ұзақтығы, мин"))
+plt.title(text("Прогноз после предобработки", "Алдын ала өңдеуден кейінгі болжам"))
+plt.legend()
+plt.tight_layout()
+plt.show()

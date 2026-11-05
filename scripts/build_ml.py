@@ -9,7 +9,7 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 ROOT = Path(__file__).resolve().parents[1]
 LANGUAGES = ('ru', 'kk')
 WEEKS = [f'{number:02d}' for number in range(1, 15)]
-OPTIONAL_ASSETS = ('data.csv', 'extra.py', 'extra-requirements.txt')
+OPTIONAL_ASSETS = ('data.csv', 'experiments.py', 'extra.py', 'extra-requirements.txt')
 TOPIC_TEXT = ('title', 'example', 'task', 'hint', 'solution', 'xLabel', 'yLabel', 'question', 'feedback')
 
 

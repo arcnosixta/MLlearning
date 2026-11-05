@@ -87,14 +87,21 @@ with sync_playwright() as playwright:
     assert page.locator('#ml-python-editor').input_value() == original
     assert not page.workers
     assert not any('pyodide' in urlsplit(request).path.lower() for request in requests)
-    expected = fetch(page, 'ml/01/results.json').json()
-    assert json.loads(run_code(page)) == expected
+    output = run_code(page)
+    assert 'Учебные данные:' in output and '"topics"' not in output
+    assert_png(page)
+    page.locator('#ml-python-source').select_option('ml/01/experiments.py')
+    expect(page.locator('#ml-python-status')).to_have_attribute('data-state', 'ready')
+    detailed_output = run_code(page)
+    assert 'Построены графики:' in detailed_output and '"topics"' not in detailed_output
     experiment = page.locator('#ml-python-experiment')
     expect(experiment).to_be_visible()
     if experiment.get_attribute('open') is None:
         experiment.locator('summary').click()
     expect(experiment.locator('.ml-plot').first).to_be_visible()
-    print('PASS lazy startup, real week 01 Python source and computed charts', flush=True)
+    page.locator('#ml-python-source').select_option('ml/01/lab.py')
+    expect(page.locator('#ml-python-status')).to_have_attribute('data-state', 'ready')
+    print('PASS lazy startup, beginner week 01 and detailed computed charts without raw JSON', flush=True)
 
     error = run_code(page, 'print("stdout marker")\nraise ValueError("traceback marker")\n', 'error')
     assert 'stdout marker' in error
@@ -103,6 +110,8 @@ with sync_playwright() as playwright:
     page.locator('#ml-python-reset').click()
     expect(page.locator('#ml-python-editor')).to_have_value(original)
     assert 'математика 42' in run_code(page, 'print("математика", 6 * 7)\n')
+    warning = run_code(page, 'import warnings\nwarnings.warn("JsProxy.as_object_map() is deprecated. Use as_py_json() instead.", RuntimeWarning)\n')
+    assert 'RuntimeWarning: JsProxy.as_object_map() is deprecated.' in warning
     assert page.locator('#ml-python-output').evaluate('''output => {
         const style = getComputedStyle(output);
         return output.clientHeight >= 224 && parseFloat(style.fontSize) >= 16 &&
@@ -117,6 +126,13 @@ plt.show()
 print("plot marker")
 ''')
     assert_png(page)
+    zoom = page.locator('.ml-python-zoom')
+    expect(zoom).to_have_attribute('aria-pressed', 'false')
+    zoom.click()
+    expect(zoom).to_have_attribute('aria-pressed', 'true')
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    zoom.click()
+    expect(zoom).to_have_attribute('aria-pressed', 'false')
     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
     print('PASS stdout, traceback, source reset and decoded matplotlib PNG on mobile', flush=True)
 

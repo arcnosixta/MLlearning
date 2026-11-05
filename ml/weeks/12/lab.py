@@ -1,124 +1,55 @@
-"""Train a tiny neural network with NumPy and compare loss curves."""
-
-import json
-
+"""Один нейрон с линейным выходом: учим прогноз балла по часам подготовки."""
+import os
 import numpy as np
-from sklearn.datasets import make_moons
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+LEARNING_RATE = 0.3  # Измени шаг обучения, например на 0.05.
+EPOCHS = 400         # Измени число шагов, например на 40.
+LANGUAGE = os.environ.get("IMLEARNING_LANG", "ru")
 
 
-def localized(ru, kk):
-    return {"ru": ru, "kk": kk}
+def text(ru, kk):
+    return kk if LANGUAGE == "kk" else ru
 
 
-def series(ru, kk, kind, x, y):
-    return {"label": localized(ru, kk), "kind": kind,
-            "points": [[round(float(a), 4), round(float(b), 4)] for a, b in zip(x, y)]}
+# Учебные вымышленные наблюдения. Четыре строки отложены до обучения.
+hours = np.arange(1, 11, dtype=float)
+scores = np.array([14, 20, 29, 35, 43, 47, 55, 60, 69, 76])
+is_test = np.array([False, True, False, False, True, False, False, True, False, True])
+x_train, y_train = hours[~is_test] / 10, scores[~is_test]
+x_test, y_test = hours[is_test] / 10, scores[is_test]
 
+# Нейрон: прогноз = вес × вход + смещение. Деление на 10 — смена единиц.
+weight, bias = 0.0, 0.0
+losses = []
+for epoch in range(EPOCHS + 1):
+    error = weight * x_train + bias - y_train
+    losses.append(np.mean(error ** 2))
+    if epoch == EPOCHS:
+        break
+    weight -= LEARNING_RATE * 2 * np.mean(error * x_train)
+    bias -= LEARNING_RATE * 2 * np.mean(error)
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-np.clip(x, -50, 50)))
+predictions = weight * x_test + bias
+print(text("Учебные данные: 10 занятий; один линейный нейрон, без скрытых слоёв.",
+           "Оқу деректері: 10 сабақ; жасырын қабатсыз бір сызықтық нейрон."))
+print(text("Обучение: 6 строк; проверка: 4 новые строки.",
+           "Оқыту: 6 жол; тексеру: 4 жаңа жол."))
+print(text("Ошибка обучения MSE, балл²:", "Оқыту қатесі MSE, балл²:"),
+      f"{losses[0]:.1f} → {losses[-1]:.1f}")
+print(text("Средняя ошибка на проверке MAE, балл:", "Тексерудегі орташа қате MAE, балл:"),
+      f"{np.mean(np.abs(y_test - predictions)):.1f}")
 
-
-def activation_cases():
-    x = np.linspace(-4, 4, 41)
-    cases = []
-    for title, operation, ru, kk in (
-        ("Sigmoid", sigmoid, "Сжимает выход в (0, 1).", "Шығысты (0, 1) аралығына келтіреді."),
-        ("ReLU", lambda values: np.maximum(0, values), "Гасит отрицательные значения.",
-         "Теріс мәндерді нөлге түсіреді."),
-        ("Tanh", np.tanh, "Нечётная функция со значениями в (−1, 1).",
-         "Мәндері (−1, 1) аралығындағы тақ функция."),
-    ):
-        cases.append({"label": localized(title, title), "note": localized(ru, kk),
-                      "series": [series(title, title, "line", x, operation(x))]})
-    return cases
-
-
-def data():
-    x, y = make_moons(n_samples=260, noise=0.20, random_state=3305)
-    return train_test_split(x, y, test_size=0.25, stratify=y, random_state=42)
-
-
-def binary_loss(logits, truth):
-    return np.mean(np.logaddexp(0, logits) - truth * logits)
-
-
-def train(train_x, validation_x, train_y, validation_y, width, learning_rate, epochs=360):
-    rng = np.random.default_rng(3305)
-    input_weights = rng.normal(0, 0.5, (train_x.shape[1], width))
-    hidden_bias = np.zeros(width)
-    output_weights = rng.normal(0, 0.5, width)
-    output_bias = 0.0
-
-    def forward(features):
-        hidden = np.tanh(features @ input_weights + hidden_bias)
-        return hidden, hidden @ output_weights + output_bias
-
-    snapshots = []
-    for epoch in range(epochs + 1):
-        hidden, logits = forward(train_x)
-        if epoch % 12 == 0:
-            _, validation_logits = forward(validation_x)
-            snapshots.append((epoch, binary_loss(logits, train_y),
-                              binary_loss(validation_logits, validation_y)))
-        if epoch == epochs:
-            break
-        residual = (sigmoid(logits) - train_y) / len(train_y)
-        hidden_gradient = residual[:, None] * output_weights * (1 - hidden ** 2)
-        output_weights -= learning_rate * (hidden.T @ residual)
-        output_bias -= learning_rate * residual.sum()
-        input_weights -= learning_rate * (train_x.T @ hidden_gradient)
-        hidden_bias -= learning_rate * hidden_gradient.sum(axis=0)
-    return np.array(snapshots), (forward(validation_x)[1] >= 0).astype(int)
-
-
-def training_cases(partitions):
-    cases = []
-    for rate in (0.02, 0.2, 1.0):
-        history, _ = train(*partitions, width=8, learning_rate=rate)
-        epochs, train_loss, validation_loss = history.T
-        cases.append({
-            "label": localized(f"Шаг {rate:g}", f"Қадам {rate:g}"),
-            "note": localized(f"Финальная потеря: обучение {train_loss[-1]:.3f}, "
-                              f"валидация {validation_loss[-1]:.3f}.",
-                              f"Соңғы шығын: оқыту {train_loss[-1]:.3f}, "
-                              f"валидация {validation_loss[-1]:.3f}."),
-            "series": [series("Обучение", "Оқыту", "line", epochs, train_loss),
-                       series("Валидация", "Валидация", "line", epochs, validation_loss)],
-        })
-    return cases
-
-
-def width_cases(partitions):
-    _, validation_x, _, validation_y = partitions
-    cases = []
-    for width in (1, 8, 16):
-        _, predictions = train(*partitions, width=width, learning_rate=0.6)
-        errors = predictions != validation_y
-        rows = []
-        for category in (0, 1):
-            right = validation_x[(validation_y == category) & ~errors]
-            if len(right):
-                rows.append(series(f"Верно: класс {category}", f"Дұрыс: {category}-класс", "scatter",
-                                   right[:, 0], right[:, 1]))
-        if errors.any():
-            wrong = validation_x[errors]
-            rows.append(series("Ошибка", "Қате", "scatter", wrong[:, 0], wrong[:, 1]))
-        cases.append({
-            "label": localized(f"Ширина {width}", f"Ені {width}"),
-            "note": localized(f"Ошибок: {errors.sum()} из {len(errors)}, accuracy={(~errors).mean():.3f}.",
-                              f"Қате: {len(errors)} нүктенің {errors.sum()}-і, accuracy={(~errors).mean():.3f}."),
-            "series": rows,
-        })
-    return cases
-
-
-def main():
-    partitions = data()
-    results = [activation_cases(), training_cases(partitions), width_cases(partitions)]
-    print(json.dumps({"topics": results}, ensure_ascii=True, separators=(",", ":")))
-
-
-if __name__ == "__main__":
-    main()
+fig, axes = plt.subplots(1, 2, figsize=(9, 3.5))
+axes[0].plot(losses)
+axes[0].set(xlabel=text("Шаг обучения", "Оқыту қадамы"),
+            ylabel=text("MSE, балл²", "MSE, балл²"),
+            title=text("Нейрон уменьшает ошибку", "Нейрон қатені азайтады"))
+axes[1].scatter(hours[~is_test], y_train, label=text("Обучение", "Оқыту"))
+axes[1].scatter(hours[is_test], y_test, marker="x", label=text("Проверка", "Тексеру"))
+axes[1].plot(hours, weight * hours / 10 + bias, label=text("Прогноз", "Болжам"))
+axes[1].set(xlabel=text("Подготовка, ч", "Дайындық, сағ"),
+            ylabel=text("Баллы", "Балл"), title=text("Обученная модель", "Оқытылған модель"))
+axes[1].legend()
+fig.tight_layout()
+plt.show()

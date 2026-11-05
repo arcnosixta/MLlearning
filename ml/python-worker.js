@@ -13,8 +13,17 @@ const RUN_SETUP = `
 import os
 import sys
 import tempfile
+import warnings
 from types import ModuleType
 
+previous_language = os.environ.get("IMLEARNING_LANG")
+os.environ["IMLEARNING_LANG"] = language
+warning_context = warnings.catch_warnings()
+warning_context.__enter__()
+# Compatibility deprecation in the bundled threadpoolctl, fixed upstream by
+# using as_py_json(). Keep every student warning and other library warning.
+warnings.filterwarnings("ignore", category=RuntimeWarning, module=r"^threadpoolctl$",
+    message=r"^JsProxy\\.as_object_map\\(\\) is deprecated\\. Use as_py_json\\(\\) instead\\.$")
 workdir = tempfile.TemporaryDirectory(prefix="imlearning-")
 script_path = os.path.join(workdir.name, "lab.py")
 previous_dir = os.getcwd()
@@ -90,6 +99,11 @@ for name, module in list(sys.modules.items()):
 linecache.cache.pop(script_path, None)
 os.chdir(previous_dir)
 workdir.cleanup()
+warning_context.__exit__(None, None, None)
+if previous_language is None:
+    os.environ.pop("IMLEARNING_LANG", None)
+else:
+    os.environ["IMLEARNING_LANG"] = previous_language
 `;
 
 let runtimePromise;
@@ -135,7 +149,7 @@ function createCapture() {
 
 function localizedText(value) {
   return ['ru', 'kk'].every(lang =>
-    typeof value?.[lang] === 'string' && value[lang].length > 0 && value[lang].length <= 2000);
+    typeof value?.[lang] === 'string' && value[lang].length > 0 && value[lang].length <= 1200);
 }
 
 function validExperiment(value) {
@@ -143,25 +157,50 @@ function validExperiment(value) {
     && value.topics.every(cases => Array.isArray(cases) && cases.length > 0 && cases.length <= 6
       && cases.every(item => localizedText(item?.label) && localizedText(item?.note)
         && (item.xTicks === undefined || (Array.isArray(item.xTicks) && item.xTicks.length <= 32
-          && item.xTicks.every(tick => Number.isFinite(tick?.value) && localizedText(tick?.label))))
+          && item.xTicks.every(tick => Number.isFinite(tick?.value) && Math.abs(tick.value) <= 1e100 && localizedText(tick?.label))))
         && Array.isArray(item.series) && item.series.length > 0 && item.series.length <= 16
         && item.series.every(series => localizedText(series?.label)
           && ['line', 'bar', 'scatter'].includes(series.kind)
           && Array.isArray(series.points) && series.points.length > 0 && series.points.length <= 1000
           && series.points.every(point => Array.isArray(point) && point.length === 2
-            && point.every(Number.isFinite)))));
+            && point.every(value => Number.isFinite(value) && Math.abs(value) <= 1e100)))));
 }
 
-function readExperiment(capture) {
+// Detailed course experiments use a JSON chart protocol. Remove only validated
+// chart objects, preserving ordinary prints, arbitrary JSON and diagnostics.
+function takeExperiment(capture, topicCount) {
   if (capture.truncated) return null;
-  const output = capture.text.trimEnd();
-  const start = output.lastIndexOf('\n{') + 1;
-  try {
-    const experiment = JSON.parse(output.slice(start));
-    return validExperiment(experiment) ? experiment : null;
-  } catch {
-    return null;
+  const output = capture.text, starts = /^[ \t]*\{/gm;
+  let match, experiment, removed = 0, visible = '';
+  while ((match = starts.exec(output))) {
+    const start = output.indexOf('{', match.index);
+    let depth = 0, quoted = false, escaped = false;
+    for (let end = start; end < output.length; end++) {
+      const char = output[end];
+      if (quoted) {
+        if (escaped) escaped = false;
+        else if (char === '\\') escaped = true;
+        else if (char === '"') quoted = false;
+      } else if (char === '"') quoted = true;
+      else if (char === '{') depth++;
+      else if (char === '}' && --depth === 0) {
+        try {
+          const candidate = JSON.parse(output.slice(start, end + 1));
+          if (validExperiment(candidate) && (topicCount === undefined || candidate.topics.length === topicCount)) {
+            experiment = candidate;
+            visible += output.slice(removed, match.index);
+            removed = end + 1;
+            if (output[removed] === '\r') removed++;
+            if (output[removed] === '\n') removed++;
+            starts.lastIndex = removed;
+          }
+        } catch { /* Ordinary output is kept verbatim. */ }
+        break;
+      }
+    }
   }
+  if (experiment) capture.text = visible + output.slice(removed);
+  return experiment;
 }
 
 function sendLog(id, stream, capture) {
@@ -187,7 +226,7 @@ async function loadPackages(pyodide, code) {
   }
 }
 
-async function run(id, code, dataset) {
+async function run(id, code, dataset, language, topicCount) {
   if (!runtimePromise) self.postMessage({type: 'status', id, phase: 'loading'});
   const pyodide = await runtime();
   self.postMessage({type: 'status', id, phase: 'packages'});
@@ -198,11 +237,13 @@ async function run(id, code, dataset) {
   const scope = pyodide.runPython('dict()');
   let studentGlobals;
   let figures;
+  let experiment, completed = false;
   try {
     pyodide.setStdout({write: bytes => stdout.write(bytes)});
     pyodide.setStderr({write: bytes => stderr.write(bytes)});
     pyodide.setStdin({stdin: () => null});
     scope.set('has_matplotlib', Object.hasOwn(pyodide.loadedPackages, 'matplotlib'));
+    scope.set('language', language);
     pyodide.runPython(RUN_SETUP, {globals: scope});
     studentGlobals = scope.get('student_globals');
     const filename = scope.get('script_path');
@@ -222,6 +263,7 @@ if pyplot is not None:
 import json
 json.dumps(figures)
 `, {globals: scope}));
+    completed = true;
   } finally {
     try {
       if (scope.has('previous_streams')) pyodide.runPython(RUN_CLEANUP, {globals: scope});
@@ -230,11 +272,12 @@ json.dumps(figures)
       scope.destroy();
       pyodide.setStdout({batched() {}});
       pyodide.setStderr({batched() {}});
+      stdout.finish();
+      if (completed) experiment = takeExperiment(stdout, topicCount);
       sendLog(id, 'stdout', stdout);
       sendLog(id, 'stderr', stderr);
     }
   }
-  const experiment = readExperiment(stdout);
   self.postMessage({
     type: 'result',
     id,
@@ -245,7 +288,8 @@ json.dumps(figures)
 
 self.addEventListener('message', async ({data}) => {
   if (data?.type !== 'run' || !Number.isSafeInteger(data.id)) return;
-  const {id, code, dataset} = data;
+  const {id, code, dataset, topicCount} = data;
+  const language = data.language === 'kk' ? 'kk' : 'ru';
   const validDataset = dataset === undefined || (dataset?.name === 'data.csv'
     && typeof dataset.text === 'string' && dataset.text.length <= MAX_DATASET);
   if (busy || typeof code !== 'string' || code.length > MAX_CODE || !validDataset) {
@@ -254,7 +298,7 @@ self.addEventListener('message', async ({data}) => {
   }
   busy = true;
   try {
-    await run(id, code, dataset);
+    await run(id, code, dataset, language, topicCount);
   } catch (error) {
     const message = String(error?.message || error);
     self.postMessage({type: 'error', id, message: message.slice(0, MAX_LOG)});

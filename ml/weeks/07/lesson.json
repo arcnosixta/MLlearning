@@ -13,7 +13,7 @@
       "Рассчитать accuracy, precision, recall и F1",
       "Строить ROC и обосновать вывод о качестве"
     ],
-    "assignment": "Мини-проект РК. Возьми Iris из sklearn, опиши четыре признака и три класса. Сделай стратифицированный train/test, обучи Pipeline(StandardScaler, LogisticRegression) и DummyClassifier. По тесту представь матрицу 3 × 3, accuracy, macro-F1 и отчёт по классам. Приведи пару чаще всего перепутанных классов и ограничение эксперимента. Покажи код, seed и одну визуализацию, защити вывод за три минуты.",
+    "assignment": "Начни с lab.py: измени THRESHOLD с 0.5 на 0.7, прочитай матрицу ошибок и объясни FP и FN. Сравни accuracy, precision, recall и F1. Вероятности здесь заданы, а не получены обучением; этот пример объясняет метрики. Для мини-проекта РК адаптируй подход из experiments.py к Iris: стратифицированный train/test, Pipeline(StandardScaler, LogisticRegression), DummyClassifier, матрица 3 × 3 и macro-F1. Не подбирай порог по итоговому test.",
     "topics": [
       {
         "title": "Матрица ошибок и четыре исхода",
@@ -91,7 +91,7 @@
       "Accuracy, precision, recall және F1 есептеу",
       "ROC құрып, сапа туралы қорытындыны негіздеу"
     ],
-    "assignment": "Аралық бақылаудың шағын жобасы. Sklearn ішінен Iris жиынын алып, төрт белгі мен үш класты сипатта. Стратификацияланған train/test бөлігін жаса, Pipeline(StandardScaler, LogisticRegression) және DummyClassifier үйрет. Сынақта 3 × 3 матрицаны, accuracy, macro-F1 және кластар есебін ұсын. Ең жиі шатастырылған екі класты және тәжірибе шектеуін ата. Код, seed және бір визуализация көрсетіп, үш минутта қорытындыңды қорға.",
+    "assignment": "Алдымен lab.py файлын орында: THRESHOLD мәнін 0.5-тен 0.7-ге өзгерт, қателер матрицасын оқып, FP мен FN түсіндір. Accuracy, precision, recall және F1 мәндерін салыстыр. Мұнда ықтималдықтар берілген, оқыту арқылы алынбаған; мысал метрикаларды түсіндіреді. РК шағын жобасында experiments.py тәсілін Iris деректеріне бейімде: стратификацияланған train/test, Pipeline(StandardScaler, LogisticRegression), DummyClassifier, 3 × 3 матрица және macro-F1. Шекті соңғы test бойынша таңдама.",
     "topics": [
       {
         "title": "Қателер матрицасы және төрт нәтиже",

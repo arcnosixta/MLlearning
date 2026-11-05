@@ -2,11 +2,17 @@ let mlPythonDispose;
 
 function mlPythonHTML(id, assets) {
   const dataset = assets.includes('data.csv');
+  const experiments = assets.includes('experiments.py');
   return `<details class="ml-code ml-python" data-source="ml/${id}/lab.py" ${dataset ? `data-dataset="ml/${id}/data.csv"` : ''}>
     <summary>${jt('Открыть редактор Python', 'Python редакторын ашу')}</summary>
     <p>${jt('Измени пример и запусти его в браузере. При первом запуске загрузятся Python и нужные библиотеки.', 'Мысалды өзгертіп, браузерде іске қос. Алғашқы іске қосқанда Python мен қажетті кітапханалар жүктеледі.')}</p>
     ${dataset ? `<p class="ml-python-dataset"><code>data.csv</code> · ${jt('данные этой лабораторной доступны из кода', 'осы зертхана деректері кодтан қолжетімді')}</p>` : ''}
-    <label for="ml-python-editor">lab.py</label>
+    ${experiments ? `<label for="ml-python-source">${jt('Пример для запуска', 'Іске қосатын мысал')}</label>
+    <select id="ml-python-source">
+      <option value="ml/${id}/lab.py">${jt('Короткий пример — lab.py', 'Қысқа мысал — lab.py')}</option>
+      <option value="ml/${id}/experiments.py">${jt('Все опыты урока — experiments.py', 'Сабақтың барлық тәжірибесі — experiments.py')}</option>
+    </select><p>${jt('Начни с короткого примера: измени одно значение, запусти и сравни результат. Все подробные опыты доступны во втором варианте.', 'Қысқа мысалдан баста: бір мәнді өзгерт, іске қосып, нәтижені салыстыр. Барлық толық тәжірибе екінші нұсқада бар.')}</p>` : ''}
+    <label for="ml-python-editor" id="ml-python-filename">lab.py</label>
     <textarea id="ml-python-editor" rows="16" maxlength="100000" spellcheck="false" autocapitalize="off" autocomplete="off" disabled></textarea>
     <div class="ml-python-actions">
       <button type="button" id="ml-python-run" class="button" aria-keyshortcuts="Control+Enter Meta+Enter" disabled>${jt('Запустить Python', 'Python іске қосу')} ▶</button>
@@ -42,6 +48,9 @@ function mlBindPython(details, lesson, week) {
   const stop = find('#ml-python-stop'), reset = find('#ml-python-reset');
   const status = find('#ml-python-status'), console = find('#ml-python-output');
   const figures = find('.ml-python-figures'), experiment = find('#ml-python-experiment');
+  const sourceSelect = find('#ml-python-source'), filename = find('#ml-python-filename');
+  const sources = new Map(), drafts = new Map();
+  let currentSource = details.dataset.source;
   const lifetime = new AbortController();
   const setExperiment = mlBindPythonPlot(experiment, lesson, week, lifetime.signal);
   const messages = {
@@ -62,6 +71,7 @@ function mlBindPython(details, lesson, week) {
     reset.disabled = Boolean(active) || Boolean(sourceLoading);
     stop.disabled = !active;
     editor.disabled = source === undefined || Boolean(active);
+    if (sourceSelect) sourceSelect.disabled = Boolean(active) || Boolean(sourceLoading);
   }
 
   function appendOutput(text, stream = 'stdout') {
@@ -109,9 +119,29 @@ function mlBindPython(details, lesson, week) {
         const image = document.createElement('img');
         image.src = `data:image/png;base64,${data}`;
         image.alt = `${jt('График Python', 'Python графигі')} ${index + 1}`;
-        figures.append(image);
+        const frame = document.createElement('figure'), viewport = document.createElement('div');
+        const zoom = document.createElement('button');
+        viewport.className = 'ml-python-image';
+        viewport.tabIndex = 0;
+        viewport.setAttribute('aria-label', image.alt);
+        viewport.append(image);
+        zoom.type = 'button';
+        zoom.className = 'button outline ml-python-zoom';
+        zoom.textContent = jt('Увеличить график', 'Графикті үлкейту');
+        zoom.setAttribute('aria-pressed', 'false');
+        zoom.onclick = () => {
+          const enlarged = viewport.classList.toggle('is-enlarged');
+          zoom.setAttribute('aria-pressed', String(enlarged));
+          zoom.textContent = enlarged ? jt('Вписать в экран', 'Экранға сыйғызу') : jt('Увеличить график', 'Графикті үлкейту');
+        };
+        frame.append(viewport, zoom);
+        figures.append(frame);
       }
       setExperiment(message.experiment);
+      if (message.experiment) appendOutput(jt(
+        `Построены графики: ${message.experiment.topics.length} темы. Выбери тему и условие опыта ниже.\n`,
+        `Графиктер құрылды: ${message.experiment.topics.length} тақырып. Төменде тақырып пен тәжірибе шартын таңда.\n`,
+      ));
       finish('success');
     }
   }
@@ -119,13 +149,15 @@ function mlBindPython(details, lesson, week) {
   async function loadSource() {
     if (source !== undefined || sourceLoading) return;
     sourceLoading = true;
-    setState('loading', jt('Загружаем lab.py…', 'lab.py жүктелуде…'));
+    setState('loading', jt('Загружаем пример…', 'Мысал жүктелуде…'));
     let failure;
     try {
-      source = await mlPythonFile(details.dataset.source, lifetime.signal);
-      editor.value = source;
+      source = sources.get(currentSource) ?? await mlPythonFile(currentSource, lifetime.signal);
+      sources.set(currentSource, source);
+      editor.value = drafts.get(currentSource) ?? source;
+      filename.textContent = currentSource.split('/').pop();
     } catch {
-      failure = jt('Не удалось загрузить lab.py. Нажми «Восстановить пример», чтобы повторить.', 'lab.py жүктелмеді. Қайталау үшін «Мысалды қалпына келтіру» батырмасын бас.');
+      failure = jt('Не удалось загрузить пример. Нажми «Восстановить пример», чтобы повторить.', 'Мысал жүктелмеді. Қайталау үшін «Мысалды қалпына келтіру» батырмасын бас.');
     } finally {
       sourceLoading = false;
       if (!lifetime.signal.aborted) setState(failure ? 'error' : 'ready', failure);
@@ -159,6 +191,7 @@ function mlBindPython(details, lesson, week) {
         worker = instance;
       }
       worker.postMessage({type: 'run', id: job.id, code: editor.value,
+        language: window.ML_LOCALE === 'kk' ? 'kk' : 'ru', topicCount: week.topics.length,
         ...(dataset === undefined ? {} : {dataset: {name: 'data.csv', text: dataset}})});
     } catch {
       if (active === job) finish('error', jt('Не удалось начать запуск. Проверь соединение и попробуй ещё раз.', 'Орындау басталмады. Байланысты тексеріп, қайта байқап көр.'), true);
@@ -166,10 +199,20 @@ function mlBindPython(details, lesson, week) {
   }
 
   details.addEventListener('toggle', () => { if (details.open) loadSource(); });
+  if (sourceSelect) sourceSelect.onchange = () => {
+    drafts.set(currentSource, editor.value);
+    currentSource = sourceSelect.value;
+    source = undefined;
+    console.replaceChildren();
+    figures.replaceChildren();
+    setExperiment();
+    loadSource();
+  };
   reset.onclick = () => {
     if (source === undefined) loadSource();
     else {
       editor.value = source;
+      drafts.delete(currentSource);
       console.replaceChildren();
       figures.replaceChildren();
       setExperiment();
@@ -197,17 +240,17 @@ function mlBindPython(details, lesson, week) {
 }
 
 function mlPythonChartTopics(data, count) {
-  if (!Array.isArray(data?.topics) || data.topics.length !== count) return;
-  const bilingual = label => ['ru', 'kk'].every(lang => typeof label?.[lang] === 'string' && label[lang].length <= 1200);
+  if (!Array.isArray(data?.topics) || data.topics.length !== count || count < 1 || count > 6) return;
+  const bilingual = label => ['ru', 'kk'].every(lang => typeof label?.[lang] === 'string' && label[lang].length > 0 && label[lang].length <= 1200);
   const number = value => Number.isFinite(value) && Math.abs(value) <= 1e100;
   const seriesValid = series => bilingual(series?.label) && ['line', 'bar', 'scatter'].includes(series.kind) &&
-    Array.isArray(series.points) && series.points.length > 0 && series.points.length <= 1500 &&
+    Array.isArray(series.points) && series.points.length > 0 && series.points.length <= 1000 &&
     series.points.every(point => Array.isArray(point) && point.length === 2 && point.every(number));
   const caseValid = item => bilingual(item?.label) && bilingual(item.note) && Array.isArray(item.series) &&
     item.series.length > 0 && item.series.length <= 16 && item.series.every(seriesValid) &&
-    (item.xTicks === undefined || (Array.isArray(item.xTicks) && item.xTicks.length <= 12 &&
+    (item.xTicks === undefined || (Array.isArray(item.xTicks) && item.xTicks.length <= 32 &&
       item.xTicks.every(tick => number(tick?.value) && bilingual(tick.label))));
-  if (data.topics.every(cases => Array.isArray(cases) && cases.length > 0 && cases.length <= 5 && cases.every(caseValid))) return data.topics;
+  if (data.topics.every(cases => Array.isArray(cases) && cases.length > 0 && cases.length <= 6 && cases.every(caseValid))) return data.topics;
 }
 
 function mlBindPythonPlot(details, lesson, week, signal) {

@@ -49,6 +49,7 @@ jobs:
           mvn -B -f artifacts/java-maven-lab/pom.xml test
       - run: node tests/java_core_check.js
       - run: node tests/track_core_check.js
+      - run: node tests/ml_python_protocol_check.js
       - name: Verify browser interactions
         run: |
           python -m http.server 8765 --bind 127.0.0.1 --directory dist &

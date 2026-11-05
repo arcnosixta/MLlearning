@@ -38,7 +38,7 @@ function mlWeekPage(lesson, data) {
       <p>${jt('Открой редактор, измени параметры и запусти расчёт. Для работы с локальным Python или дополнительными примерами скачай архив.', 'Редакторды ашып, параметрлерді өзгерт те есептеуді іске қос. Жергілікті Python не қосымша мысалдар үшін архивті жүкте.')}</p>
       ${mlPythonHTML(id, lesson.assets)}
       <div class="hero-actions"><a class="button outline" href="ml/${id}/lab.zip" download>${jt('Скачать лабораторную', 'Зертхананы жүктеу')} ZIP ↓</a><a class="sources" href="ml/${id}/lab.py" download>lab.py ↓</a>${lesson.assets.map(file => `<a class="sources" href="ml/${id}/${file}" download>${escapeHTML(file)} ↓</a>`).join('')}</div>
-      <details><summary>${jt('Запуск скачанного архива', 'Жүктелген архивті іске қосу')}</summary><pre><code>python -m pip install -r requirements.txt\npython lab.py &gt; results.json</code></pre></details></section>
+      <details><summary>${jt('Запуск скачанного архива', 'Жүктелген архивті іске қосу')}</summary><pre><code>python -m pip install -r requirements.txt\npython lab.py${lesson.assets.includes('experiments.py') ? '\npython experiments.py &gt; results.json' : ' &gt; results.json'}</code></pre></details></section>
       ${week.topics.map((topic, index) => mlTopicHTML(topic, data.topics[index], index)).join('')}
       <section class="ml-assignment" id="ml-topic-assignment" tabindex="-1"><h2>${jt('Самостоятельная работа', 'Өзіндік жұмыс')}</h2><p>${escapeHTML(week.assignment)}</p>
       ${project ? `<p><strong>${jt('Отложенный тест', 'Соңғы тест')}</strong> · ROC-AUC ${escapeHTML(data.heldOutAUC)} · ${jt('базовый вариант', 'базалық нұсқа')} ${escapeHTML(data.baselineAUC)}</p>` : ''}
