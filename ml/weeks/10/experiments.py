@@ -1,4 +1,4 @@
-"""Cluster synthetic customers, compare k and check what PCA preserves."""
+"""Cluster synthetic customers and compare PCA with local t-SNE maps."""
 
 import csv
 import json
@@ -10,6 +10,7 @@ from sklearn.datasets import make_classification
 from sklearn.decomposition import PCA
 from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.manifold import TSNE
 from sklearn.metrics import accuracy_score, precision_score, recall_score, silhouette_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
@@ -139,6 +140,30 @@ def imbalance_cases():
     return cases
 
 
+def tsne_cases(scaled, groups):
+    """Colors come from k-means on the original four standardized features."""
+    cases = []
+    for perplexity in (5, 15, 30):
+        projection = TSNE(
+            n_components=2, perplexity=perplexity, init="pca",
+            learning_rate="auto", max_iter=500, random_state=42,
+            method="exact", n_jobs=1,
+        ).fit_transform(scaled)
+        cases.append({
+            "label": localized(f"perplexity = {perplexity}", f"perplexity = {perplexity}"),
+            "note": localized(
+                f"72 клиента; perplexity={perplexity}, seed=42, до 500 итераций. "
+                "Цвет — прежняя группа k-means по 4 признакам. Оси условные; "
+                "расстояния между облаками и их площадь не измеряют различие и размер сегментов.",
+                f"72 клиент; perplexity={perplexity}, seed=42, 500 итерацияға дейін. "
+                "Түс — 4 белгі бойынша бұрын алынған k-means тобы. Осьтер шартты; "
+                "бұлттар аралығы мен ауданы сегмент айырмасы мен өлшемін көрсетпейді.",
+            ),
+            "series": group_series(projection, groups),
+        })
+    return cases
+
+
 def main():
     customers = read_customers()
     scaled = StandardScaler().fit_transform(customers)
@@ -146,7 +171,8 @@ def main():
         models = {k: KMeans(n_clusters=k, n_init=20, random_state=3305).fit(scaled)
                   for k in range(2, 7)}
     topics = [cluster_cases(customers, models), quality_cases(scaled, models),
-              projection_cases(customers, scaled, models[3].labels_), imbalance_cases()]
+              projection_cases(customers, scaled, models[3].labels_), imbalance_cases(),
+              tsne_cases(scaled, models[3].labels_)]
     print(json.dumps({"topics": topics}, ensure_ascii=True, separators=(",", ":")))
 
 

@@ -44,6 +44,8 @@ def validate_lesson(lesson, results, ident):
         if len(content['topics']) != len(topics):
             raise ValueError(f'ML {ident} {lang}: topics and experiments differ')
         for topic in content['topics']:
+            if 'equalAspect' in topic and type(topic['equalAspect']) is not bool:
+                raise ValueError(f'ML {ident} {lang}: equalAspect must be boolean')
             if not all(text(topic[key]) for key in TOPIC_TEXT) or len(topic['theory']) < 3 or not all(map(text, topic['theory'])):
                 raise ValueError(f'ML {ident} {lang}: incomplete topic')
             if len(topic['choices']) != 3 or not all(map(text, topic['choices'])) or type(topic['answer']) is not int or topic['answer'] not in range(3):

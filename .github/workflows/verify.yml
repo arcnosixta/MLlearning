@@ -50,6 +50,8 @@ jobs:
       - run: node tests/java_core_check.js
       - run: node tests/track_core_check.js
       - run: node tests/ml_python_protocol_check.js
+      - run: node tests/ml_chart_geometry_check.js
+      - run: python tests/ml_results_check.py
       - name: Verify browser interactions
         run: |
           python -m http.server 8765 --bind 127.0.0.1 --directory dist &

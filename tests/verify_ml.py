@@ -1,7 +1,6 @@
 """Run every published ML lab from its download and compare with the browser plots."""
 
 import json
-import math
 import os
 import subprocess
 import sys
@@ -12,21 +11,7 @@ from zipfile import ZipFile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_ml import WEEKS, validate_lesson
-
-
-def compare(actual, expected):
-    if type(expected) in (float, int):
-        assert math.isclose(actual, expected, rel_tol=1e-5, abs_tol=1e-6), (actual, expected)
-    elif isinstance(expected, list):
-        assert len(actual) == len(expected)
-        for left, right in zip(actual, expected):
-            compare(left, right)
-    elif isinstance(expected, dict):
-        assert actual.keys() == expected.keys()
-        for key, value in expected.items():
-            compare(actual[key], value)
-    else:
-        assert actual == expected, (actual, expected)
+from ml_results_check import compare_ml_results
 
 
 dist = ROOT / 'dist'
@@ -67,7 +52,7 @@ for ident in [*WEEKS, 'project']:
             compile(archive.read('extra.py'), 'extra.py', 'exec')
         script = 'experiments.py' if 'experiments.py' in names else 'lab.py'
         run = subprocess.run([sys.executable, script], cwd=temporary, env=env, encoding='utf-8', capture_output=True, timeout=60, check=True)
-        compare(json.loads(run.stdout), expected)
+        compare_ml_results(json.loads(run.stdout), expected, ident)
         if script == 'experiments.py':
             outputs = []
             for language in ('ru', 'kk'):

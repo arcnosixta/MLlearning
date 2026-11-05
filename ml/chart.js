@@ -17,8 +17,15 @@ function mlPlot(cases, current, topic, independentAxes, width) {
   const [left, right, top, bottom] = [60, width - 27, 20, compact ? 181 : 238];
   const tickCount = compact ? 3 : 5;
   const xs = all.map(([x]) => x), ys = all.map(([, y]) => y);
-  const [xmin, xmax] = mlExtent(xs);
-  const [ymin, ymax] = mlExtent(scaleCases.some(item => item.series.some(series => series.kind === 'bar')) ? [...ys, 0] : ys);
+  let [xmin, xmax] = mlExtent(xs);
+  let [ymin, ymax] = mlExtent(scaleCases.some(item => item.series.some(series => series.kind === 'bar')) ? [...ys, 0] : ys);
+  // Neighborhood maps need the same pixels per unit on both axes.
+  if (topic.equalAspect === true) {
+    const unit = Math.max((xmax - xmin) / (right - left), (ymax - ymin) / (bottom - top));
+    const centerX = (xmin + xmax) / 2, centerY = (ymin + ymax) / 2;
+    [xmin, xmax] = [centerX - unit * (right - left) / 2, centerX + unit * (right - left) / 2];
+    [ymin, ymax] = [centerY - unit * (bottom - top) / 2, centerY + unit * (bottom - top) / 2];
+  }
   const sx = x => left + (x - xmin) * (right - left) / (xmax - xmin);
   const sy = y => bottom - (y - ymin) * (bottom - top) / (ymax - ymin);
   const fmt = new Intl.NumberFormat(window.ML_LOCALE, {maximumSignificantDigits: 4}).format;

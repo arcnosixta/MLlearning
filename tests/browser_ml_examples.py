@@ -16,6 +16,7 @@ from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
 from browser_ready import goto_ready
+from ml_results_check import compare_ml_results
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / 'artifacts/ml-qa'
@@ -181,7 +182,12 @@ def main():
             count = len(lesson['ru']['topics'])
             stdout, stderr, result = run_worker(page, source(week, 'experiments.py'), 'ru', week, topic_count=count)
             assert not stdout.strip() and not stderr, (week, stdout, stderr)
-            assert result.get('experiment') == json.loads(source(week, 'results.json')), week
+            expected = json.loads(source(week, 'results.json'))
+            if week == '10':
+                assert result['experiment']['topics'][:4] == expected['topics'][:4], week
+                compare_ml_results(result.get('experiment'), expected, week)
+            else:
+                assert result.get('experiment') == expected, week
             report['worker'].append({'week': week, 'kind': 'detailed', 'topics': count})
             print(f'PASS week {week}: RU/KK, edited example and all detailed charts in real Pyodide', flush=True)
 
