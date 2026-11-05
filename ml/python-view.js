@@ -200,9 +200,10 @@ function mlBindPython(details, lesson, week) {
 
   details.addEventListener('toggle', () => { if (details.open) loadSource(); });
   if (sourceSelect) sourceSelect.onchange = () => {
-    drafts.set(currentSource, editor.value);
+    if (source !== undefined) drafts.set(currentSource, editor.value);
     currentSource = sourceSelect.value;
     source = undefined;
+    editor.value = '';
     console.replaceChildren();
     figures.replaceChildren();
     setExperiment();

@@ -102,6 +102,40 @@ def run_ui(page, code=None, state='success'):
     return page.locator('#ml-python-output').inner_text()
 
 
+def check_source_download_recovery(page, url, language):
+    """A failed source fetch must not copy another file's draft into its cache."""
+    open_editor(page, url, '05', language)
+    editor = page.locator('#ml-python-editor')
+    select = page.locator('#ml-python-source')
+    status = page.locator('#ml-python-status')
+    draft = source('05') + '\n# draft kept only in lab.py\n'
+    editor.fill(draft)
+    pattern = '**/ml/05/experiments.py'
+
+    def fail_download(route):
+        route.fulfill(status=503, content_type='text/plain', body='Temporarily unavailable')
+
+    page.route(pattern, fail_download)
+    select.select_option('ml/05/experiments.py')
+    expect(status).to_have_attribute('data-state', 'error')
+    expect(editor).to_be_disabled()
+    expect(editor).to_have_value('')
+    expect(page.locator('#ml-python-run')).to_be_disabled()
+    select.select_option('ml/05/lab.py')
+    expect(status).to_have_attribute('data-state', 'ready')
+    expect(editor).to_have_value(draft)
+    page.unroute(pattern, fail_download)
+    select.select_option('ml/05/experiments.py')
+    expect(status).to_have_attribute('data-state', 'ready')
+    expect(editor).to_be_enabled()
+    expect(editor).to_have_value(source('05', 'experiments.py'))
+    assert '# draft kept only in lab.py' not in editor.input_value()
+    select.select_option('ml/05/lab.py')
+    expect(status).to_have_attribute('data-state', 'ready')
+    expect(editor).to_have_value(draft)
+    print(f'PASS source download 503 recovery {language}: lab draft retained; experiments source restored exactly', flush=True)
+
+
 def main():
     server = None
     if len(sys.argv) > 1:
@@ -210,6 +244,8 @@ def main():
                 assert not page.locator('.ml-python-figures img').count()
                 assert page.locator('#ml-python-experiment').is_hidden()
                 print(f'PASS UI {language} {width}px: PNG, source drafts/reset, detailed charts, error/retry and overflow', flush=True)
+            check_source_download_recovery(page, url, language)
+            report['ui'].append({'language': language, 'kind': 'source-download-recovery', 'status': 503})
         assert not errors, errors
         browser.close()
     if server:
